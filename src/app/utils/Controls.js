@@ -309,17 +309,27 @@ export default class Controls extends EventEmitter {
 
     this.updateLocalStorage()
 
-    document.addEventListener('click', () => {
+    document.addEventListener('click', (event) => {
+      // console.log(event.target)
+      const { target } = event
+
+      const exportButtonContainer = document.querySelector('.export-button-container')
+      const exportConfigBtn = document.querySelector('#export-config')
       const exportConfig = document.querySelector('#export-options')
       const exportConfigOptions = exportConfig.querySelectorAll('.export-option')
+
       let inFocus = false
       exportConfigOptions.forEach((button) => {
-        if (document.activeElement === button) inFocus = true
+        if (target === button) inFocus = true
       })
-      if (document.activeElement === document.querySelector('#export-config')) inFocus = true
+      if (target === exportConfigBtn) inFocus = true
+      if (target === exportConfig) inFocus = true
 
       if (!inFocus) {
-        exportConfig.style.display = 'none'
+        if (exportConfig.style.display !== 'none') {
+          exportConfig.style.display = 'none'
+        }
+        exportButtonContainer.classList.remove('config-open')
       }
     })
 
@@ -444,6 +454,7 @@ export default class Controls extends EventEmitter {
   }
 
   createExportButtons = () => {
+    const exportButtonContainer = document.querySelector('.export-button-container')
     const exportBtnConfig = document.querySelector('#export-config')
 
     const scales = this.parameters.buttons.export.options.scale
@@ -460,10 +471,14 @@ export default class Controls extends EventEmitter {
       if (scale === 1) button.classList.add('selected')
       const label = document.createElement('label')
       label.innerHTML = `${scale}x <span>${this.sizes.width * scale}x${this.sizes.height * scale}</span>`
+      label.style.pointerEvents = 'none'
+      label.querySelector('span').style.pointerEvents = 'none'
       button.appendChild(label)
       buttonContainer.appendChild(button)
 
       button.addEventListener('click', (event) => {
+        // console.log(event.target)
+        // console.log('click')
         event.preventDefault()
         if (scale !== this.parameters.buttons.export.value.scale) {
           this.parameters.buttons.export.value.scale = scale
@@ -472,11 +487,13 @@ export default class Controls extends EventEmitter {
           const optionButtons = buttonContainer.querySelectorAll('.export-option')
           optionButtons.forEach((option) => option.classList.remove('selected'))
           button.classList.add('selected')
-          buttonContainer.style.display = 'none'
         }
+        buttonContainer.style.display = 'none'
+        exportButtonContainer.classList.remove('config-open')
       })
 
       button.addEventListener('keydown', (event) => {
+        // console.log('enter')
         if (event.key === 'Enter' && document.activeElement === button) {
           event.preventDefault()
           button.click()
@@ -534,8 +551,11 @@ export default class Controls extends EventEmitter {
           const exportConfigOptions = document.querySelectorAll('#export-options .export-option')
           exportConfigOptions.forEach((option) => {
             const scale = parseFloat(option.dataset.scale)
-            const span = option.querySelector('label span')
+            const label = option.querySelector('label')
+            const span = label.querySelector('span')
             span.innerHTML = `${this.sizes.width * scale}x${this.sizes.height * scale}`
+            label.style.pointerEvents = 'none'
+            span.style.pointerEvents = 'none'
           })
         }
 
@@ -645,6 +665,12 @@ export default class Controls extends EventEmitter {
       buttonConfigInput.addEventListener('click', () => {
         const exportConfigOptions = document.querySelector('#export-options')
         exportConfigOptions.style.display = exportConfigOptions.style.display === 'none' ? 'flex' : 'none'
+        // if (exportButtonContainer.classList.contains('config-open')) {
+        //   exportButtonContainer.classList.remove('config-open')
+        // } else {
+        //   exportButtonContainer.classList.add('config-open')
+        // }
+        exportButtonContainer.classList.toggle('config-open')
         exportConfigOptions.style.top = `-${exportConfigOptions.offsetHeight + 10}px`
       })
       exportButtonContainer.appendChild(buttonInput)

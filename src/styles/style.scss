@@ -473,6 +473,12 @@ textarea {
     display: flex;
     flex-direction: row;
     position: relative;
+  
+    &.config-open {
+      #export-config {
+        background: $color-bg-lighter;
+      }
+    }
   }
 
   input {
@@ -554,6 +560,7 @@ textarea {
     background: $color-bg;
     border: 1px solid $color-border;
     box-shadow: 0 0 20px $color-bg;
+    z-index: 999;
     // display: none;
   }
 
@@ -628,7 +635,8 @@ textarea {
       display: flex;
       width: 100%;
       justify-content: space-between;
-      cursor: pointer;
+      // cursor: pointer;
+      pointer-events: none;
       // border: 1px solid color.adjust($color-border, $lightness: -40%);
       // padding: 0 20px;
       // // height: 60px;
@@ -639,6 +647,7 @@ textarea {
       span {
         color: $color-text-medium;
         font-size: 14px;
+        pointer-events: none;
       }
     }
   }
