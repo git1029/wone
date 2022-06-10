@@ -570,7 +570,8 @@ export default class Controls extends EventEmitter {
       sliderValue.innerHTML = slider.value
 
       // sliderValue.style.left = `${this.map(slider.value, slider.options.min, slider.options.max, 0, 100)}%`
-      const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
+      // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
+      const leftMax = 540 - sliderValue.offsetWidth
       const left = this.map(slider.value, slider.options.min, slider.options.max, 0, leftMax)
       sliderValue.style.left = `${left}px`
 
@@ -605,7 +606,8 @@ export default class Controls extends EventEmitter {
     // inputContainer.appendChild(label)
 
     parent.appendChild(inputContainer)
-    const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
+    // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
+    const leftMax = 540 - sliderValue.offsetWidth
     const left = this.map(slider.value, slider.options.min, slider.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
   }
