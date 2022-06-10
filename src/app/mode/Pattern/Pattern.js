@@ -37,7 +37,7 @@ export default class Pattern {
     this.destroy()
 
     this.renderer.instance.setClearColor(
-      this.controls.parameters.color.pattern.value.colors.background,
+      this.controls.parameters.color.pattern.value.background,
     )
 
     this.WIDTH = 512
@@ -173,7 +173,7 @@ export default class Pattern {
       // 'cameraConstant': { value: getCameraConstant( camera ) },
       density: { value: 0.0 },
       sandColor: {
-        value: new THREE.Color(this.controls.parameters.color.pattern.value.colors.primary),
+        value: new THREE.Color(this.controls.parameters.color.pattern.value.primary),
       },
     }
 
@@ -205,7 +205,7 @@ export default class Pattern {
 
   updateColors = () => {
     this.material.uniforms.sandColor.value = new THREE.Color(
-      this.controls.parameters.color.pattern.value.colors.primary,
+      this.controls.parameters.color.pattern.value.primary,
     )
     this.material.needsUpdate = true
   }

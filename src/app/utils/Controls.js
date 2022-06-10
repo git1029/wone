@@ -43,9 +43,9 @@ export default class Controls extends EventEmitter {
         pattern: {
           modes: ['pattern'],
           options: {
-            blue: { name: 'Blue', colors: { background: '#BEC0E1', primary: '#0F57E5' } },
-            orange: { name: 'Orange', colors: { background: '#D6B2D9', primary: '#C55F36' } },
-            red: { name: 'Red', colors: { background: '#ED897F', primary: '#C3405B' } },
+            blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
+            orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
+            red: { name: 'Red', background: '#ED897F', primary: '#C3405B' },
           },
           controllers: {},
         },
@@ -53,8 +53,8 @@ export default class Controls extends EventEmitter {
         text: {
           modes: ['text'],
           options: {
-            light: { name: 'Light', colors: { background: '#1D1D1B', primary: '#E1E0D3' } },
-            dark: { name: 'Dark', colors: { background: '#E1E0D3', primary: '#1D1D1B' } },
+            light: { name: 'Light', background: '#1D1D1B', primary: '#E1E0D3' },
+            dark: { name: 'Dark', background: '#E1E0D3', primary: '#1D1D1B' },
           },
           controllers: {},
         },
@@ -297,6 +297,8 @@ export default class Controls extends EventEmitter {
       // buttonLabel.innerHTML = `${size.aspect}<br><span>${size.width}x${size.height}</span>`
       buttonLabel.innerHTML = `${size.name}<br><span>${size.width}x${size.height}</span>`
     })
+
+    this.updateLocalStorage()
   }
 
   // eslint-disable-next-line default-param-last
@@ -304,15 +306,23 @@ export default class Controls extends EventEmitter {
     if (params) {
       if (parent) {
         if (params[parent] && params[parent][name] && typeof params[parent][name].value !== 'undefined') {
-          this.parameters[parent][name].value = params[parent][name].value
+          if (this.compareKeys(params[parent][name].value, fallback)) {
+            this.parameters[parent][name].value = params[parent][name].value
+          } else {
+            this.parameters[parent][name].value = fallback
+          }
         } else {
           this.parameters[parent][name].value = fallback
         }
       } else if (params[name] && typeof params[name].value !== 'undefined') {
-        if (name === 'text' && params[name].value === '') {
-          this.parameters[name].value = fallback
+        if (this.compareKeys(params[name].value, fallback)) {
+          if (name === 'text' && params[name].value === '') {
+            this.parameters[name].value = fallback
+          } else {
+            this.parameters[name].value = params[name].value
+          }
         } else {
-          this.parameters[name].value = params[name].value
+          this.parameters[name].value = fallback
         }
       } else {
         this.parameters[name].value = fallback
@@ -322,6 +332,20 @@ export default class Controls extends EventEmitter {
     } else {
       this.parameters[name].value = fallback
     }
+  }
+
+  compareKeys = (a, b) => {
+    // Check type of values first (some e.g. sliders are just numbers)
+    if (typeof a !== 'object' || typeof b !== 'object') {
+      return typeof a === typeof b
+    }
+
+    // Compare object properties
+    const aKeys = Object.keys(a).sort()
+    const bKeys = Object.keys(b).sort()
+    const aTypes = aKeys.map((key) => typeof a[key])
+    const bTypes = aKeys.map((key) => typeof b[key])
+    return (JSON.stringify(aKeys) === JSON.stringify(bKeys)) && (JSON.stringify(aTypes) === JSON.stringify(bTypes))
   }
 
   setTextures = () => {
@@ -459,12 +483,12 @@ export default class Controls extends EventEmitter {
       button.setAttribute('class', 'color-block')
       button.setAttribute('tabindex', '0')
       buttonDivide.setAttribute('class', 'color-block-divide')
-      button.style.backgroundColor = name === 'text' ? value.colors.primary : value.colors.background
-      if (name !== 'text') button.style.borderColor = value.colors.background
+      button.style.backgroundColor = name === 'text' ? value.primary : value.background
+      if (name !== 'text') button.style.borderColor = value.background
       if (inner) {
         const buttonInner = document.createElement('div')
         buttonInner.setAttribute('class', 'color-block-inner')
-        buttonInner.style.backgroundColor = value.colors.primary
+        buttonInner.style.backgroundColor = value.primary
         button.appendChild(buttonInner)
       }
       buttonContainer.append(button)
@@ -483,7 +507,7 @@ export default class Controls extends EventEmitter {
         button.classList.add('selected')
         this.parameters.color[name].value = value
 
-        if (name !== 'text') this.renderer.instance.setClearColor(value.colors.background)
+        if (name !== 'text') this.renderer.instance.setClearColor(value.background)
         this.trigger('parameter-update-color')
 
         this.updateLocalStorage()

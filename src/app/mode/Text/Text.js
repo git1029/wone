@@ -35,7 +35,7 @@ export default class Text {
       // maxWidth: 1,
       // overflowWrap: 'break-word',
       lineHeight: this.controls.parameters.sliders.lineHeight.value,
-      color: this.controls.parameters.color.text.value.colors.primary,
+      color: this.controls.parameters.color.text.value.primary,
     }
 
     this.setText()
@@ -57,8 +57,8 @@ export default class Text {
     this.controls.on('parameter-update-color', () => {
       if (this.app.mode.activeMode.name === 'Text') {
         this.text.forEach((text) => {
-          this.textSettings.color = this.controls.parameters.color.text.value.colors.primary
-          text.color = this.controls.parameters.color.text.value.colors.primary
+          this.textSettings.color = this.controls.parameters.color.text.value.primary
+          text.color = this.controls.parameters.color.text.value.primary
         })
         this.updateCanvas()
       }
@@ -85,7 +85,7 @@ export default class Text {
   }
 
   updateCanvas = () => {
-    this.app.canvas.style.background = this.controls.parameters.color.text.value.colors.background
+    this.app.canvas.style.background = this.controls.parameters.color.text.value.background
   }
 
   getYPos = (i) => {
