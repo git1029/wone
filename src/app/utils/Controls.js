@@ -231,6 +231,12 @@ export default class Controls extends EventEmitter {
           modes: [],
           name: 'Export',
           label: 'Export',
+          options: {
+            scale: [1, 2, 3, 4],
+          },
+          value: {
+            scale: 1,
+          },
           handleClick: () => {
             // this.app.export.recording = true
             // this.capturer.start()
@@ -242,6 +248,8 @@ export default class Controls extends EventEmitter {
             // document.body.appendChild(a);
             // a.click();
             // document.body.removeChild(a);
+            const exportConfigOptions = document.querySelector('#export-options')
+            exportConfigOptions.style.display = 'none'
 
             this.app.export.recording = true
           },
@@ -286,6 +294,7 @@ export default class Controls extends EventEmitter {
     })
     this.createTextarea(document.querySelector('#input-text'))
     this.createImageUpload(document.querySelector('#input-image'))
+    this.createExportButtons()
 
     this.setTextures()
 
@@ -299,6 +308,22 @@ export default class Controls extends EventEmitter {
     })
 
     this.updateLocalStorage()
+
+    document.addEventListener('click', () => {
+      const exportConfig = document.querySelector('#export-options')
+      const exportConfigOptions = exportConfig.querySelectorAll('.export-option')
+      let inFocus = false
+      exportConfigOptions.forEach((button) => {
+        if (document.activeElement === button) inFocus = true
+      })
+      if (document.activeElement === document.querySelector('#export-config')) inFocus = true
+
+      if (!inFocus) {
+        exportConfig.style.display = 'none'
+      }
+    })
+
+    this.parameters.buttons.export.value.scale = 1
   }
 
   // eslint-disable-next-line default-param-last
@@ -418,6 +443,54 @@ export default class Controls extends EventEmitter {
     window.localStorage.setItem('woneParams', JSON.stringify(values))
   }
 
+  createExportButtons = () => {
+    const exportBtnConfig = document.querySelector('#export-config')
+
+    const scales = this.parameters.buttons.export.options.scale
+    // const buttonContainer = document.querySelector('#export-overlay .export-options')
+    const buttonContainer = document.createElement('div')
+    buttonContainer.setAttribute('id', 'export-options')
+    buttonContainer.setAttribute('class', 'export-options')
+    buttonContainer.style.display = 'none'
+    scales.forEach((scale) => {
+      const button = document.createElement('div')
+      button.setAttribute('class', 'export-option')
+      button.setAttribute('tabindex', '0')
+      button.dataset.scale = scale
+      if (scale === 1) button.classList.add('selected')
+      const label = document.createElement('label')
+      label.innerHTML = `${scale}x <span>${this.sizes.width * scale}x${this.sizes.height * scale}</span>`
+      button.appendChild(label)
+      buttonContainer.appendChild(button)
+
+      button.addEventListener('click', (event) => {
+        event.preventDefault()
+        if (scale !== this.parameters.buttons.export.value.scale) {
+          this.parameters.buttons.export.value.scale = scale
+          exportBtnConfig.value = `${this.parameters.buttons.export.value.scale}x`
+          // console.log(this.parameters.buttons.export.value.scale)
+          const optionButtons = buttonContainer.querySelectorAll('.export-option')
+          optionButtons.forEach((option) => option.classList.remove('selected'))
+          button.classList.add('selected')
+          buttonContainer.style.display = 'none'
+        }
+      })
+
+      button.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && document.activeElement === button) {
+          event.preventDefault()
+          button.click()
+        }
+      })
+    })
+    const exportBtn = this.parameters.buttons.export.controller
+
+    exportBtnConfig.value = `${this.parameters.buttons.export.value.scale}x`
+
+    exportBtn.parentNode.appendChild(buttonContainer)
+    buttonContainer.style.top = `-${buttonContainer.offsetHeight + 10}px`
+  }
+
   createOptionButtons = (name, parent) => {
     parent.classList.add(...this.parameters[name].modes.map((mode) => `${mode}-mode`))
     const buttonContainer = parent.querySelector(`.${name}-blocks`)
@@ -458,6 +531,12 @@ export default class Controls extends EventEmitter {
         } else if (name === 'size') {
           this.sizes.size = value
           this.sizes.resize()
+          const exportConfigOptions = document.querySelectorAll('#export-options .export-option')
+          exportConfigOptions.forEach((option) => {
+            const scale = parseFloat(option.dataset.scale)
+            const span = option.querySelector('label span')
+            span.innerHTML = `${this.sizes.width * scale}x${this.sizes.height * scale}`
+          })
         }
 
         this.updateLocalStorage()
@@ -555,7 +634,26 @@ export default class Controls extends EventEmitter {
 
     this.parameters.buttons[name].controller = buttonInput
 
-    buttonContainer.appendChild(buttonInput)
+    if (name === 'export') {
+      const exportButtonContainer = document.createElement('div')
+      exportButtonContainer.setAttribute('class', 'export-button-container')
+      const buttonConfigInput = document.createElement('input')
+      buttonConfigInput.setAttribute('type', 'submit')
+      buttonConfigInput.setAttribute('id', `${name}-config`)
+      buttonConfigInput.setAttribute('value', '1x')
+      buttonConfigInput.setAttribute('tabindex', '0')
+      buttonConfigInput.addEventListener('click', () => {
+        const exportConfigOptions = document.querySelector('#export-options')
+        exportConfigOptions.style.display = exportConfigOptions.style.display === 'none' ? 'flex' : 'none'
+        exportConfigOptions.style.top = `-${exportConfigOptions.offsetHeight + 10}px`
+      })
+      exportButtonContainer.appendChild(buttonInput)
+      exportButtonContainer.appendChild(buttonConfigInput)
+      buttonContainer.appendChild(exportButtonContainer)
+    } else {
+      buttonContainer.appendChild(buttonInput)
+    }
+
     parent.appendChild(buttonContainer)
   }
 

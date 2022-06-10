@@ -10,7 +10,7 @@ float brightness(vec3 color) {
 void main() {
   highp vec4 colorDiff = texture2D(tDiffuse, vUv);
   float b = brightness(colorDiff.rgb);
-  b = pow(b, 5.);
+  b = pow(b, 1.);
   vec2 newUv = vUv + b * .1;
 
   highp vec4 color = texture2D(uImage, newUv);

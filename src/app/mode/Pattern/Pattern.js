@@ -170,6 +170,7 @@ export default class Pattern {
     this.particleUniforms = {
       texturePosition: { value: null },
       textureVelocity: { value: null },
+      uSize: { value: 1 },
       // 'cameraConstant': { value: getCameraConstant( camera ) },
       density: { value: 0.0 },
       sandColor: {
@@ -207,6 +208,11 @@ export default class Pattern {
     this.material.uniforms.sandColor.value = new THREE.Color(
       this.controls.parameters.color.pattern.value.primary,
     )
+    this.material.needsUpdate = true
+  }
+
+  updateParticleSize = (size) => {
+    this.material.uniforms.uSize.value = size
     this.material.needsUpdate = true
   }
 

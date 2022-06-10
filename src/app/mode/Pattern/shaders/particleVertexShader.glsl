@@ -3,6 +3,7 @@
 
 uniform sampler2D texturePosition;
 uniform sampler2D textureVelocity;
+uniform float uSize;
 
 // uniform float cameraConstant;
 // uniform float density;
@@ -47,7 +48,7 @@ void main() {
   else {
     // gl_PointSize = radius * cameraConstant / ( - mvPosition.z );
     // gl_PointSize = mass*1. / -mvPosition.z;
-    gl_PointSize = mass*1.;
+    gl_PointSize = mass*1. * uSize;
   }
 
   gl_Position = projectionMatrix * mvPosition;

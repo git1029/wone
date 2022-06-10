@@ -145,6 +145,15 @@ export default class App {
 
     if (this.export.recording === true) {
       // this.renderer.instance.preserveDrawingBuffer = true
+      const sclFactor = this.controls.parameters.buttons.export.value.scale
+      if (sclFactor !== 1) {
+        this.renderer.instance.setSize(this.sizes.width * sclFactor, this.sizes.height * sclFactor)
+        const scl = (this.sizes.width * sclFactor) / this.sizes.width
+        if (this.mode.activeMode.name === 'Pattern') this.mode.mode.updateParticleSize(scl)
+        if (this.mode && this.mode.mode.effectComposer) this.mode.mode.effectComposer.render()
+        else this.renderer.update()
+      }
+
       const imgData = this.renderer.instance.domElement.toDataURL('image/png')
       // const imgData = this.renderer.instance.domElement.toDataURL('image/jpg', 0.5)
       const a = document.createElement('a')
@@ -153,12 +162,19 @@ export default class App {
       const frequencyB = Math.round(this.controls.parameters.sliders.frequencyB.value * 100) / 100
       const distortion = Math.round(this.controls.parameters.sliders.distortion.value * 100) / 100
       const scale = Math.round(this.controls.parameters.sliders.scale.value * 100) / 100
+      const w = this.sizes.width * sclFactor
+      const h = this.sizes.height * sclFactor
       // a.download = `wone_fA${frequency}_fB${frequencyB}_d${distortion}_s${scale}.jpg`
-      a.download = `wone_fA${frequency}_fB${frequencyB}_d${distortion}_s${scale}.png`
+      a.download = `wone_fA${frequency}_fB${frequencyB}_d${distortion}_s${scale}_${w}_${h}.png`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
       this.export.recording = false
+
+      if (sclFactor !== 1) {
+        if (this.mode.activeMode.name === 'Pattern') this.mode.mode.updateParticleSize(1)
+        this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
+      }
       // this.renderer.instance.preserveDrawingBuffer = false
     }
 
