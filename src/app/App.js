@@ -35,15 +35,15 @@ export default class App {
 
     this.export = {
       recording: false,
-      duration: 1 / 60,
+      duration: 1,
     }
     // eslint-disable-next-line no-undef
-    this.capturer = new CCapture({
-      format: 'png',
-      framerate: 30,
-      // verbose: true,
-      timeLimit: this.export.duration,
-    })
+    // this.capturer = new CCapture({
+    //   format: 'png',
+    //   framerate: 30,
+    //   // verbose: true,
+    //   timeLimit: this.export.duration,
+    // })
 
     // Setup
     this.canvas = canvas
@@ -124,6 +124,17 @@ export default class App {
     // Add events
     this.sizes.on('resize', this.resize)
     this.time.on('tick', this.update)
+
+    // this.exportVideo()
+
+    // this.capturer = new CCapture({
+    //   format: 'webm',
+    //   framerate: 60,
+    //   quality: 0.95,
+    //   // verbose: true,
+    //   timeLimit: this.export.duration,
+    // })
+    // this.capturer.start()
   }
 
   setMode = () => {
@@ -137,13 +148,26 @@ export default class App {
     if (this.mode && this.mode.resize) this.mode.resize()
   }
 
-  update = () => {
-    // this.camera.update()
-    if (this.mode) this.mode.update()
-    if (this.mode && this.mode.mode.effectComposer) this.mode.mode.effectComposer.render()
-    else this.renderer.update()
+  exportCC = () => {
+    if (this.export.recording) {
+      // this.debugFolderTime.controllers.forEach((controller) => controller.disable())
+      this.capturer.capture(this.canvas)
 
-    if (this.export.recording === true) {
+      if (this.time.elapsedTime > this.export.duration) {
+        this.export.recording = false
+        this.capturer.stop()
+        this.capturer.save()
+        // this.debugFolderTime.controllers.forEach((controller) => controller.enable())
+        // const btn = this.debugFolderExport.children.filter((c) =>
+        //  c.property === 'export')[0].$button
+        // btn.innerHTML = 'Export'
+        // btn.style.color = 'white'
+      }
+    }
+  }
+
+  exportImage = () => {
+    if (this.export.recording) {
       // this.renderer.instance.preserveDrawingBuffer = true
       const sclFactor = this.controls.parameters.buttons.export.value.scale
       if (sclFactor !== 1) {
@@ -177,6 +201,52 @@ export default class App {
       }
       // this.renderer.instance.preserveDrawingBuffer = false
     }
+  }
+
+  // exportVideo = () => {
+  //   const chunks = []
+  //   const canvasStream = this.canvas.captureStream(30) // fps
+  //   // Create media recorder from canvas stream
+  //   this.mediaRecorder = new MediaRecorder(canvasStream, {
+  //     mimeType: 'video/webm; codecs=vp8,opus',
+  //   })
+  //   // Record data in chunks array when data is available
+  //   this.mediaRecorder.ondataavailable = (evt) => { chunks.push(evt.data) }
+  //   // Provide recorded data when recording stops
+  //   this.mediaRecorder.onstop = () => { this.onMediaRecorderStop(chunks) }
+  //   // Start recording using a 1s timeslice [ie data is made available every 1s)
+  //   this.mediaRecorder.start(1000)
+  // }
+
+  // onMediaRecorderStop = (chunks) => {
+  //   // Gather chunks of video data into a blob and create an object URL
+  //   const blob = new Blob(chunks, { type: 'video/webm' })
+  //   const recordingUrl = URL.createObjectURL(blob)
+  //   // Attach the object URL to an <a> element, setting the download file name
+  //   const a = document.createElement('a')
+  //   a.style = 'display: none;'
+  //   a.href = recordingUrl
+  //   a.download = 'video.webm'
+  //   document.body.appendChild(a)
+  //   // Trigger the file download
+  //   a.click()
+  //   setTimeout(() => {
+  //     // Clean up - see https://stackoverflow.com/a/48968694 for why it is in a timeout
+  //     URL.revokeObjectURL(recordingUrl)
+  //     document.body.removeChild(a)
+  //   }, 0)
+  // }
+
+  update = () => {
+    // this.camera.update()
+    if (this.mode) this.mode.update()
+    if (this.mode && this.mode.mode.effectComposer) this.mode.mode.effectComposer.render()
+    else this.renderer.update()
+
+    if (this.export.recording) this.exportImage()
+    // if (this.export.recording) this.exportCC()
+
+    // if (this.time.elapsedTime >= 3 && this.mediaRecorder.state === 'recording') this.mediaRecorder.stop()
 
     this.stats.update()
 

@@ -402,7 +402,8 @@ textarea {
   font-family: RobotoMono, monospace;
   font-size: 20px;
   cursor: text;
-  text-align: center;
+  // text-align: center;
+  text-transform: uppercase;
 }
 
 
@@ -492,6 +493,7 @@ textarea {
     color: $color-text-light;
     font-family: RobotoMono, monospace;
     cursor: pointer;
+    text-emphasis: center;
 
     &#export {
       flex: 1 1 0;
@@ -502,6 +504,7 @@ textarea {
     &#export-config {
       width: auto;
       padding: 0 20px;
+      // width: 65px;
       font-size: 16px;
       text-transform: none;
       border-radius: 0 4px 4px 0;

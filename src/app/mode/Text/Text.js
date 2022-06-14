@@ -34,7 +34,8 @@ export default class Text {
       textAlign: 'center',
       // maxWidth: 1,
       // overflowWrap: 'break-word',
-      lineHeight: this.controls.parameters.sliders.lineHeight.value,
+      // lineHeight: this.controls.parameters.sliders.lineHeight.value,
+      lineHeight: 0.8,
       color: this.controls.parameters.color.text.value.primary,
     }
 
@@ -44,7 +45,7 @@ export default class Text {
       if (this.app.mode.activeMode.name === 'Text') {
         this.text.forEach((text, i) => {
           this.textSettings.fontSize = this.getSize()
-          this.textSettings.lineHeight = this.controls.parameters.sliders.lineHeight.value
+          // this.textSettings.lineHeight = this.controls.parameters.sliders.lineHeight.value
           text.fontSize = this.textSettings.fontSize
           text.lineHeight = this.textSettings.lineHeight
           text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
@@ -109,7 +110,7 @@ export default class Text {
       const text = new TText()
       this.scene.add(text)
 
-      text.text = string
+      text.text = string.toUpperCase()
       text.position.z = 0
 
       Object.keys(this.textSettings).forEach((key) => {

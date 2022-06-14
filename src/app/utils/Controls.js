@@ -131,7 +131,7 @@ export default class Controls extends EventEmitter {
         displacement: {
           modes: ['image'],
           options: {
-            min: 0,
+            min: 0.5,
             max: 1,
             step: 0.01,
             default: 1,
@@ -153,19 +153,19 @@ export default class Controls extends EventEmitter {
           },
         },
 
-        lineHeight: {
-          modes: ['text'],
-          options: {
-            min: 0.5,
-            max: 2,
-            step: 0.01,
-            default: 0.8,
-            label: 'Line Height',
-            // range: ['12pt', '128pt'],
-            // range: ['50%', '200%'],
-            range: [],
-          },
-        },
+        // lineHeight: {
+        //   modes: ['text'],
+        //   options: {
+        //     min: 0.5,
+        //     max: 2,
+        //     step: 0.01,
+        //     default: 0.8,
+        //     label: 'Line Height',
+        //     // range: ['12pt', '128pt'],
+        //     // range: ['50%', '200%'],
+        //     range: [],
+        //   },
+        // },
 
         textOffset: {
           modes: ['text'],
