@@ -1,0 +1,52 @@
+import Controls from '../Controls'
+
+export default class ButtonColor {
+  constructor() {
+    this.controls = new Controls()
+    this.parameters = this.controls.parameters
+  }
+
+  create = (name, parent = document.querySelector('#inputs')) => {
+    const parameter = this.parameters.color[name]
+    parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
+
+    const buttonContainer = parent.querySelector('.color-blocks')
+    Object.keys(parameter.options).forEach((key) => {
+      const value = parameter.options[key]
+      const button = document.createElement('div')
+
+      button.setAttribute('class', 'color-block')
+      button.setAttribute('tabindex', '0')
+      button.style.backgroundColor = value.primary
+      buttonContainer.append(button)
+
+      parameter.controllers[key] = button
+      this.controls.controllers.push(button)
+
+      if (parameter.value.name === value.name) {
+        button.classList.add('selected')
+      }
+
+      button.addEventListener('click', () => {
+        if (button.classList.contains('selected')) return
+        Object.keys(parameter.controllers).forEach((controller) => {
+          parameter.controllers[controller].classList.remove('selected')
+        })
+        button.classList.add('selected')
+        parameter.value = value
+
+        if (name !== 'text') this.controls.renderer.instance.setClearColor(value.background)
+        this.controls.trigger('parameter-update-color')
+
+        this.controls.updateLocalStorage()
+      })
+
+      button.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && document.activeElement === button) {
+          event.preventDefault()
+          button.click()
+        }
+      })
+    })
+  }
+}

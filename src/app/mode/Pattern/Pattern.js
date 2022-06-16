@@ -3,6 +3,8 @@
 import * as THREE from 'three'
 import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer'
 
+import { SVGObject } from 'three/examples/jsm/renderers/SVGRenderer'
+
 // import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 // import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 // import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass'
@@ -13,6 +15,8 @@ import computeShaderPosition from './shaders/computeShaderPosition.glsl'
 import computeShaderVelocity from './shaders/computeShaderVelocity.glsl'
 import particleFragmentShader from './shaders/particleFragmentShader.glsl'
 import particleVertexShader from './shaders/particleVertexShader.glsl'
+// import vertexSVG from './shaders/vertexSVG.glsl'
+// import fragmentSVG from './shaders/fragmentSVG.glsl'
 
 import App from '../../App'
 
@@ -40,7 +44,7 @@ export default class Pattern {
       this.controls.parameters.color.pattern.value.background,
     )
 
-    this.WIDTH = 512
+    this.WIDTH = 512/1
     this.PARTICLES = this.WIDTH * this.WIDTH
 
     this.initComputeRenderer()
@@ -138,6 +142,28 @@ export default class Pattern {
   }
 
   initSand = () => {
+    // const geometry = new THREE.CircleGeometry(.1, 10)
+    // const material = new THREE.MeshBasicMaterial({
+    //   color: 0xff0000,
+    // })
+    // const mesh = new THREE.Mesh(geometry, material)
+    // this.scene.add(mesh)
+
+    // const node = document.createElementNS( 'http://www.w3.org/2000/svg', 'circle' );
+    // // node.setAttribute( 'stroke', 'black' );
+    // node.setAttribute( 'fill', 'red' );
+    // node.setAttribute( 'r', '1' );
+
+    // for ( let i = 0; i < this.PARTICLES; i ++ ) {
+
+    //   const object = new SVGObject( node.cloneNode() );
+    //   object.position.x = Math.random() * 1 - .5;
+    //   object.position.y = Math.random() * 1 - .5;
+    //   object.position.z = Math.random() * 1 - .5;
+    //   this.scene.add( object );
+
+    // }
+
     this.geometry = new THREE.BufferGeometry()
 
     const positions = new Float32Array(this.PARTICLES * 3)
@@ -188,13 +214,70 @@ export default class Pattern {
       transparent: true,
     })
 
+    // this.material = new THREE.ShaderMaterial({
+    //   depthWrite: false,
+    //   // uniforms: this.particleUniforms,
+    //   vertexShader: vertexSVG,
+    //   fragmentShader: fragmentSVG,
+    //   // blending: THREE.AdditiveBlending,
+    //   vertexColors: true,
+    //   transparent: false,
+    // })
+
     this.material.extensions.drawBuffers = true
+
+    // this.material = new THREE.PointsMaterial({
+    //   size: 0.005,
+    //   sizeAttenuation: true,
+    //   color: 0xff0000,
+    // })
 
     this.mesh = new THREE.Points(this.geometry, this.material)
     this.mesh.matrixAutoUpdate = false
     this.mesh.updateMatrix()
 
     this.scene.add(this.mesh)
+
+    // const vertices = [];
+    // const divisions = 50;
+
+    // for ( let i = 0; i <= divisions; i ++ ) {
+
+    //   const v = ( i / divisions ) * ( Math.PI * 2 );
+
+    //   const x = Math.sin( v );
+    //   const z = Math.cos( v );
+
+    //   vertices.push( x, 0, z );
+
+    // }
+
+    // const geometry = new THREE.BufferGeometry();
+    // geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+
+    // //
+
+    // for ( let i = 1; i <= 3; i ++ ) {
+
+    //   const material = new THREE.LineBasicMaterial( {
+    //     color: Math.random() * 0xffffff,
+    //     linewidth: 10
+    //   } );
+    //   const line = new THREE.Line( geometry, material );
+    //   line.scale.setScalar( i / 3 );
+    //   this.scene.add( line );
+
+    // }
+
+    // const material = new THREE.LineDashedMaterial( {
+    //   color: 'blue',
+    //   linewidth: 1,
+    //   dashSize: 10,
+    //   gapSize: 10
+    // } );
+    // const line = new THREE.Line( geometry, material );
+    // line.scale.setScalar( 2 );
+    // this.scene.add( line );
   }
 
   updateValues = () => {

@@ -26,12 +26,16 @@ export default class Text {
 
     this.string = this.controls.parameters.text.value
 
+    this.padding = 0.015
+
     this.textSettings = {
       font: '/fonts/Theinhardt Pan Medium.otf',
       fontSize: this.getSize(),
-      anchorX: 'center',
+      // anchorX: 'center',
+      anchorX: 'left',
       anchorY: 'middle',
-      textAlign: 'center',
+      // textAlign: 'center',
+      textAlign: 'left',
       // maxWidth: 1,
       // overflowWrap: 'break-word',
       // lineHeight: this.controls.parameters.sliders.lineHeight.value,
@@ -49,6 +53,7 @@ export default class Text {
           text.fontSize = this.textSettings.fontSize
           text.lineHeight = this.textSettings.lineHeight
           text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
+          text.position.x -= 0.5 - this.padding
           text.sync(() => {
             text.position.y = this.getYPos(i)
           })
@@ -130,12 +135,18 @@ export default class Text {
 
   getXOffset = (text) => {
     const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
-    if (width < 1) {
-      const pad = ((1 - width) * 0.5 - 0.01) * Math.random()
-      text.offsetX = Math.random() < 0.5 ? -pad : pad
+    if (width + this.padding * 2 < 1) {
+      // const offset = ((1 - width) * 0.5 - 0.01) * Math.random()
+      // text.offsetX = Math.random() < 0.5 ? -pad : pad
+      const offset = ((1 - width - this.padding * 2) * 1) * Math.random()
+      text.offsetX = offset
       text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
+      text.position.x -= 0.5 - this.padding
     } else {
-      text.offsetX = 0
+      // text.offsetX = 0
+      text.offsetX = -0.5 - this.padding
+      // text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
+      text.position.x = text.offsetX
     }
   }
 

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
-import CCapture from 'ccapture.js-npmfixed'
 import Stats from 'stats-js'
+import CCapture from 'ccapture.js-npmfixed'
 
 import Sizes from './utils/Sizes'
 import Time from './utils/Time'
@@ -27,11 +27,6 @@ export default class App {
     this.stats.domElement.style.bottom = 0
     this.stats.domElement.style.top = 'auto'
     document.body.appendChild(this.stats.dom)
-
-    // // Debug
-    // this.debug = new Debug()
-    // this.debugFolderScene = this.debug.ui.addFolder('Scene')
-    // this.debugFolderScene.$title.style.backgroundColor = '#111111'
 
     this.export = {
       recording: false,
@@ -202,40 +197,6 @@ export default class App {
       // this.renderer.instance.preserveDrawingBuffer = false
     }
   }
-
-  // exportVideo = () => {
-  //   const chunks = []
-  //   const canvasStream = this.canvas.captureStream(30) // fps
-  //   // Create media recorder from canvas stream
-  //   this.mediaRecorder = new MediaRecorder(canvasStream, {
-  //     mimeType: 'video/webm; codecs=vp8,opus',
-  //   })
-  //   // Record data in chunks array when data is available
-  //   this.mediaRecorder.ondataavailable = (evt) => { chunks.push(evt.data) }
-  //   // Provide recorded data when recording stops
-  //   this.mediaRecorder.onstop = () => { this.onMediaRecorderStop(chunks) }
-  //   // Start recording using a 1s timeslice [ie data is made available every 1s)
-  //   this.mediaRecorder.start(1000)
-  // }
-
-  // onMediaRecorderStop = (chunks) => {
-  //   // Gather chunks of video data into a blob and create an object URL
-  //   const blob = new Blob(chunks, { type: 'video/webm' })
-  //   const recordingUrl = URL.createObjectURL(blob)
-  //   // Attach the object URL to an <a> element, setting the download file name
-  //   const a = document.createElement('a')
-  //   a.style = 'display: none;'
-  //   a.href = recordingUrl
-  //   a.download = 'video.webm'
-  //   document.body.appendChild(a)
-  //   // Trigger the file download
-  //   a.click()
-  //   setTimeout(() => {
-  //     // Clean up - see https://stackoverflow.com/a/48968694 for why it is in a timeout
-  //     URL.revokeObjectURL(recordingUrl)
-  //     document.body.removeChild(a)
-  //   }, 0)
-  // }
 
   update = () => {
     // this.camera.update()

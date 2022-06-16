@@ -3,3 +3,5 @@ build
 dist
 .eslintrc.js
 bundler
+
+spare.js
