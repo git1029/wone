@@ -11,11 +11,11 @@ export default class ImageUpload {
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
     const dropzone = document.createElement('div')
-    dropzone.setAttribute('id', 'drop-zone')
+    dropzone.setAttribute('id', 'image-drop-zone')
     dropzone.setAttribute('tabindex', '0')
 
     const dropzoneInner = document.createElement('div')
-    dropzoneInner.classList.add('drop-zone-inner')
+    dropzoneInner.classList.add('image-drop-zone-inner')
 
     const input = document.createElement('input')
     input.setAttribute('type', 'file')
@@ -32,7 +32,7 @@ export default class ImageUpload {
     dropzoneText.innerText = 'Click here or\nDrag an image here'
 
     const dropzoneBg = document.createElement('div')
-    dropzoneBg.classList.add('drop-zone-bg')
+    dropzoneBg.classList.add('image-drop-zone-bg')
 
     dropzoneInner.appendChild(dropzoneText)
     dropzoneInner.appendChild(dropzoneBg)
@@ -121,7 +121,7 @@ export default class ImageUpload {
     image.value = this.controls.resources[items][image.name]
 
     // Update drag and drop background image
-    const controllerBg = image.controller.querySelector('.drop-zone-inner')
+    const controllerBg = image.controller.querySelector('.image-drop-zone-inner')
     controllerBg.style.backgroundImage = `url(${image.value.file.image.src})`
 
     this.controls.updateLocalStorage()

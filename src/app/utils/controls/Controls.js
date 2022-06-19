@@ -1,16 +1,16 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 
-import App from '../App'
-import EventEmitter from './EventEmitter'
+import App from '../../App'
+import EventEmitter from '../EventEmitter'
 
-import * as Utils from './controls/Utils'
-import ButtonOption from './controls/ButtonOption'
-import ButtonColor from './controls/ButtonColor'
-import ButtonAction from './controls/ButtonAction'
-import TextInput from './controls/TextInput'
-import ImageUpload from './controls/ImageUpload'
-import Slider from './controls/Slider'
+import * as Utils from './utils/Utils'
+import ButtonOption from './components/ButtonOption'
+import ButtonColor from './components/ButtonColor'
+import ButtonAction from './components/ButtonAction'
+import TextInput from './components/TextInput'
+import ImageUpload from './components/ImageUpload'
+import Slider from './components/Slider'
 
 let instance = null
 
@@ -37,6 +37,8 @@ export default class Controls extends EventEmitter {
     this.parameters = {
       mode: {
         modes: [],
+        // label: 'Mode',
+        label: null,
         options: {
           pattern: { name: 'Pattern' },
           image: { name: 'Image' },
@@ -47,6 +49,7 @@ export default class Controls extends EventEmitter {
 
       size: {
         modes: [],
+        label: 'Size',
         options: {
           square: {
             name: 'Square', aspect: '1:1', width: 1080, height: 1080,
@@ -55,15 +58,75 @@ export default class Controls extends EventEmitter {
             name: 'Portrait', aspect: '16:9', width: 1080, height: 1920,
           },
           custom: {
-            name: 'Landscape', aspect: '9:16', width: 1920, height: 1080,
+            name: 'Custom', aspect: '', width: 1920, height: 1080,
           },
         },
         controllers: {},
       },
 
+      keyframe: {
+        modes: [],
+        label: null,
+        options: {
+          a: { name: 'Keyframe A' },
+          b: { name: 'Keyframe B' },
+        },
+        controllers: {},
+      },
+
+      export: {
+        save: {
+          modes: [],
+          // label: 'Export As',
+          label: null,
+          options: {
+            still: { name: 'Image' },
+            animation: { name: 'Image Sequence' },
+          },
+          controllers: {},
+        },
+
+        loop: {
+          modes: [],
+          label: 'Sequence Mode',
+          exportModes: ['animation'],
+          // label: null,
+          options: {
+            linear: { name: 'Linear (A → B)' },
+            loop: { name: 'Loop (A → B → A)' },
+          },
+          controllers: {},
+        },
+
+        duration: {
+          modes: [],
+          label: 'Duration (seconds)',
+          exportModes: ['animation'],
+          // label: null,
+          default: 8,
+          controllers: {},
+        },
+
+        scale: {
+          modes: [],
+          label: 'Image Scaling',
+          exportModes: ['still'],
+          sizeModes: ['square', 'portrait'],
+          // label: null,
+          options: {
+            x1: { name: '1x', scale: 1 },
+            x2: { name: '2x', scale: 2 },
+            x3: { name: '3x', scale: 3 },
+            x4: { name: '4x', scale: 4 },
+          },
+          controllers: {},
+        },
+      },
+
       color: {
         pattern: {
           modes: ['pattern'],
+          label: 'Color Palette',
           options: {
             blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
             orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
@@ -74,6 +137,7 @@ export default class Controls extends EventEmitter {
 
         text: {
           modes: ['text'],
+          label: 'Text Color',
           options: {
             light: { name: 'Light', background: '#1D1D1B', primary: '#E1E0D3' },
             dark: { name: 'Dark', background: '#E1E0D3', primary: '#1D1D1B' },
@@ -175,20 +239,6 @@ export default class Controls extends EventEmitter {
           },
         },
 
-        // lineHeight: {
-        //   modes: ['text'],
-        //   options: {
-        //     min: 0.5,
-        //     max: 2,
-        //     step: 0.01,
-        //     default: 0.8,
-        //     label: 'Line Height',
-        //     // range: ['12pt', '128pt'],
-        //     // range: ['50%', '200%'],
-        //     range: [],
-        //   },
-        // },
-
         textOffset: {
           modes: ['text'],
           options: {
@@ -202,6 +252,20 @@ export default class Controls extends EventEmitter {
             range: [],
           },
         },
+
+        // loopDuration: {
+        //   modes: ['pattern', 'image', 'text'],
+        //   options: {
+        //     min: 1,
+        //     max: 15,
+        //     step: 1,
+        //     default: 8,
+        //     label: 'Duration (sec)',
+        //     // range: ['12pt', '128pt'],
+        //     // range: ['50%', '200%'],
+        //     range: [],
+        //   },
+        // },
       },
 
       text: {
@@ -223,6 +287,13 @@ export default class Controls extends EventEmitter {
           handleClick: () => this.slider.randomize(),
         },
 
+        textPreview: {
+          modes: ['pattern', 'image'],
+          name: 'TextPreview',
+          label: 'Show Text Preview',
+          handleClick: () => { console.log('preview text') },
+        },
+
         reset: {
           modes: [],
           name: 'Reset',
@@ -240,24 +311,15 @@ export default class Controls extends EventEmitter {
           value: {
             scale: 1,
           },
-          handleClick: () => {
-            // this.app.export.recording = true
-            // this.capturer.start()
+          handleClick: () => { this.app.export.recording = true },
+        },
 
-            // const screenshot = this.app.canvas.toDataURL("image/png");
-            // let a = document.createElement('a');
-            // a.href = screenshot;
-            // a.download = "screenshot.png";
-            // document.body.appendChild(a);
-            // a.click();
-            // document.body.removeChild(a);
-            // const exportConfigOptions = document.querySelector('#export-options')
-            // exportConfigOptions.style.display = 'none'
-
-            this.app.export.recording = true
-
-            // this.app.btnSVGExportClick()
-          },
+        exportPreview: {
+          modes: [],
+          exportModes: ['animation'],
+          name: 'Preview',
+          label: 'Preview',
+          handleClick: () => { console.log('Export Preview') },
         },
       },
     }
@@ -282,6 +344,11 @@ export default class Controls extends EventEmitter {
     // Initialize values
     this.setParameter(params, null, 'mode', this.parameters.mode.options.pattern)
     this.setParameter(params, null, 'size', this.parameters.size.options.square)
+    this.setParameter(params, null, 'keyframe', this.parameters.keyframe.options.a)
+    this.setParameter(params, 'export', 'save', this.parameters.export.save.options.still)
+    this.setParameter(params, 'export', 'loop', this.parameters.export.loop.options.linear)
+    this.setParameter(params, 'export', 'scale', this.parameters.export.scale.options.x1)
+    this.setParameter(params, 'export', 'duration', this.parameters.export.duration.default)
     this.setParameter(params, 'color', 'pattern', this.parameters.color.pattern.options.blue)
     this.setParameter(params, 'color', 'text', this.parameters.color.text.options.dark)
     Object.keys(this.parameters.sliders).forEach((key) => {
@@ -295,19 +362,32 @@ export default class Controls extends EventEmitter {
     this.app.resize()
 
     // Create controllers
-    this.buttonOption.create('mode', document.querySelector('#input-mode'))
-    this.buttonOption.create('size', document.querySelector('#input-size'))
+    this.buttonOption.create('mode', null, document.querySelector('#input-mode'))
+    this.buttonOption.create('size', null, document.querySelector('#input-size'))
     this.buttonColor.create('pattern', document.querySelector('#input-color-pattern'))
     this.buttonColor.create('text', document.querySelector('#input-color-text'))
-    this.textInput.create(document.querySelector('#input-text'))
+    this.buttonOption.create('keyframe', null, document.querySelector('#input-keyframe'))
+    this.textInput.createTextarea(document.querySelector('#input-text'))
     this.imageUpload.create(document.querySelector('#input-image'))
     Object.keys(this.parameters.sliders).forEach((key) => {
-      this.slider.create(key, document.querySelector('#input-sliders'))
+      let parent = document.querySelector('#input-sliders')
+      // if (key === 'loopDuration') parent = document.querySelector('#input-loop-duration')
+      if (key === 'textSize') parent = document.querySelector('#input-text-settings')
+      this.slider.create(key, parent)
     })
-    Object.keys(this.parameters.buttons).forEach((key) => {
-      this.buttonAction.create(key, document.querySelector('#input-buttons'))
-    })
-    this.buttonAction.createExportButtons()
+    this.buttonAction.create('randomize', document.querySelector('#input-buttons-controls'))
+    this.buttonAction.create('reset', document.querySelector('#input-buttons-controls'))
+    this.buttonOption.create('save', 'export', document.querySelector('#input-export-mode'))
+    this.buttonOption.create('loop', 'export', document.querySelector('#input-export-loop'))
+    this.buttonOption.create('scale', 'export', document.querySelector('#input-export-scale'))
+    this.textInput.createInput('duration', 'export', document.querySelector('#input-export-duration'))
+    this.buttonAction.create('exportPreview', document.querySelector('#input-buttons-export'))
+    this.buttonAction.create('export', document.querySelector('#input-buttons-export'))
+    this.buttonAction.create('textPreview', document.querySelector('#input-text-preview-button'))
+    // Object.keys(this.parameters.buttons).forEach((key) => {
+    //   this.buttonAction.create(key, document.querySelector('#input-buttons'))
+    // })
+    // this.buttonAction.createExportButtons()
 
     // this.setTextures()
 
@@ -340,6 +420,14 @@ export default class Controls extends EventEmitter {
       } else {
         this.parameters[name].value = fallback
       }
+
+      if (name === 'size') {
+        if (params.sizeCustom && params.sizeCustom.value !== 'undefined') {
+          if (Utils.compareKeys(params.sizeCustom.value, this.parameters.size.options.custom)) {
+            this.parameters.size.options.custom = params.sizeCustom.value
+          }
+        }
+      }
     } else if (parent) {
       this.parameters[parent][name].value = fallback
     } else {
@@ -351,6 +439,7 @@ export default class Controls extends EventEmitter {
     const values = {
       mode: { value: this.parameters.mode.value },
       size: { value: this.parameters.size.value },
+      sizeCustom: { value: this.parameters.size.options.custom },
       color: {
         pattern: { value: this.parameters.color.pattern.value },
         text: { value: this.parameters.color.text.value },

@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import Controls from '../Controls'
-import * as Utils from './Utils'
+import * as Utils from '../utils/Utils'
 
 export default class Slider {
   constructor() {
@@ -63,7 +63,7 @@ export default class Slider {
 
     // sliderValue.style.left = `${this.map(slider.value, slider.options.min, slider.options.max, 0, 100)}%`
     // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
-    const leftMax = 540 - sliderValue.offsetWidth
+    const leftMax = 500 - sliderValue.offsetWidth
     const left = Utils.map(parameter.value, parameter.options.min, parameter.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
 
@@ -83,6 +83,7 @@ export default class Slider {
 
   create = (name, parent = document.querySelector('#inputs')) => {
     const parameter = this.parameters.sliders[name]
+    parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
     const inputContainer = document.createElement('div')
     inputContainer.classList.add('input', name)
@@ -122,10 +123,6 @@ export default class Slider {
     parameter.controller = sliderInput
     this.controls.controllers.push(sliderInput)
 
-    sliderContainer.appendChild(sliderSpan)
-    sliderContainer.appendChild(sliderInput)
-    sliderContainer.appendChild(sliderValue)
-
     const range = document.createElement('div')
     range.classList.add('range')
     const rangeMin = parameter.options.range[0] || parameter.options.min
@@ -137,6 +134,26 @@ export default class Slider {
       <div class="max">${rangeMax}</div>
     `
 
+    // const min = document.createElement('div')
+    // min.setAttribute('class', 'min')
+    // min.innerHTML = rangeMin
+
+    // const max = document.createElement('div')
+    // max.setAttribute('class', 'max')
+    // max.innerHTML = rangeMax
+
+    // const sliderWrapper = document.createElement('div')
+    // sliderWrapper.setAttribute('class', 'slider-wrapper')
+    // sliderWrapper.appendChild(sliderSpan)
+    // sliderWrapper.appendChild(sliderInput)
+
+    // sliderContainer.appendChild(min)
+    // sliderContainer.appendChild(sliderWrapper)
+    sliderContainer.appendChild(sliderSpan)
+    sliderContainer.appendChild(sliderInput)
+    // sliderContainer.appendChild(max)
+    sliderContainer.appendChild(sliderValue)
+
     const label = document.createElement('label')
     label.setAttribute('for', name)
     label.innerText = parameter.options.label || ''
@@ -147,7 +164,7 @@ export default class Slider {
 
     parent.appendChild(inputContainer)
     // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
-    const leftMax = 540 - sliderValue.offsetWidth
+    const leftMax = 500 - sliderValue.offsetWidth
     const left = Utils.map(parameter.value, parameter.options.min, parameter.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
   }

@@ -3,7 +3,7 @@
 import * as THREE from 'three'
 import { GPUComputationRenderer } from 'three/examples/jsm/misc/GPUComputationRenderer'
 
-import { SVGObject } from 'three/examples/jsm/renderers/SVGRenderer'
+// import { SVGObject } from 'three/examples/jsm/renderers/SVGRenderer'
 
 // import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 // import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
@@ -44,7 +44,7 @@ export default class Pattern {
       this.controls.parameters.color.pattern.value.background,
     )
 
-    this.WIDTH = 512/1
+    this.WIDTH = 512 / 1
     this.PARTICLES = this.WIDTH * this.WIDTH
 
     this.initComputeRenderer()

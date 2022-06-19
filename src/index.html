@@ -13,38 +13,82 @@
     <section class="controls">
       <div class="controls-inner">
         <h1>WONE Generator</h1>
-        <div id="inputs" class="mode-pattern size-square">
+        <div id="inputs" class="mode-pattern size-square export-still">
           <div class="inputs-top">
-            <!-- Mode buttons -->
-            <div id="input-mode" class="input-group mode">
-              <div class="mode-blocks"></div>
-              <label>Mode</label>
+
+            <div id="input-scene" class="input-group input-multi-group">
+              <div class="input-scene input-multi-group-container">
+                <label class="input-group-label">Scene Settings</label>
+                <div id="input-mode" class="input-group mode  input-multi-tab"></div>
+                <div class="input-multi-group-inner">                
+                  <!-- Mode buttons -->
+                
+                <!-- Size buttons -->
+                  <div id="input-size" class="input-group size"></div>
+                              
+                  <!-- Color buttons (pattern) -->
+                  <div id="input-color-pattern" class="input-group color"></div>
+
+                  <!-- Image upload -->
+                  <div id="input-image" class="input-group image"></div>
+                  
+                  <!-- Text input -->
+                  <div id="input-text" class="input-group text"></div>
+
+                  <!-- Color buttons (text) -->
+                  <div id="input-color-text" class="input-group color"></div>
+
+                  <div id="input-text-settings" class="input-group sliders"></div>
+
+
+                  <!-- Text input -->
+                  <div id="input-text-preview-button" class="input-group text-preview"></div>
+
+                </div>
+              </div>
             </div>
-            <!-- Size buttons -->
-            <div id="input-size" class="input-group size">
-              <div class="size-blocks"></div>
-              <label>Size</label>
+
+            
+            <!-- Pattern/text settings -->
+            <div id="input-controls" class="input-multi-group">
+              <!-- <div class="input-controls input-multi-group-container">
+                <div id="input-keyframe" class="input-group keyframe"></div>
+                <div id="input-sliders" class="input-group sliders"></div>
+                <div id="input-buttons-controls" class="input-group buttons-controls"></div>
+              </div>
+              <label>Pattern Settings</label> -->
+
+              <div class="input-controls input-multi-group-container">
+                <label class="input-group-label">Pattern Settings</label>
+                <div id="input-keyframe" class="input-group keyframe input-multi-tab"></div>
+                <div class="input-multi-group-inner">                
+                  <div id="input-sliders" class="input-group sliders"></div>
+                  <div id="input-buttons-controls" class="input-group buttons-controls"></div>
+                </div>
+              </div>
             </div>
-            <!-- Image upload -->
-            <div id="input-image" class="input-group image"></div>
-            <!-- Text input -->
-            <div id="input-text" class="input-group text"></div>
-            <!-- Color buttons (pattern) -->
-            <div id="input-color-pattern" class="input-group color">
-              <div class="color-blocks"></div>
-              <label>Color Palette</label>
+
+            <!-- Export settings -->
+            <div id="input-export" class="input-multi-group">
+              <label class="input-group-label">Export Settings</label>
+              <div class="input-export input-multi-group-container">
+                <div id="input-export-mode" class="input-group export-mode input-multi-tab"></div>
+                <div class="input-multi-group-inner">
+                  <div id="input-export-loop" class="input-group export-loop"></div>
+                  <div id="input-export-scale" class="input-group export-scale"></div>
+                  <!-- <div id="input-loop-duration" class="input-group loop-duration sliders" style="display:none"></div> -->
+                  <div id="input-export-duration" class="input-group export-duration"></div>
+                  <div id="input-buttons-export" class="input-group buttons-export"></div>
+                </div>
+              </div>
             </div>
-            <!-- Color buttons (text) -->
-            <div id="input-color-text" class="input-group color">
-              <div class="color-blocks"></div>
-              <label>Text Color</label>
-            </div>
-            <!-- Sliders -->
-            <div id="input-sliders" class="input-group sliders"></div>
+
           </div>
+        
           <!-- Randomize/Export buttons -->
           <div class="inputs-bottom">
-            <div id="input-buttons" class="input-group buttons"></div>
+            <!-- <div id="input-buttons" class="input-group buttons"></div> -->
+            <!-- <label>Export Settings</label> -->
           </div>
         </div>
       </div>

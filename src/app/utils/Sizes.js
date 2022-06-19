@@ -27,11 +27,35 @@ export default class Sizes extends EventEmitter {
   resize = () => {
     this.width = this.size.width
     this.height = this.size.height
+
+    const limit = {
+      width: 1000,
+      height: 1000,
+    }
+
+    // Constrain size to limit
+    this.getAspect()
+    if (this.width > limit.width || this.height > limit.height) {
+      this.width = limit.width * this.aspect.x
+      this.height = limit.height * this.aspect.y
+    }
+
     this.pixelRatio = Math.min(window.devicePixelRatio, 2)
 
     this.scaleCanvas()
 
     this.trigger('resize')
+  }
+
+  getAspect = () => {
+    this.aspect = { x: 1, y: 1 }
+    if (this.width > this.height) {
+      this.aspect.x = 1
+      this.aspect.y = this.height / this.width
+    } else if (this.height > this.width) {
+      this.aspect.x = this.width / this.height
+      this.aspect.y = 1
+    }
   }
 
   scaleCanvas = () => {

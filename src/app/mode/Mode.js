@@ -1,8 +1,8 @@
 import EventEmitter from '../utils/EventEmitter'
 import App from '../App'
-import Pattern from './Pattern/Pattern'
-import Image from './Image/Image'
-import Text from './Text/Text'
+import Pattern from './pattern/Pattern'
+import Image from './image/Image'
+import Text from './text/Text'
 
 export default class Mode extends EventEmitter {
   constructor() {

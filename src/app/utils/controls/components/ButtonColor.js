@@ -10,12 +10,15 @@ export default class ButtonColor {
     const parameter = this.parameters.color[name]
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
-    const buttonContainer = parent.querySelector('.color-blocks')
+    // const buttonContainer = parent.querySelector('.color-blocks')
+    const buttonContainer = document.createElement('div')
+    buttonContainer.setAttribute('class', `button-colors colors-${name}`)
+
     Object.keys(parameter.options).forEach((key) => {
       const value = parameter.options[key]
       const button = document.createElement('div')
 
-      button.setAttribute('class', 'color-block')
+      button.setAttribute('class', `button-color color-${name}`)
       button.setAttribute('tabindex', '0')
       button.style.backgroundColor = value.primary
       buttonContainer.append(button)
@@ -48,5 +51,12 @@ export default class ButtonColor {
         }
       })
     })
+
+    parent.appendChild(buttonContainer)
+    if (parameter.label) {
+      const label = document.createElement('label')
+      label.innerHTML = parameter.label
+      parent.appendChild(label)
+    }
   }
 }

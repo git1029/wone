@@ -10,7 +10,7 @@ import Renderer from './Renderer'
 import Mode from './mode/Mode'
 import Resources from './utils/Resources'
 import sources from './sources'
-import Controls from './utils/Controls'
+import Controls from './utils/controls/Controls'
 
 let instance = null
 
@@ -164,7 +164,13 @@ export default class App {
   exportImage = () => {
     if (this.export.recording) {
       // this.renderer.instance.preserveDrawingBuffer = true
-      const sclFactor = this.controls.parameters.buttons.export.value.scale
+      // const sclFactor = this.controls.parameters.buttons.export.value.scale
+
+      // Only use export scale on preset sizes (need to limit max render size for performance reasons)
+      const sclFactor = this.controls.parameters.size.value.name === 'Custom'
+        ? 1
+        : this.controls.parameters.export.scale.value.scale
+
       if (sclFactor !== 1) {
         this.renderer.instance.setSize(this.sizes.width * sclFactor, this.sizes.height * sclFactor)
         const scl = (this.sizes.width * sclFactor) / this.sizes.width
@@ -174,7 +180,7 @@ export default class App {
       }
 
       const imgData = this.renderer.instance.domElement.toDataURL('image/png')
-      // const imgData = this.renderer.instance.domElement.toDataURL('image/jpg', 0.5)
+      // const imgData = this.renderer.instance.domElement.toDataURL('image/jpeg', 1)
       const a = document.createElement('a')
       a.href = imgData
       const frequency = Math.round(this.controls.parameters.sliders.frequency.value * 100) / 100
