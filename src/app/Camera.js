@@ -72,7 +72,7 @@ export default class Camera {
   setOrbitControls = () => {
     this.controls = new OrbitControls(this.instance, this.canvas)
     // this.controls.enableDamping = true
-    // this.controls.enabled = true
+    this.controls.enabled = false
   }
 
   update = () => {

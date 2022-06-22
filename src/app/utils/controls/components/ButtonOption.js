@@ -1,15 +1,24 @@
+/* eslint-disable class-methods-use-this */
+/* eslint-disable no-param-reassign */
+
+import App from '../../../App'
 import Controls from '../Controls'
 import * as Utils from '../utils/Utils'
 
 export default class ButtonOption {
   constructor() {
+    this.app = new App()
     this.controls = new Controls()
     this.parameters = this.controls.parameters
+    this.sizes = this.app.sizes
   }
 
   create = (name, paramParent = null, parent = document.querySelector('#inputs')) => {
     const parameter = paramParent ? this.parameters[paramParent][name] : this.parameters[name]
-    parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
+
+    if (parameter.modes) {
+      parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
+    }
 
     if (parameter.exportModes) {
       parent.classList.add(...parameter.exportModes.map((mode) => `${mode}-save`))
@@ -24,9 +33,9 @@ export default class ButtonOption {
     const customContainer = document.createElement('div')
     customContainer.setAttribute('class', 'input-custom-size-container custom-size')
 
-    // const buttonContainer = parent.querySelector(`.${name}-blocks`)
     const buttonContainer = document.createElement('div')
     buttonContainer.setAttribute('class', `button-options ${name}-options`)
+
     if (name === 'size') {
       const buttonContainerInner = document.createElement('div')
       buttonContainerInner.setAttribute('class', 'button-options-inner')
@@ -56,7 +65,6 @@ export default class ButtonOption {
         this.createCustomSize(customContainer)
       }
 
-      // buttonLabel.innerText = value.name
       button.appendChild(buttonImg)
       button.appendChild(buttonRadio)
       button.appendChild(buttonLabel)
@@ -86,27 +94,14 @@ export default class ButtonOption {
           this.controls.app.setMode()
         } else if (name === 'size') {
           this.updateCanvasSize(value)
-          // const exportConfigOptions = document.querySelectorAll('#export-options .export-option')
-          // exportConfigOptions.forEach((option) => {
-          //   const scale = parseFloat(option.dataset.scale)
-          //   const sizeLabel = option.querySelector('label')
-          //   const span = sizeLabel.querySelector('span')
-          //   const width = this.controls.sizes.width * scale
-          //   const height = this.controls.sizes.height * scale
-          //   span.innerHTML = `${width}x${height}`
-          //   sizeLabel.style.pointerEvents = 'none'
-          //   span.style.pointerEvents = 'none'
-          // })
         } else if (name === 'keyframe') {
           console.log(`${name}-${key}`)
         } else if (name === 'scale') {
           const label = document.querySelector('#input-export-scale > label')
-          const width = this.controls.sizes.width * parameter.value.scale
-          const height = this.controls.sizes.height * parameter.value.scale
+          const width = this.parameters.size.value.width * parameter.value.scale
+          const height = this.parameters.size.value.height * parameter.value.scale
           label.innerHTML = `${parameter.label}<span>Output size: ${width}x${height}</span>`
         }
-
-        // console.log(parameter)
 
         this.controls.updateLocalStorage()
       })
@@ -125,8 +120,8 @@ export default class ButtonOption {
       const label = document.createElement('label')
       label.innerHTML = parameter.label
       if (paramParent === 'export' && name === 'scale') {
-        const width = this.controls.sizes.width * parameter.value.scale
-        const height = this.controls.sizes.height * parameter.value.scale
+        const width = this.parameters.size.value.width * parameter.value.scale
+        const height = this.parameters.size.value.height * parameter.value.scale
         label.innerHTML = `${parameter.label}<span>Output size: ${width}x${height}</span>`
       }
       parent.appendChild(label)
@@ -170,40 +165,15 @@ export default class ButtonOption {
       attributes.class = `input-custom-${size}`
 
       Utils.setAttributes(input, attributes)
-      // input.setAttribute('type', 'number')
-      // input.setAttribute('min', 'number')
-      // input.setAttribute('tabindex', '0')
-      // input.setAttribute('class', `input-custom-${size}`)
-      // input.setAttribute('value', size === 'width'
-      //   ? this.parameters.size.value.width
-      //   : this.parameters.size.value.height)
 
       inputs[size] = input
 
       input.addEventListener('keyup', (event) => {
-        const eventValue = parseFloat(event.target.value)
-        // if (eventValue < attributes.min) eventValue = attributes.min
-        // else if (eventValue > attributes.max) eventValue = attributes.max
+        this.checkInput(event, attributes, input, inputs, parent, applyBtn)
+      })
 
-        if (eventValue < attributes.min || eventValue > attributes.max || event.target.value.length === 0) {
-          if (!input.classList.contains('error')) {
-            input.classList.add('error')
-          }
-        } else {
-          input.classList.remove('error')
-        }
-
-        const isError = Object.keys(inputs)
-          .map((key) => inputs[key].classList.contains('error'))
-          .some((bool) => bool === true)
-
-        if (isError) {
-          if (!parent.classList.contains('error')) parent.classList.add('error')
-          applyBtn.disabled = true
-        } else {
-          parent.classList.remove('error')
-          applyBtn.disabled = false
-        }
+      input.addEventListener('blur', (event) => {
+        this.checkInput(event, attributes, input, inputs, parent, applyBtn)
       })
 
       this.controls.controllers.push(input)
@@ -259,20 +229,10 @@ export default class ButtonOption {
       const label = document.querySelector('.button-option.size-custom > label')
       label.innerHTML = `Custom<br><span>${width}x${height}</span>`
 
-      // console.log(parameter.value)
-      // if (eventValue < attributes.min) eventValue = attributes.min
-      // else if (eventValue > attributes.max) eventValue = attributes.max
       this.updateCanvasSize(parameter.value)
 
       this.controls.updateLocalStorage()
     })
-
-    // applyBtn.addEventListener('keydown', (event) => {
-    //   if (event.key === 'Enter' && document.activeElement === applyBtn) {
-    //     event.preventDefault()
-    //     applyBtn.click()
-    //   }
-    // })
 
     const labelEnd = document.createElement('label')
     labelEnd.innerHTML = 'px'
@@ -284,11 +244,35 @@ export default class ButtonOption {
   }
 
   updateCanvasSize = (value) => {
-    this.controls.sizes.size = value
-    this.controls.sizes.resize()
+    this.app.sizes.size = value
+    this.app.sizes.resize()
     const label = document.querySelector('#input-export-scale > label')
-    const width = this.controls.sizes.width * this.parameters.export.scale.value.scale
-    const height = this.controls.sizes.height * this.parameters.export.scale.value.scale
+    const width = this.parameters.size.value.width * this.parameters.export.scale.value.scale
+    const height = this.parameters.size.value.height * this.parameters.export.scale.value.scale
     label.innerHTML = `${this.parameters.export.scale.label}<span>Output size: ${width}x${height}</span>`
+  }
+
+  checkInput = (event, attributes, input, inputs, parent, applyBtn) => {
+    const eventValue = parseFloat(event.target.value)
+
+    if (eventValue < attributes.min || eventValue > attributes.max || event.target.value.length === 0) {
+      if (!input.classList.contains('error')) {
+        input.classList.add('error')
+      }
+    } else {
+      input.classList.remove('error')
+    }
+
+    const isError = Object.keys(inputs)
+      .map((key) => inputs[key].classList.contains('error'))
+      .some((bool) => bool === true)
+
+    if (isError) {
+      if (!parent.classList.contains('error')) parent.classList.add('error')
+      applyBtn.disabled = true
+    } else {
+      parent.classList.remove('error')
+      applyBtn.disabled = false
+    }
   }
 }

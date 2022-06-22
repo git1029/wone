@@ -52,8 +52,9 @@ export default class Text {
           // this.textSettings.lineHeight = this.controls.parameters.sliders.lineHeight.value
           text.fontSize = this.textSettings.fontSize
           text.lineHeight = this.textSettings.lineHeight
+          const windowWidth = this.camera.aspect.x
           text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
-          text.position.x -= 0.5 - this.padding
+          text.position.x -= (windowWidth * 0.5) - this.padding
           text.sync(() => {
             text.position.y = this.getYPos(i)
           })
@@ -135,16 +136,17 @@ export default class Text {
 
   getXOffset = (text) => {
     const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
+    const windowWidth = this.camera.aspect.x
     if (width + this.padding * 2 < 1) {
       // const offset = ((1 - width) * 0.5 - 0.01) * Math.random()
       // text.offsetX = Math.random() < 0.5 ? -pad : pad
-      const offset = ((1 - width - this.padding * 2) * 1) * Math.random()
+      const offset = ((windowWidth - width - this.padding * 2) * 1) * Math.random()
       text.offsetX = offset
       text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
-      text.position.x -= 0.5 - this.padding
+      text.position.x -= (windowWidth * 0.5) - this.padding
     } else {
       // text.offsetX = 0
-      text.offsetX = -0.5 - this.padding
+      text.offsetX = -(windowWidth * 0.5) - this.padding
       // text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
       text.position.x = text.offsetX
     }

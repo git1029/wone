@@ -11,6 +11,7 @@ uniform float uScale;
 uniform vec2 uAspect;
 uniform vec4 uTexAspect;
 uniform vec4 uResolution;
+uniform float uTime;
 
 // #define delta ( 1.0 / 60.0 )
 
@@ -97,6 +98,7 @@ float chladni(float x, float y, float a, float b, vec2 pos) {
   float n_ = n;
   float m_ = m;
   vec2 pos_ = pos;
+  pos_.x *= uAspect.x; 
   pos_.y *= uAspect.y; 
   n_ += snoise(pos_*2.) * uDistortion;
   m_ += snoise(pos_*2. + 123.4324) * uDistortion;
@@ -119,7 +121,8 @@ void main() {
   // highp vec4 colorDiff = texture2D(tDiffuse, vUv);
   // float b = brightness(colorDiff.rgb);
   // b = pow(b, 5.);
-  vec2 newUv = vUv - vec2(.5)*1.;
+  vec2 uv = gl_FragCoord.xy/uResolution.xy;
+  vec2 newUv = vUv - vec2(.5);
 
   float scl = uScale;
   if (uScale < 0.) scl = abs(uScale) + 1.;
@@ -130,7 +133,7 @@ void main() {
 
   vec4 color = vec4(1.);
 
-  float eq = chladni((newUv.x+0.), (newUv.y*uAspect.y  ), 1., 1., newUv/scl);
+  float eq = chladni(newUv.x * uAspect.x, newUv.y * uAspect.y, 1., 1., newUv/scl);
 
   float amp = 1. * abs(eq);
   // if (amp < 0.002) amp = 0.002;
@@ -138,6 +141,7 @@ void main() {
   if (amp < 0.08) amp = 0.08;
   if (amp >= .4 && amp < .5) amp = map(amp, .4, .5, .45, 1.);
   else if (amp >= .5) amp = 1.;
+  // else if (amp >= .5) amp = rand(vUv)* (amp-.5)*2.;
   // if (amp > 1.) amp = 1.;
   // color.r = 1.;
 
@@ -206,6 +210,8 @@ void main() {
   // dispUv *= n;
   color = texture2D(uImage, imgUv + dispUv);
   // color.rgb = vec3(length(dispUv)*8.);
+
+  // if (length(color.rgb) < .5) color.rgb += vec3(length(dispUv)*8.)+rand(vUv);
   // color.rgb = vec3(1.-amp);
   // color.rgb = vec3(1.-pow(amp,.5));
   

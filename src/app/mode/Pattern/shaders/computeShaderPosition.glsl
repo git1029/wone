@@ -5,6 +5,8 @@ uniform float n;
 uniform float uDistortion;
 uniform vec2 uAspect;
 uniform float uScale;
+uniform float uTime;
+uniform float uStartTime;
 // uniform float uScaleMax;
 
 #define delta ( 1.0 / 60.0 )
@@ -109,13 +111,16 @@ void main() {
   vec4 tmpPos = texture2D( texturePosition, uv );
   vec3 pos = tmpPos.xyz;
 
-  vec4 tmpVel = texture2D( textureVelocity, uv );
-  vec3 vel = tmpVel.xyz;
-  float mass = tmpVel.w;
+  // vec4 tmpVel = texture2D( textureVelocity, uv );
+  // vec3 vel = tmpVel.xyz;
+  // float mass = tmpVel.w;
 
-  if ( mass == 0.0 ) {
-    vel = vec3( 0.0 );
-  }
+  // if ( mass == 0.0 ) {
+  //   vel = vec3( 0.0 );
+  // }
+
+  vec3 vel = vec3(0.);
+  // float mass = 0.;
 
 
     // // perform one random walk
@@ -138,6 +143,12 @@ void main() {
   // if (amp < 0.04) amp = 0.04;
 
 
+
+
+  float tf = 1.;
+  if ((uTime - uStartTime) < 1.) tf = 1.;
+  else if ((uTime - uStartTime) < 2.) tf = 1.-((uTime - uStartTime)-1.);
+  else tf = 0.;
   
   vel.x = rand(uv + pos.y + 3.143284) * amp * 2. - amp;
   vel.y = rand(uv + pos.x + 124.32347) * amp * 2. - amp;
@@ -146,13 +157,12 @@ void main() {
   // vel.y = amp;
   vel.z = 0.;
 
-
-  pos += vel * delta * 4.;
+  pos += vel * delta * 4. * 1.;
 
   
 
-  if (pos.x < -.5) pos.x = -.5; 
-  if (pos.x >= .5) pos.x = .5; 
+  if (pos.x < -.5 * uAspect.x) pos.x = -.5 * uAspect.x; 
+  if (pos.x >= .5 * uAspect.x) pos.x = .5 * uAspect.x; 
   if (pos.y < (-.5) * uAspect.y) pos.y = (-.5) * uAspect.y; 
   if (pos.y >= (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
   pos.z = (abs(eq)) * .04;

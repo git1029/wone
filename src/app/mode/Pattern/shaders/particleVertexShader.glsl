@@ -2,13 +2,14 @@
 #include <common>
 
 uniform sampler2D texturePosition;
-uniform sampler2D textureVelocity;
+// uniform sampler2D textureVelocity;
 uniform float uSize;
 
 // uniform float cameraConstant;
 // uniform float density;
 
 attribute float aIndex;
+attribute float aMass;
 
 // varying vec3 vColor;
 varying vec3 vPosition;
@@ -26,9 +27,9 @@ void main() {
   vec4 posTemp = texture2D( texturePosition, uv );
   vec3 pos = posTemp.xyz;
 
-  vec4 velTemp = texture2D( textureVelocity, uv );
-  vec3 vel = velTemp.xyz;
-  float mass = velTemp.w;
+  // vec4 velTemp = texture2D( textureVelocity, uv );
+  // vec3 vel = velTemp.xyz;
+  // float mass = velTemp.w;
 
   // vColor = vec4( 1.0, mass / 250.0, 0.0, 1.0 );
 
@@ -37,19 +38,21 @@ void main() {
   // Calculate radius of a sphere from mass and density
   //float radius = pow( ( 3.0 / ( 4.0 * PI ) ) * mass / density, 1.0 / 3.0 );
   // float radius = radiusFromMass( mass );
-  float radius = 1.;
+  // float radius = 1.;
 
   // float ms = mass;
 
-  // Apparent size in pixels
-  if ( mass == 0.0 ) {
-    gl_PointSize = 0.0;
-  }
-  else {
-    // gl_PointSize = radius * cameraConstant / ( - mvPosition.z );
-    // gl_PointSize = mass*1. / -mvPosition.z;
-    gl_PointSize = mass*1. * uSize;
-  }
+  // // Apparent size in pixels
+  // if ( mass == 0.0 ) {
+  //   gl_PointSize = 0.0;
+  // }
+  // else {
+  //   // gl_PointSize = radius * cameraConstant / ( - mvPosition.z );
+  //   // gl_PointSize = mass*1. / -mvPosition.z;
+  //   gl_PointSize = mass*1. * uSize;
+  // }
+
+  gl_PointSize = aMass * uSize;
 
   gl_Position = projectionMatrix * mvPosition;
 

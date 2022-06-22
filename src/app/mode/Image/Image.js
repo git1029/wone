@@ -16,6 +16,7 @@ export default class Image {
     this.camera = this.app.camera
     this.camera.controls.reset()
     this.camera.controls.enabled = false
+    this.time = this.app.time
 
     this.init()
   }
@@ -24,7 +25,7 @@ export default class Image {
     this.destroy()
 
     // Mesh
-    this.geometry = new THREE.PlaneGeometry(1, 1 * this.camera.aspect.y)
+    this.geometry = new THREE.PlaneGeometry(this.camera.aspect.x, this.camera.aspect.y)
     this.material = new THREE.ShaderMaterial({
       uniforms: {
         m: { value: this.controls.parameters.sliders.frequency.value },
@@ -37,6 +38,7 @@ export default class Image {
         uTexAspect: { value: new THREE.Vector4() },
         uResolution: { value: new THREE.Vector2(this.sizes.width, this.sizes.height) },
         uImage: { value: null },
+        uTime: { value: 0 },
       },
       vertexShader,
       fragmentShader,
@@ -110,6 +112,11 @@ export default class Image {
     this.material.uniforms.uDisplacement.value = this.controls.parameters.sliders.displacement.value
     this.material.uniforms.uScale.value = this.controls.parameters.sliders.scale.value
     this.material.uniforms.uGrain.value = this.controls.parameters.sliders.grain.value
+    this.material.needsUpdate = true
+  }
+
+  update = () => {
+    this.material.uniforms.uTime.value = this.time.elapsedTime
     this.material.needsUpdate = true
   }
 
