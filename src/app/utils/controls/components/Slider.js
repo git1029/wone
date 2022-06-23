@@ -63,7 +63,7 @@ export default class Slider {
 
     // sliderValue.style.left = `${this.map(slider.value, slider.options.min, slider.options.max, 0, 100)}%`
     // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
-    const leftMax = 500 - sliderValue.offsetWidth
+    const leftMax = document.querySelector('#input-sliders').offsetWidth - sliderValue.offsetWidth
     const left = Utils.map(parameter.value, parameter.options.min, parameter.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
 
@@ -164,7 +164,7 @@ export default class Slider {
 
     parent.appendChild(inputContainer)
     // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
-    const leftMax = 500 - sliderValue.offsetWidth
+    const leftMax = document.querySelector('#input-sliders').offsetWidth - sliderValue.offsetWidth
     const left = Utils.map(parameter.value, parameter.options.min, parameter.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
   }

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import Stats from 'stats-js'
-import CCapture from 'ccapture.js-npmfixed'
+// import CCapture from 'ccapture.js-npmfixed'
 
 import Sizes from './utils/Sizes'
 import Time from './utils/Time'

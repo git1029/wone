@@ -37,8 +37,8 @@ export default class Controls extends EventEmitter {
     this.parameters = {
       mode: {
         modes: [],
-        // label: 'Mode',
-        label: null,
+        label: 'Mode',
+        // label: null,
         options: {
           pattern: { name: 'Pattern' },
           image: { name: 'Image' },
@@ -66,7 +66,8 @@ export default class Controls extends EventEmitter {
 
       keyframe: {
         modes: [],
-        label: null,
+        // label: null,
+        label: 'Keyframe',
         options: {
           a: { name: 'Keyframe A' },
           b: { name: 'Keyframe B' },
@@ -77,8 +78,8 @@ export default class Controls extends EventEmitter {
       export: {
         save: {
           modes: [],
-          // label: 'Export As',
-          label: null,
+          label: 'Export As',
+          // label: null,
           options: {
             still: { name: 'Image' },
             animation: { name: 'Image Sequence' },
@@ -391,6 +392,8 @@ export default class Controls extends EventEmitter {
 
     // this.setTextures()
 
+    this.setToggleButton()
+
     this.updateLocalStorage()
   }
 
@@ -465,5 +468,31 @@ export default class Controls extends EventEmitter {
     })
 
     window.localStorage.setItem('woneParams', JSON.stringify(values))
+  }
+
+  setToggleButton = () => {
+    const button = document.querySelector('#controls-toggle')
+    const buttonLabel = button.querySelector('label')
+    const controls = document.querySelector('.controls-inner')
+
+    button.addEventListener('click', (event) => {
+      event.preventDefault()
+
+      controls.classList.toggle('hidden')
+      button.classList.toggle('hide')
+
+      if (controls.classList.contains('hidden')) {
+        buttonLabel.innerHTML = 'Show Controls'
+      } else {
+        buttonLabel.innerHTML = 'Hide Controls'
+      }
+    })
+
+    button.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && document.activeElement === button) {
+        event.preventDefault()
+        button.click()
+      }
+    })
   }
 }
