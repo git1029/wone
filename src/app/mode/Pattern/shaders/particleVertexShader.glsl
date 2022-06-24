@@ -14,6 +14,7 @@ attribute float aMass;
 // varying vec3 vColor;
 varying vec3 vPosition;
 varying float vIndex;
+varying float vEq;
 
 // float radiusFromMass( float mass ) {
 //   // Calculate radius of a sphere from mass and density
@@ -26,6 +27,7 @@ void main() {
 
   vec4 posTemp = texture2D( texturePosition, uv );
   vec3 pos = posTemp.xyz;
+  float eq = posTemp.w;
 
   // vec4 velTemp = texture2D( textureVelocity, uv );
   // vec3 vel = velTemp.xyz;
@@ -59,5 +61,6 @@ void main() {
   vPosition = pos;
   // vColor = color;
   vIndex = aIndex;
+  vEq = eq;
 
 }

@@ -101,6 +101,25 @@ float chladni(float x, float y, float a, float b, vec3 pos) {
   // return a * cos(PI*n_*x/L.x+off) * cos(PI*m_*y/L.y+off) - b * cos(PI*m_*x/L.x+off) * cos(PI*n_*y/L.y+off);
 }
 
+float cubicInOut(float t) {
+  return t < 0.5
+    ? 4.0 * t * t * t
+    : 0.5 * pow(2.0 * t - 2.0, 3.0) + 1.0;
+}
+
+float cubicOut(float t) {
+  float f = t - 1.0;
+  return f * f * f + 1.0;
+}
+
+float cubicIn(float t) {
+  return t * t * t;
+}
+
+float map(float value, float min1, float max1, float min2, float max2) {
+  return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
+}
+
 void main() {
 
 // vec2 resolution = vec2(1080., 1080.)
@@ -136,37 +155,43 @@ void main() {
   else if (uScale >= 0.) scl = 1./(abs(uScale) + 1.);
   float eq = chladni((pos.x*scl), (pos.y*scl), 1., 1., pos);
 
-  float v = 0. + length(uv) * 0.5;
+  // float v = 0. + length(uv) * 0.5;
   float amp = 0.5 * abs(eq);
   // if (amp < 0.002) amp = 0.002;
   if (amp < 0.008) amp = 0.008;
+  // if (abs(eq) < 0.0001) amp = 0.0001;
   // if (amp < 0.04) amp = 0.04;
 
 
 
 
   float tf = 1.;
-  if ((uTime - uStartTime) < 1.) tf = 1.;
-  else if ((uTime - uStartTime) < 2.) tf = 1.-((uTime - uStartTime)-1.);
-  else tf = 0.;
+  // if ((uTime - uStartTime) < 1.) tf = 1.;
+  if ((uTime - uStartTime) < 4.) {
+    // tf = 1.-((uTime - uStartTime)-1.);
+    tf = map(uTime - uStartTime, 0., 4., 1., 0.);
+    // tf = cubicInOut(tf);
+    tf = map(tf, 1., 0., 1., 0.1);
+  }
+  else tf = 0.1;
   
-  vel.x = rand(uv + pos.y + 3.143284) * amp * 2. - amp;
-  vel.y = rand(uv + pos.x + 124.32347) * amp * 2. - amp;
+  vel.x = rand(uv + pos.y + 3.143284 + uTime) * amp * 2. - amp;
+  vel.y = rand(uv + pos.x + 124.32347 + uTime) * amp * 2. - amp;
   // vel.z = rand(uv + pos.x + 124.32347) * amp * 2. - amp;
   // vel.x = amp;
   // vel.y = amp;
   vel.z = 0.;
 
-  pos += vel * delta * 4. * 1.;
+  pos += vel * delta * 4. * tf;
 
   
 
   if (pos.x < -.5 * uAspect.x) pos.x = -.5 * uAspect.x; 
-  if (pos.x >= .5 * uAspect.x) pos.x = .5 * uAspect.x; 
+  if (pos.x > .5 * uAspect.x) pos.x = .5 * uAspect.x; 
   if (pos.y < (-.5) * uAspect.y) pos.y = (-.5) * uAspect.y; 
-  if (pos.y >= (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
+  if (pos.y > (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
   pos.z = (abs(eq)) * .04;
 
-  gl_FragColor = vec4( pos, 1.0 );
+  gl_FragColor = vec4( pos, abs(eq) );
 
 }

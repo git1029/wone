@@ -174,6 +174,15 @@ export default class App {
       const width = this.controls.parameters.size.value.width * sclFactor
       const height = this.controls.parameters.size.value.height * sclFactor
 
+      // Prevent text export for Pattern and Image
+      if (this.mode.activeMode.name !== 'Text') {
+        if (this.mode.textMode) {
+          this.mode.textMode.text.forEach((text) => {
+            text.visible = false
+          })
+        }
+      }
+
       // Scale canvas (and particles) to export size
       this.renderer.instance.setSize(width, height)
       const scl = (this.controls.parameters.size.value.width * sclFactor) / this.sizes.limit.width
@@ -202,6 +211,15 @@ export default class App {
       }
       this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
       // this.renderer.instance.preserveDrawingBuffer = false
+
+      // Reset text preview
+      if (this.mode.activeMode.name !== 'Text') {
+        if (this.mode.textMode) {
+          this.mode.textMode.text.forEach((text) => {
+            text.visible = this.controls.parameters.buttons.textPreview.value
+          })
+        }
+      }
     }
   }
 

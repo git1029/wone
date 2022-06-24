@@ -208,7 +208,7 @@ export default class Controls extends EventEmitter {
             max: 1,
             step:
             0.01,
-            default: 0,
+            default: 1,
             label: 'Grain',
             // range: ['0', '100'],
             range: [],
@@ -290,9 +290,17 @@ export default class Controls extends EventEmitter {
 
         textPreview: {
           modes: ['pattern', 'image'],
+          value: false,
           name: 'TextPreview',
           label: 'Show Text Preview',
-          handleClick: () => { console.log('preview text') },
+          handleClick: () => {
+            if (this.app.mode && this.app.mode.textMode && this.app.mode.activeMode.name !== 'Text') {
+              this.parameters.buttons.textPreview.value = !this.parameters.buttons.textPreview.value
+              this.app.mode.textMode.text.forEach((text) => {
+                text.visible = this.parameters.buttons.textPreview.value
+              })
+            }
+          },
         },
 
         reset: {

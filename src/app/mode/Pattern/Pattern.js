@@ -30,7 +30,7 @@ export default class Pattern {
     this.time = this.app.time
     this.camera = this.app.camera
     this.camera.controls.reset()
-    this.camera.controls.enabled = false
+    this.camera.controls.enabled = true
     this.controls = this.app.controls
 
     this.init()
@@ -51,24 +51,31 @@ export default class Pattern {
     this.initSand()
     this.updateValues()
 
+    this.setEvents()
+
+    // this.setPostProcessing(true)
+    // this.setTextures()
+  }
+
+  setEvents = () => {
     this.controls.on('parameter-update-slider', () => {
+      console.log('parameter-update-slider pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
+      console.log('parameter-update-random pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateValues()
       }
     })
     this.controls.on('parameter-update-color', () => {
+      console.log('parameter-update-color pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateColors()
       }
     })
-
-    // this.setPostProcessing(true)
-    // this.setTextures()
   }
 
   // setTextures = () => {

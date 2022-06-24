@@ -75,6 +75,7 @@ export default class Sizes extends EventEmitter {
 
     // document.querySelector('.canvas').style.width = `${widnwo}px`
 
-    this.canvas.style.transform = `scale(${scale}, ${scale})`
+    if (window.innerWidth > 320) this.canvas.style.transform = `scale(${scale}, ${scale})`
+    // else this.canvas.style.transform = 'scale(1, 1)'
   }
 }

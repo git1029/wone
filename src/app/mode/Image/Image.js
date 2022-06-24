@@ -49,12 +49,18 @@ export default class Image {
 
     this.scene.add(this.mesh)
 
+    this.setEvents()
+  }
+
+  setEvents = () => {
     this.controls.on('parameter-update-slider', () => {
+      console.log('parameter-update-slider image')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
+      console.log('parameter-update-random pattern')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
       }

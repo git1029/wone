@@ -21,8 +21,7 @@ export default class Text {
   }
 
   init = () => {
-    this.renderer.instance.setClearAlpha(0)
-    this.updateCanvas()
+    this.updateCanvasBackground()
 
     this.string = this.controls.parameters.text.value
 
@@ -45,7 +44,12 @@ export default class Text {
 
     this.setText()
 
+    this.setEvents()
+  }
+
+  setEvents = () => {
     this.controls.on('parameter-update-slider', () => {
+      console.log('parameter-update-slider text')
       if (this.app.mode.activeMode.name === 'Text') {
         this.text.forEach((text, i) => {
           this.textSettings.fontSize = this.getSize()
@@ -62,15 +66,17 @@ export default class Text {
       }
     })
     this.controls.on('parameter-update-color', () => {
+      console.log('parameter-update-color text')
       if (this.app.mode.activeMode.name === 'Text') {
         this.text.forEach((text) => {
           this.textSettings.color = this.controls.parameters.color.text.value.primary
           text.color = this.controls.parameters.color.text.value.primary
         })
-        this.updateCanvas()
+        this.updateCanvasBackground()
       }
     })
     this.controls.on('parameter-update-text', () => {
+      console.log('parameter-update-text text')
       if (this.app.mode.activeMode.name === 'Text') {
         if (this.controls.parameters.text.value !== this.string) {
           this.string = this.controls.parameters.text.value
@@ -82,16 +88,9 @@ export default class Text {
 
   getSize = () => this.map(this.controls.parameters.sliders.textSize.value, 12, 128, 0.05, 0.75)
 
-  updateCanvasBorder = () => {
-    if (this.controls.parameters.color.text.value.name === 'Light') {
-      this.app.canvas.style.borderWidth = '1px'
-      this.app.canvas.style.borderStyle = 'solid'
-    } else {
-      this.app.canvas.style.borderWidth = '0'
-    }
-  }
-
-  updateCanvas = () => {
+  updateCanvasBackground = () => {
+    this.renderer.instance.setClearColor(0x000000, 0)
+    this.renderer.instance.setClearAlpha(0)
     this.app.canvas.style.background = this.controls.parameters.color.text.value.background
   }
 
@@ -117,7 +116,7 @@ export default class Text {
       this.scene.add(text)
 
       text.text = string.toUpperCase()
-      text.position.z = 0
+      text.position.z = 10
 
       Object.keys(this.textSettings).forEach((key) => {
         text[key] = this.textSettings[key]
