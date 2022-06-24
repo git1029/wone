@@ -48,7 +48,7 @@ export default class TextInput {
     input.setAttribute('tabindex', '0')
     input.setAttribute('type', 'number')
     input.setAttribute('class', 'input-export-duration-input')
-    input.value = parameter.default
+    input.value = parameter.value
 
     input.addEventListener('keyup', (event) => {
       parameter.value = parseFloat(event.target.value)

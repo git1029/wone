@@ -175,14 +175,16 @@ void main() {
   }
   else tf = 0.1;
   
-  vel.x = rand(uv + pos.y + 3.143284 + uTime) * amp * 2. - amp;
-  vel.y = rand(uv + pos.x + 124.32347 + uTime) * amp * 2. - amp;
+  // for (int i = 0; i < 1; i++) {
+    vel.x = rand(uv + pos.y + 3.143284 + uTime) * amp * 2. - amp;
+    vel.y = rand(uv + pos.x + 124.32347 + uTime) * amp * 2. - amp;
+    vel.z = 0.;
+    pos += vel * delta * 4. * tf;
+  // }
   // vel.z = rand(uv + pos.x + 124.32347) * amp * 2. - amp;
   // vel.x = amp;
   // vel.y = amp;
-  vel.z = 0.;
 
-  pos += vel * delta * 4. * tf;
 
   
 

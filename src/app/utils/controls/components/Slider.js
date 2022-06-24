@@ -21,6 +21,8 @@ export default class Slider {
   }
 
   randomize = () => {
+    const keyframe = this.parameters.keyframe.value.key
+
     if (this.parameters.mode.value.name === 'Text') {
       if (this.app.mode && this.app.mode.activeMode.name === 'Text'
       && this.app.mode.mode && this.app.mode.mode.randomizeXOffset) {
@@ -35,7 +37,8 @@ export default class Slider {
         const pres = Utils.precision(slider.options.step)
         const value = Math.round((Math.random() * (max - min) + min) * 10 ** pres) / 10 ** pres
 
-        slider.value = value
+        if (slider.keyframes) slider.value[keyframe] = value
+        else slider.value = value
         slider.controller.value = value
 
         const sliderInput = slider.controller
@@ -51,9 +54,12 @@ export default class Slider {
 
   // eslint-disable-next-line class-methods-use-this
   update = (parameter, value, updateInput = false) => {
+    const keyframe = this.parameters.keyframe.value.key
+
     const sliderValue = parameter.controller.nextElementSibling
 
-    parameter.value = value
+    if (parameter.keyframes) parameter.value[keyframe] = value
+    else parameter.value = value
     sliderValue.innerHTML = value
 
     if (updateInput) {
@@ -64,7 +70,7 @@ export default class Slider {
     // sliderValue.style.left = `${this.map(slider.value, slider.options.min, slider.options.max, 0, 100)}%`
     // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
     const leftMax = document.querySelector('#input-sliders').offsetWidth - sliderValue.offsetWidth
-    const left = Utils.map(parameter.value, parameter.options.min, parameter.options.max, 0, leftMax)
+    const left = Utils.map(value, parameter.options.min, parameter.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
 
     // const slider = sliders[key]
@@ -79,11 +85,17 @@ export default class Slider {
     // sliderValue.innerHTML = value
     // const left = this.map(value, min, max, 0, sliderInput.offsetWidth - sliderValue.offsetWidth)
     // sliderValue.style.left = `${left}px`
+
+    // console.log(parameter)
   }
 
   create = (name, parent = document.querySelector('#inputs')) => {
+    const keyframe = this.parameters.keyframe.value.key
+
     const parameter = this.parameters.sliders[name]
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
+
+    const value = parameter.keyframes ? parameter.value[keyframe] : parameter.value
 
     const inputContainer = document.createElement('div')
     inputContainer.classList.add('input', name)
@@ -97,7 +109,7 @@ export default class Slider {
 
     const sliderValue = document.createElement('span')
     sliderValue.classList.add('input-slider-value')
-    sliderValue.innerHTML = parameter.value
+    sliderValue.innerHTML = value
 
     const sliderInput = document.createElement('input')
     const attributes = {
@@ -105,7 +117,7 @@ export default class Slider {
       min: parameter.options.min,
       max: parameter.options.max,
       step: parameter.options.step,
-      value: parameter.value,
+      value,
       tabindex: '0',
       id: name,
       class: 'slider',
@@ -113,8 +125,8 @@ export default class Slider {
     Utils.setAttributes(sliderInput, attributes)
 
     sliderInput.addEventListener('input', (event) => {
-      const value = parseFloat(event.target.value)
-      this.update(parameter, value)
+      const targetValue = parseFloat(event.target.value)
+      this.update(parameter, targetValue)
 
       this.controls.updateLocalStorage()
       this.controls.trigger('parameter-update-slider')
@@ -165,7 +177,7 @@ export default class Slider {
     parent.appendChild(inputContainer)
     // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
     const leftMax = document.querySelector('#input-sliders').offsetWidth - sliderValue.offsetWidth
-    const left = Utils.map(parameter.value, parameter.options.min, parameter.options.max, 0, leftMax)
+    const left = Utils.map(value, parameter.options.min, parameter.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
   }
 }

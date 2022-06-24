@@ -69,8 +69,8 @@ export default class Controls extends EventEmitter {
         // label: null,
         label: 'Keyframe',
         options: {
-          a: { name: 'Keyframe A' },
-          b: { name: 'Keyframe B' },
+          a: { name: 'Keyframe A', key: 'a' },
+          b: { name: 'Keyframe B', key: 'b' },
         },
         controllers: {},
       },
@@ -150,6 +150,7 @@ export default class Controls extends EventEmitter {
       sliders: {
         frequency: {
           modes: ['pattern', 'image'],
+          keyframes: true,
           options: {
             min: 0.1,
             max: 10,
@@ -163,6 +164,7 @@ export default class Controls extends EventEmitter {
 
         frequencyB: {
           modes: ['pattern', 'image'],
+          keyframes: true,
           options: {
             min: 0.1,
             max: 10,
@@ -176,6 +178,7 @@ export default class Controls extends EventEmitter {
 
         distortion: {
           modes: ['pattern', 'image'],
+          keyframes: true,
           options: {
             min: 0,
             max: 2,
@@ -189,6 +192,7 @@ export default class Controls extends EventEmitter {
 
         scale: {
           modes: ['pattern', 'image'],
+          keyframes: true,
           options: {
             min: -2,
             max: 2,
@@ -203,6 +207,7 @@ export default class Controls extends EventEmitter {
         grain: {
           // modes: ['pattern', 'image'],
           modes: ['image'],
+          keyframes: true,
           options: {
             min: 0,
             max: 1,
@@ -217,6 +222,7 @@ export default class Controls extends EventEmitter {
 
         displacement: {
           modes: ['image'],
+          keyframes: true,
           options: {
             min: 0.5,
             max: 1,
@@ -230,6 +236,7 @@ export default class Controls extends EventEmitter {
 
         textSize: {
           modes: ['text'],
+          keyframes: false,
           options: {
             min: 12,
             max: 128,
@@ -242,6 +249,7 @@ export default class Controls extends EventEmitter {
 
         textOffset: {
           modes: ['text'],
+          keyframes: true,
           options: {
             min: 0,
             max: 1,
@@ -361,9 +369,20 @@ export default class Controls extends EventEmitter {
     this.setParameter(params, 'color', 'pattern', this.parameters.color.pattern.options.blue)
     this.setParameter(params, 'color', 'text', this.parameters.color.text.options.dark)
     Object.keys(this.parameters.sliders).forEach((key) => {
+      // Initialize default values for slider (value for each keyframe)
+      if (this.parameters.sliders[key].keyframes) {
+        const value = this.parameters.sliders[key].options.default
+        this.parameters.sliders[key].options.default = {}
+        Object.keys(this.parameters.keyframe.options).forEach((keyframe) => {
+          this.parameters.sliders[key].options.default[keyframe] = value
+        })
+      }
+
       this.setParameter(params, 'sliders', key, this.parameters.sliders[key].options.default)
     })
     this.setParameter(params, null, 'text', 'WONE IS\nA NEW MODEL\nOF HEALTH FOR\nTHE\nMODERN\nWORKPLACE')
+
+    console.log(this.parameters)
 
     // Initialize canvas size
     this.sizes.size = this.parameters.size.value
@@ -451,6 +470,7 @@ export default class Controls extends EventEmitter {
       mode: { value: this.parameters.mode.value },
       size: { value: this.parameters.size.value },
       sizeCustom: { value: this.parameters.size.options.custom },
+      keyframe: { value: this.parameters.keyframe.value },
       color: {
         pattern: { value: this.parameters.color.pattern.value },
         text: { value: this.parameters.color.text.value },
@@ -458,7 +478,16 @@ export default class Controls extends EventEmitter {
       text: { value: this.parameters.text.value },
       image: {},
       sliders: {},
+      export: {},
     }
+
+    Object.keys(this.parameters.export).forEach((key) => {
+      values.export[key] = {
+        value: key === 'duration'
+          ? parseFloat(this.parameters.export[key].value)
+          : this.parameters.export[key].value,
+      }
+    })
 
     if (this.parameters.image.value) {
       if (this.parameters.image.value.source) {
@@ -476,6 +505,16 @@ export default class Controls extends EventEmitter {
     })
 
     window.localStorage.setItem('woneParams', JSON.stringify(values))
+  }
+
+  getSliderValue = (name) => {
+    const slider = this.parameters.sliders[name]
+    if (slider.keyframes) {
+      const keyframe = this.parameters.keyframe.value.key
+      return slider.value[keyframe]
+    }
+
+    return slider.value
   }
 
   setToggleButton = () => {

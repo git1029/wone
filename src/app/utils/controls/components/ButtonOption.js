@@ -95,7 +95,16 @@ export default class ButtonOption {
         } else if (name === 'size') {
           this.updateCanvasSize(value)
         } else if (name === 'keyframe') {
-          console.log(`${name}-${key}`)
+          // update slider controller
+          Object.keys(this.parameters.sliders).forEach((sliderName) => {
+            const slider = this.parameters.sliders[sliderName]
+            const sliderValue = slider.keyframes ? slider.value[key] : slider.value
+            this.controls.slider.update(slider, sliderValue, true)
+          })
+          // update modes
+          if (this.app.mode && this.app.mode.mode && this.app.mode.mode.updateValues) {
+            this.app.mode.mode.updateValues()
+          }
         } else if (name === 'scale') {
           const label = document.querySelector('#input-export-scale > label')
           const width = this.parameters.size.value.width * parameter.value.scale

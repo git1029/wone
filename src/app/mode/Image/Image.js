@@ -14,8 +14,8 @@ export default class Image {
     this.resources = this.app.resources
     this.controls = this.app.controls
     this.camera = this.app.camera
-    this.camera.controls.reset()
-    this.camera.controls.enabled = false
+    // this.camera.controls.reset()
+    // this.camera.controls.enabled = false
     this.time = this.app.time
 
     this.init()
@@ -28,12 +28,12 @@ export default class Image {
     this.geometry = new THREE.PlaneGeometry(this.camera.aspect.x, this.camera.aspect.y)
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        m: { value: this.controls.parameters.sliders.frequency.value },
-        n: { value: this.controls.parameters.sliders.frequencyB.value },
-        uDistortion: { value: this.controls.parameters.sliders.distortion.value },
-        uDisplacement: { value: this.controls.parameters.sliders.displacement.value },
-        uScale: { value: this.controls.parameters.sliders.scale.value },
-        uGrain: { value: this.controls.parameters.sliders.grain.value },
+        m: { value: this.controls.getSliderValue('frequency') },
+        n: { value: this.controls.getSliderValue('frequencyB') },
+        uDistortion: { value: this.controls.getSliderValue('distortion') },
+        uDisplacement: { value: this.controls.getSliderValue('displacement') },
+        uScale: { value: this.controls.getSliderValue('scale') },
+        uGrain: { value: this.controls.getSliderValue('grain') },
         uAspect: { value: this.camera.aspect },
         uTexAspect: { value: new THREE.Vector4() },
         uResolution: { value: new THREE.Vector2(this.sizes.width, this.sizes.height) },
@@ -112,12 +112,12 @@ export default class Image {
   }
 
   updateValues = () => {
-    this.material.uniforms.n.value = this.controls.parameters.sliders.frequencyB.value
-    this.material.uniforms.m.value = this.controls.parameters.sliders.frequency.value
-    this.material.uniforms.uDistortion.value = this.controls.parameters.sliders.distortion.value
-    this.material.uniforms.uDisplacement.value = this.controls.parameters.sliders.displacement.value
-    this.material.uniforms.uScale.value = this.controls.parameters.sliders.scale.value
-    this.material.uniforms.uGrain.value = this.controls.parameters.sliders.grain.value
+    this.material.uniforms.n.value = this.controls.getSliderValue('frequencyB')
+    this.material.uniforms.m.value = this.controls.getSliderValue('frequency')
+    this.material.uniforms.uDistortion.value = this.controls.getSliderValue('distortion')
+    this.material.uniforms.uDisplacement.value = this.controls.getSliderValue('displacement')
+    this.material.uniforms.uScale.value = this.controls.getSliderValue('scale')
+    this.material.uniforms.uGrain.value = this.controls.getSliderValue('grain')
     this.material.needsUpdate = true
   }
 

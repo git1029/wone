@@ -14,8 +14,8 @@ export default class Text {
     this.resources = this.app.resources
     this.controls = this.app.controls
     this.camera = this.app.camera
-    this.camera.controls.reset()
-    this.camera.controls.enabled = false
+    // this.camera.controls.reset()
+    // this.camera.controls.enabled = false
 
     this.init()
   }
@@ -57,7 +57,7 @@ export default class Text {
           text.fontSize = this.textSettings.fontSize
           text.lineHeight = this.textSettings.lineHeight
           const windowWidth = this.camera.aspect.x
-          text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
+          text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
           text.position.x -= (windowWidth * 0.5) - this.padding
           text.sync(() => {
             text.position.y = this.getYPos(i)
@@ -83,6 +83,14 @@ export default class Text {
           this.setText()
         }
       }
+    })
+  }
+
+  updateValues = () => {
+    this.text.forEach((text) => {
+      const windowWidth = this.camera.aspect.x
+      text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
+      text.position.x -= (windowWidth * 0.5) - this.padding
     })
   }
 
@@ -141,7 +149,7 @@ export default class Text {
       // text.offsetX = Math.random() < 0.5 ? -pad : pad
       const offset = ((windowWidth - width - this.padding * 2) * 1) * Math.random()
       text.offsetX = offset
-      text.position.x = text.offsetX * this.controls.parameters.sliders.textOffset.value
+      text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
       text.position.x -= (windowWidth * 0.5) - this.padding
     } else {
       // text.offsetX = 0

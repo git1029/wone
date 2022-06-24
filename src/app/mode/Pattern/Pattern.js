@@ -29,8 +29,8 @@ export default class Pattern {
     this.sizes = this.app.sizes
     this.time = this.app.time
     this.camera = this.app.camera
-    this.camera.controls.reset()
-    this.camera.controls.enabled = true
+    // this.camera.controls.reset()
+    // this.camera.controls.enabled = false
     this.controls = this.app.controls
 
     this.init()
@@ -160,10 +160,10 @@ export default class Pattern {
     // this.velocityUniforms = this.velocityVariable.material.uniforms
     this.positionUniforms = this.positionVariable.material.uniforms
 
-    this.positionUniforms.n = { value: this.controls.parameters.sliders.frequencyB.value }
-    this.positionUniforms.m = { value: this.controls.parameters.sliders.frequency.value }
-    this.positionUniforms.uDistortion = { value: this.controls.parameters.sliders.distortion.value }
-    this.positionUniforms.uScale = { value: this.controls.parameters.sliders.scale.value }
+    this.positionUniforms.n = { value: this.controls.getSliderValue('frequencyB') }
+    this.positionUniforms.m = { value: this.controls.getSliderValue('frequency') }
+    this.positionUniforms.uDistortion = { value: this.controls.getSliderValue('distortion') }
+    this.positionUniforms.uScale = { value: this.controls.getSliderValue('scale') }
     this.positionUniforms.uAspect = { value: this.camera.aspect }
     this.positionUniforms.uTime = { value: 0 }
     this.positionUniforms.uStartTime = { value: 0 }
@@ -413,10 +413,10 @@ export default class Pattern {
   // }
 
   updateValues = () => {
-    this.positionUniforms.n.value = this.controls.parameters.sliders.frequencyB.value
-    this.positionUniforms.m.value = this.controls.parameters.sliders.frequency.value
-    this.positionUniforms.uDistortion.value = this.controls.parameters.sliders.distortion.value
-    this.positionUniforms.uScale.value = this.controls.parameters.sliders.scale.value
+    this.positionUniforms.n.value = this.controls.getSliderValue('frequencyB')
+    this.positionUniforms.m.value = this.controls.getSliderValue('frequency')
+    this.positionUniforms.uDistortion.value = this.controls.getSliderValue('distortion')
+    this.positionUniforms.uScale.value = this.controls.getSliderValue('scale')
     this.positionUniforms.uTime.value = this.time.elapsedTime
     this.positionUniforms.uStartTime.value = this.time.elapsedTime
   }
