@@ -56,7 +56,7 @@ export default class Sizes extends EventEmitter {
     }
   }
 
-  scaleCanvas = () => {
+  scaleCanvas = (render = false) => {
     let pad = 30
     if (window.innerWidth < 1200) {
       pad = 10
@@ -69,9 +69,19 @@ export default class Sizes extends EventEmitter {
       availableWidth = window.innerWidth - pad * 2
     }
 
-    const scaleX = availableWidth < this.width ? availableWidth / this.width : 1
-    const scaleY = availableHeight < this.height * scaleX ? availableHeight / (this.height * scaleX) : 1
-    const scale = scaleX * scaleY
+    const { width, height } = this
+
+    // const width = render ? this.app.controls.parameters.size.value.width : this.width
+    // const height = render ? this.app.controls.parameters.size.value.height : this.height
+
+    const scaleX = availableWidth < width ? availableWidth / width : 1
+    const scaleY = availableHeight < height * scaleX ? availableHeight / (height * scaleX) : 1
+    let scale = scaleX * scaleY
+
+    if (render) {
+      scale *= (width * scaleX) / this.app.controls.parameters.size.value.width
+    }
+
 
     // document.querySelector('.canvas').style.width = `${widnwo}px`
 

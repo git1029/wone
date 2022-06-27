@@ -1,7 +1,7 @@
 #include <common>
 
-uniform float m;
-uniform float n;
+uniform float uFrequencyA;
+uniform float uFrequencyB;
 uniform float uDistortion;
 uniform vec2 uAspect;
 uniform float uScale;
@@ -89,12 +89,14 @@ float snoise(vec2 v)
   return 130.0 * dot(m, g);
 }
 
-
+// https://github.com/addiebarron/chladni
+// https://github.com/luciopaiva/chladni
+// http://paulbourke.net/geometry/chladni/
 float chladni(float x, float y, float a, float b, vec3 pos) {
-  float n_ = n;
-  float m_ = m;
-  n_ += snoise(pos.xy*2.) * uDistortion;
+  float m_ = uFrequencyA;
+  float n_ = uFrequencyB;
   m_ += snoise(pos.xy*2. + 123.4324) * uDistortion;
+  n_ += snoise(pos.xy*2.) * uDistortion;
   float off = PI/2.*1.;
   vec2 L = vec2(1.,1.);
   return a * sin(PI*n_*x/L.x+off) * sin(PI*m_*y/L.y+off) + b * sin(PI*m_*x/L.x+off) * sin(PI*n_*y/L.y+off);
@@ -155,6 +157,21 @@ void main() {
   else if (uScale >= 0.) scl = 1./(abs(uScale) + 1.);
   float eq = chladni((pos.x*scl), (pos.y*scl), 1., 1., pos);
 
+  // vec2 pos2 = vec2(pos.x, pos.y);
+  // for (float i = -1.; i <= 1.; i += 1.) {
+  //   for (float j = -1.; j <= 1.; j += 1.) {
+  //     if (i == 0. && j == 0.) continue;
+  //     float x = pos.x + i / resolution.x; 
+  //     float y = pos.y + j / resolution.y;
+  //     if (x < -0.5 || x > 0.5) continue;
+  //     if (y < -0.5 || y > 0.5) continue;
+  //     float eq2 = chladni(x*scl, y*scl, 1., 1., pos);
+  //     if (abs(eq2) < abs(eq)) pos2 = vec2(x, y);
+  //   }
+  // }
+
+  // pos.xy = pos2;
+
   // float v = 0. + length(uv) * 0.5;
   float amp = 0.5 * abs(eq);
   // if (amp < 0.002) amp = 0.002;
@@ -166,14 +183,15 @@ void main() {
 
 
   float tf = 1.;
-  // if ((uTime - uStartTime) < 1.) tf = 1.;
-  if ((uTime - uStartTime) < 4.) {
-    // tf = 1.-((uTime - uStartTime)-1.);
-    tf = map(uTime - uStartTime, 0., 4., 1., 0.);
-    // tf = cubicInOut(tf);
-    tf = map(tf, 1., 0., 1., 0.1);
-  }
-  else tf = 0.1;
+  // // if ((uTime - uStartTime) < 1.) tf = 1.;
+  // if ((uTime - uStartTime) < 4.) {
+  //   // tf = 1.-((uTime - uStartTime)-1.);
+  //   tf = map(uTime - uStartTime, 0., 4., 1., 0.);
+  //   // tf = cubicInOut(tf);
+  //   tf = map(tf, 1., 0., 1., 0.1);
+  // }
+  // else tf = 0.1;
+  // tf = 1.;
   
   // for (int i = 0; i < 1; i++) {
     vel.x = rand(uv + pos.y + 3.143284 + uTime) * amp * 2. - amp;
@@ -186,12 +204,13 @@ void main() {
   // vel.y = amp;
 
 
+
   
 
   if (pos.x < -.5 * uAspect.x) pos.x = -.5 * uAspect.x; 
-  if (pos.x > .5 * uAspect.x) pos.x = .5 * uAspect.x; 
+  if (pos.x >= .5 * uAspect.x) pos.x = .5 * uAspect.x; 
   if (pos.y < (-.5) * uAspect.y) pos.y = (-.5) * uAspect.y; 
-  if (pos.y > (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
+  if (pos.y >= (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
   pos.z = (abs(eq)) * .04;
 
   gl_FragColor = vec4( pos, abs(eq) );

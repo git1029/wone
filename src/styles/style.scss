@@ -924,18 +924,7 @@ textarea {
     input {
       height: 45px;
       font-size: 16px;
-
-      &:disabled {
-        // display: none; 
-        opacity: 0.5;
-        cursor: default;
-
-        &:hover,
-        &:focus,
-        &:active {
-          background: $color-bg;
-        }
-      }
+      min-width: 100px;
     }
   }
 
@@ -995,6 +984,18 @@ textarea {
 
     &:active {
       background: color.adjust($color-bg-lighter, $lightness: 2%);
+    }
+
+    &:disabled {
+      // display: none; 
+      // opacity: 0.5;
+      cursor: default;
+  
+      &:hover,
+      &:focus,
+      &:active {
+        // background: $color-bg;
+      }
     }
   }
 }
@@ -1396,6 +1397,19 @@ textarea {
         //   display: block;
         // }
       }
+    }
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .input-custom-size-container {
+    .input-custom-size-container-inner {
+      flex-wrap: wrap;
+    }
+    
+    .input.button {
+      margin: 20px 0 0;
+      flex: 1 1 100%;
     }
   }
 }

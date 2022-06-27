@@ -49,7 +49,7 @@ export default class Text {
 
   setEvents = () => {
     this.controls.on('parameter-update-slider', () => {
-      console.log('parameter-update-slider text')
+      // console.log('parameter-update-slider text')
       if (this.app.mode.activeMode.name === 'Text') {
         this.text.forEach((text, i) => {
           this.textSettings.fontSize = this.getSize()
@@ -57,6 +57,12 @@ export default class Text {
           text.fontSize = this.textSettings.fontSize
           text.lineHeight = this.textSettings.lineHeight
           const windowWidth = this.camera.aspect.x
+          const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
+          const eq = this.chladni(0.5, text.position.y)
+          let amp = Math.abs(eq)
+          if (amp > 1) amp = 1
+          const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
+          text.offsetX = offset
           text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
           text.position.x -= (windowWidth * 0.5) - this.padding
           text.sync(() => {
@@ -66,7 +72,7 @@ export default class Text {
       }
     })
     this.controls.on('parameter-update-color', () => {
-      console.log('parameter-update-color text')
+      // console.log('parameter-update-color text')
       if (this.app.mode.activeMode.name === 'Text') {
         this.text.forEach((text) => {
           this.textSettings.color = this.controls.parameters.color.text.value.primary
@@ -76,7 +82,7 @@ export default class Text {
       }
     })
     this.controls.on('parameter-update-text', () => {
-      console.log('parameter-update-text text')
+      // console.log('parameter-update-text text')
       if (this.app.mode.activeMode.name === 'Text') {
         if (this.controls.parameters.text.value !== this.string) {
           this.string = this.controls.parameters.text.value
@@ -89,6 +95,15 @@ export default class Text {
   updateValues = () => {
     this.text.forEach((text) => {
       const windowWidth = this.camera.aspect.x
+      const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
+      // const height = this.textSettings.lineHeight * this.textSettings.fontSize
+      const eq = this.chladni(0.5, text.position.y)
+      // const eq2 = this.chladni(0.5, text.position.y + height/2)
+      // const eq = (eq1 + eq2) / 2
+      let amp = Math.abs(eq)
+      if (amp > 1) amp = 1
+      const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
+      text.offsetX = offset
       text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
       text.position.x -= (windowWidth * 0.5) - this.padding
     })
@@ -135,22 +150,46 @@ export default class Text {
       this.text.push(text)
 
       text.sync(() => {
-        this.getXOffset(text)
         text.position.y = this.getYPos(i)
+        this.getXOffset(text)
       })
     })
   }
+
+  chladni = (x, y) => {
+    const m_ = this.controls.getSliderValue('frequencyA')
+    const n_ = this.controls.getSliderValue('frequencyB')
+    // vec2 pos_ = pos;
+    // pos_.x *= uAspect.x; 
+    // pos_.y *= uAspect.y; 
+    // n_ += snoise(pos_*2.) * uDistortion;
+    // m_ += snoise(pos_*2. + 123.4324) * uDistortion;
+    const PI = Math.PI
+    const off = Math.PI/2.*1.
+    const L = { x: 1, y: 1 };
+    const a = 1.
+    const b = 1.
+    return a * Math.sin(PI*n_*x/L.x+off) * Math.sin(PI*m_*y/L.y+off) + b * Math.sin(PI*m_*x/L.x+off) * Math.sin(PI*n_*y/L.y+off)
+    // return a * cos(PI*n_*x/L+off) * cos(PI*m_*y/L+off) - b * cos(PI*m_*x/L+off) * cos(PI*n_*y/L+off);
+  }
+
 
   getXOffset = (text) => {
     const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
     const windowWidth = this.camera.aspect.x
     if (width + this.padding * 2 < 1) {
+      
+      const eq = this.chladni(0.5, text.position.y)
+      let amp = Math.abs(eq)
+      if (amp > 1) amp = 1
+      const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
       // const offset = ((1 - width) * 0.5 - 0.01) * Math.random()
       // text.offsetX = Math.random() < 0.5 ? -pad : pad
-      const offset = ((windowWidth - width - this.padding * 2) * 1) * Math.random()
+      // const offset = ((windowWidth - width - this.padding * 2) * 1) * Math.random()
       text.offsetX = offset
       text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
       text.position.x -= (windowWidth * 0.5) - this.padding
+      
     } else {
       // text.offsetX = 0
       text.offsetX = -(windowWidth * 0.5) - this.padding
@@ -163,6 +202,10 @@ export default class Text {
     this.text.forEach((text) => {
       this.getXOffset(text)
     })
+  }
+
+  animate = () => {
+    this.updateValues()
   }
 
   // eslint-disable-next-line class-methods-use-this

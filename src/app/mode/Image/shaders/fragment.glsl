@@ -2,8 +2,8 @@
 
 uniform sampler2D uImage;
 
-uniform float m;
-uniform float n;
+uniform float uFrequencyA;
+uniform float uFrequencyB;
 uniform float uDistortion;
 uniform float uDisplacement;
 uniform float uGrain;
@@ -95,8 +95,8 @@ float brightness(vec3 color) {
 }
 
 float chladni(float x, float y, float a, float b, vec2 pos) {
-  float n_ = n;
-  float m_ = m;
+  float m_ = uFrequencyA;
+  float n_ = uFrequencyB;
   vec2 pos_ = pos;
   pos_.x *= uAspect.x; 
   pos_.y *= uAspect.y; 
@@ -138,8 +138,10 @@ void main() {
   float amp = 1. * abs(eq);
   // if (amp < 0.002) amp = 0.002;
   // if (amp < 0.008) amp = 0.008;
+  amp = clamp(amp, 0., 1.);
   if (amp < 0.08) amp = 0.08;
-  if (amp >= .4 && amp < .5) amp = map(amp, .4, .5, .45, 1.);
+  // if (amp >= .4 && amp < .5) amp = map(amp, .4, .5, .45, 1.);
+  if (amp >= .08 && amp < .5) amp = map(amp, .08, .5, .08, 1.);
   else if (amp >= .5) amp = 1.;
   // else if (amp >= .5) amp = rand(vUv)* (amp-.5)*2.;
   // if (amp > 1.) amp = 1.;
@@ -204,12 +206,36 @@ void main() {
 
   // imgUv.y -= abs(uResolution.y - uTexAspect.y)/uResolution.y * .5 * uAspect;
   // imgUv.y -= (1. - uTexAspect.w/uAspect.y) * .5;
-  vec2 dispUv = disp + rand(vUv) * uGrain * length(disp);
+  vec2 dispUv = disp;
+  float r = rand(vUv + uTime*.1);
+  r *= length(disp);
+  r *= (smoothstep(-.2, 1., abs(eq) * (1.-pow(abs(eq),.2))) * 5.);
+  dispUv += r * uGrain; 
+
+  // if (rand(vUv + uTime*.1) < abs(eq) * 1.) {
+  //   dispUv += rand(vUv + uTime*.1) * uGrain * pow(abs(eq),1.);
+  // }
+
+
   float n = snoise(vUv*2.);
   // n = pow(n, 4.);
   // dispUv *= n;
+
+  color.rgb = vec3(length(dispUv)*8.);
+
+  if (rand(uv + eq + uTime*.1) < 0.05) {
+    dispUv += (1.-length(dispUv)) * rand(uv + eq + uTime*.1) * (1.-abs(eq)) * uGrain; 
+  }
+
   color = texture2D(uImage, imgUv + dispUv);
-  // color.rgb = vec3(length(dispUv)*8.);
+  // color.rgb = vec3(1.-(eq*.5+.5)) * (1.-length(dispUv)) * rand(uv);
+  // color.rgb = vec3(1.-pow(abs(eq),2.)) * (1.-length(dispUv)) * rand(uv);
+
+// color.rgb = vec3(smoothstep(-.2, 1., abs(eq) * (1.-pow(abs(eq),.2))) * 8.);
+
+  // if (rand(uv) < 0.5) {
+  //   color.rgb += (1.-length(dispUv)) * rand(uv); 
+  // }
 
   // if (length(color.rgb) < .5) color.rgb += vec3(length(dispUv)*8.)+rand(vUv);
   // color.rgb = vec3(1.-amp);

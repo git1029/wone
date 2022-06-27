@@ -48,6 +48,8 @@ export default class TextInput {
     input.setAttribute('tabindex', '0')
     input.setAttribute('type', 'number')
     input.setAttribute('class', 'input-export-duration-input')
+    input.setAttribute('min', '0.1')
+    input.setAttribute('max', '30')
     input.value = parameter.value
 
     input.addEventListener('keyup', (event) => {

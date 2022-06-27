@@ -14,6 +14,8 @@ export const compareKeys = (a, b) => {
 
 export const map = (value, low1, high1, low2, high2) => low2 + ((high2 - low2) * (value - low1)) / (high1 - low1)
 
+export const lerp = (a, b, t) => a + (b - a) * t
+
 export const precision = (a) => {
   if (!Number.isFinite(a)) return 0
   let e = 1

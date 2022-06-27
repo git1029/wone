@@ -200,6 +200,12 @@ export default class ButtonOption {
 
       if (applyBtn.disabled === true) return
 
+      const parameter = this.parameters.size
+      const width = parseFloat(inputs.width.value)
+      const height = parseFloat(inputs.height.value)
+
+      if (parameter.value.width === width && parameter.value.height === height) return
+
       customSizes.forEach((size) => {
         const value = parseFloat(inputs[size].value)
         if (value < attributes.min || value > attributes.max || inputs[size].value.length === 0) {
@@ -225,9 +231,9 @@ export default class ButtonOption {
       parent.classList.remove('error')
       applyBtn.disabled = false
 
-      const parameter = this.parameters.size
-      const width = parseFloat(inputs.width.value)
-      const height = parseFloat(inputs.height.value)
+      // const parameter = this.parameters.size
+      // const width = parseFloat(inputs.width.value)
+      // const height = parseFloat(inputs.height.value)
       parameter.options.custom.width = width
       parameter.options.custom.height = height
       if (parameter.value.name === 'Custom') {

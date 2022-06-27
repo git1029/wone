@@ -23,14 +23,14 @@ export default class Slider {
   randomize = () => {
     const keyframe = this.parameters.keyframe.value.key
 
-    if (this.parameters.mode.value.name === 'Text') {
-      if (this.app.mode && this.app.mode.activeMode.name === 'Text'
-      && this.app.mode.mode && this.app.mode.mode.randomizeXOffset) {
-        this.app.mode.mode.randomizeXOffset()
-      }
-    } else {
+    // if (this.parameters.mode.value.name === 'Text') {
+    //   if (this.app.mode && this.app.mode.activeMode.name === 'Text'
+    //   && this.app.mode.mode && this.app.mode.mode.randomizeXOffset) {
+    //     this.app.mode.mode.randomizeXOffset()
+    //   }
+    // } else {
       const { sliders } = this.parameters
-      const keys = ['frequency', 'frequencyB', 'distortion']
+      const keys = ['frequencyA', 'frequencyB', 'distortion', 'scale']
       keys.forEach((key) => {
         const slider = sliders[key]
         const { min, max } = slider.options
@@ -47,9 +47,15 @@ export default class Slider {
         const left = Utils.map(value, min, max, 0, sliderInput.offsetWidth - sliderValue.offsetWidth)
         sliderValue.style.left = `${left}px`
       })
+      
+      if (this.app.mode && this.app.mode.activeMode.name === 'Text'
+      && this.app.mode.mode && this.app.mode.mode.randomizeXOffset) {
+        this.app.mode.mode.randomizeXOffset()
+      }
+
       this.controls.trigger('parameter-update-slider-random')
       this.controls.updateLocalStorage()
-    }
+    // }
   }
 
   // eslint-disable-next-line class-methods-use-this

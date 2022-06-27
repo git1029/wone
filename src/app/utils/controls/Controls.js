@@ -11,6 +11,7 @@ import ButtonAction from './components/ButtonAction'
 import TextInput from './components/TextInput'
 import ImageUpload from './components/ImageUpload'
 import Slider from './components/Slider'
+import * as Easing from '../easing'
 
 let instance = null
 
@@ -31,6 +32,7 @@ export default class Controls extends EventEmitter {
     this.sizes = this.app.sizes
     this.camera = this.app.camera
     this.renderer = this.app.renderer
+    this.time = this.app.time
 
     this.controllers = []
 
@@ -81,8 +83,8 @@ export default class Controls extends EventEmitter {
           label: 'Export As',
           // label: null,
           options: {
-            still: { name: 'Image' },
-            animation: { name: 'Image Sequence' },
+            still: { name: 'Image', key: 'still' },
+            animation: { name: 'Image Sequence', key: 'animation' },
           },
           controllers: {},
         },
@@ -93,8 +95,8 @@ export default class Controls extends EventEmitter {
           exportModes: ['animation'],
           // label: null,
           options: {
-            linear: { name: 'Linear (A → B)' },
-            loop: { name: 'Loop (A → B → A)' },
+            linear: { name: 'Linear (A → B)', key: 'linear' },
+            loop: { name: 'Loop (A → B → A)', key: 'loop' },
           },
           controllers: {},
         },
@@ -148,8 +150,9 @@ export default class Controls extends EventEmitter {
       },
 
       sliders: {
-        frequency: {
-          modes: ['pattern', 'image'],
+        frequencyA: {
+          // modes: ['pattern', 'image'],
+          modes: [],
           keyframes: true,
           options: {
             min: 0.1,
@@ -163,7 +166,8 @@ export default class Controls extends EventEmitter {
         },
 
         frequencyB: {
-          modes: ['pattern', 'image'],
+          // modes: ['pattern', 'image'],
+          modes: [],
           keyframes: true,
           options: {
             min: 0.1,
@@ -328,7 +332,73 @@ export default class Controls extends EventEmitter {
           value: {
             scale: 1,
           },
-          handleClick: () => { this.app.export.recording = true },
+          handleClick: () => {
+            // this.export.export = () => {
+            //   this.time.paused = false
+            //   const animateBtn = this.debugFolderTime.children.filter((c) =>
+            //      c.property === 'animate')[0].$button
+            //   animateBtn.innerHTML = 'Pause'
+            //   animateBtn.style.color = 'white'
+
+            if (this.parameters.export.save.value.key === 'animation') {
+              // this.time.restart()
+
+              // Change to keyframe A
+              this.parameters.keyframe.controllers.a.click()
+
+              // Hide text preview for Pattern and Image modes
+              if (this.app.mode.activeMode.name !== 'Text') {
+                if (this.app.mode.textMode) {
+                  this.app.mode.textMode.text.forEach((text) => {
+                    text.visible = false
+                  })
+                }
+              }
+
+              this.parameters.buttons.export.controller.value = 'Preparing Export'
+
+              // Wait for pattern to settle before beginning recording
+              setTimeout(() => {
+                this.app.export.recordStartTime = this.time.elapsedTime
+                // console.log(this.app.export.recordStartTime)
+                this.app.export.recording.animation = true
+                // const button = this.parameters.buttons.export.controller
+                // button.disabled = true
+                this.parameters.buttons.export.controller.disabled = true
+
+                const { width, height } = this.parameters.size.value
+
+                // Scale canvas (and particles) to export size
+                this.app.renderer.instance.setSize(width, height)
+
+                this.app.sizes.scaleCanvas(true)
+
+                const scl = (this.parameters.size.value.width) / this.app.sizes.limit.width
+                if (this.app.mode.activeMode.name === 'Pattern') this.app.mode.mode.updateParticleSize(scl)
+
+                this.app.capturer.start()
+              }, 2000)
+            } else {
+              this.app.export.recording.still = true
+            }
+
+            //   this.export.recording = true
+
+            //   const exportBtn = this.debugFolderExport.children.filter((c) =>
+            //      c.property === 'export')[0].$button
+            //   exportBtn.innerHTML = 'Exporting...'
+            //   exportBtn.style.color = 'lime'
+
+            //   this.capture = null
+            //   // eslint-disable-next-line no-undef
+            //   this.capturer = new CCapture({
+            //     format: 'png',
+            //     framerate: 30,
+            //     // verbose: true,
+            //     timeLimit: this.export.duration,
+            //   })
+            // }
+          },
         },
 
         exportPreview: {
@@ -336,7 +406,34 @@ export default class Controls extends EventEmitter {
           exportModes: ['animation'],
           name: 'Preview',
           label: 'Preview',
-          handleClick: () => { console.log('Export Preview') },
+          value: false,
+          handleClick: () => {
+            console.log('Export Preview')
+            // this.time.restart()
+
+            if (this.parameters.export.save.value.key !== 'animation') return
+            // this.time.paused = false
+            // const animateBtn = this.debugFolderTime.children.filter((c) => c.property === 'animate')[0].$button
+            // animateBtn.innerHTML = 'Pause'
+            // animateBtn.style.color = 'white'
+            this.parameters.buttons.exportPreview.value = true
+            // this.time.restart()
+            this.app.export.recordStartTime = this.time.elapsedTime
+
+            // Hide text preview for Pattern and Image modes
+            if (this.app.mode.activeMode.name !== 'Text') {
+              if (this.app.mode.textMode) {
+                this.app.mode.textMode.text.forEach((text) => {
+                  text.visible = false
+                })
+              }
+            }
+            // this.export.recording = true
+
+            // const exportBtn = this.debugFolderExport.children.filter((c) => c.property === 'export')[0].$button
+            // exportBtn.innerHTML = 'Exporting...'
+            // exportBtn.style.color = 'lime'
+          },
         },
       },
     }
@@ -382,7 +479,7 @@ export default class Controls extends EventEmitter {
     })
     this.setParameter(params, null, 'text', 'WONE IS\nA NEW MODEL\nOF HEALTH FOR\nTHE\nMODERN\nWORKPLACE')
 
-    console.log(this.parameters)
+    // console.log(this.parameters)
 
     // Initialize canvas size
     this.sizes.size = this.parameters.size.value
@@ -511,7 +608,39 @@ export default class Controls extends EventEmitter {
     const slider = this.parameters.sliders[name]
     if (slider.keyframes) {
       const keyframe = this.parameters.keyframe.value.key
-      return slider.value[keyframe]
+
+      let value = slider.value[keyframe]
+
+      // console.log(this.time.elapsedTime)
+
+      if (this.parameters.buttons.exportPreview.value || this.app.export.recording.animation) {
+        const duration = this.parameters.export.duration.value
+        let t = ((this.time.elapsedTime - this.app.export.recordStartTime) % duration) / duration
+        // if (name === 'frequencyA') console.log(t)
+        // // t = easeInOutCubic(t)
+        const pad = 0.2
+
+        // Need to bias ending pattern so has time to settle (>2s generally)
+        if (this.parameters.export.loop.value.key === 'linear') {
+          if (t < pad * 0) t = 0
+          else if (t < 1 - pad) t = Utils.map(t, pad * 0, 1 - pad, 0, 1)
+          else t = 1
+        } else if (this.parameters.export.loop.value.key === 'loop') {
+          if (t < 0.5) t = Utils.map(t, 0, 0.5, 0, 1)
+          else t = Utils.map(t, 0.5, 1, 1, 0)
+          // t = Math.sin(t * (Math.PI / 2))
+        }
+        t = Easing.easeInOutCubic(t)
+        value = Utils.lerp(slider.value.a, slider.value.b, t)
+      }
+
+      return value
+
+      // const values = []
+      // Object.keys(slider.value).sort().forEach((keyframe) => {
+      //   values.push(slider.value[keyframe])
+      // })
+      // return new THREE.Vector2(...values)
     }
 
     return slider.value

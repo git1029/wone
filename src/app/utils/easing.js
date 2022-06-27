@@ -50,4 +50,5 @@ const easeInOutQuint = function(t) {
 export {
   easeOutQuint,
   easeInOutQuint,
+  easeInOutCubic,
 }

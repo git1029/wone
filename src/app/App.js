@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 
 import Stats from 'stats-js'
-// import CCapture from 'ccapture.js-npmfixed'
+import CCapture from 'ccapture.js-npmfixed'
 
 import Sizes from './utils/Sizes'
 import Time from './utils/Time'
@@ -29,8 +29,11 @@ export default class App {
     document.body.appendChild(this.stats.dom)
 
     this.export = {
-      recording: false,
-      duration: 1,
+      recording: {
+        still: false,
+        animation: false,
+      },
+      recordStartTime: 0,
     }
     // eslint-disable-next-line no-undef
     // this.capturer = new CCapture({
@@ -122,12 +125,22 @@ export default class App {
 
     // this.exportVideo()
 
+    // this.capture = null
+    // eslint-disable-next-line no-undef
+    this.capturer = new CCapture({
+      format: 'png',
+      framerate: 60,
+      // verbose: true,
+      // timeLimit: this.export.duration,
+      // timeLimit: this.controls.parameters.export.duration.value,
+    })
+    // this.capturer.start()
     // this.capturer = new CCapture({
     //   format: 'webm',
     //   framerate: 60,
     //   quality: 0.95,
     //   // verbose: true,
-    //   timeLimit: this.export.duration,
+    //   // timeLimit: this.export.duration,
     // })
     // this.capturer.start()
   }
@@ -144,27 +157,75 @@ export default class App {
   }
 
   exportCC = () => {
-    if (this.export.recording) {
+    if (this.export.recording.animation && this.controls.parameters.export.save.value.key === 'animation') {
       // this.debugFolderTime.controllers.forEach((controller) => controller.disable())
+
+      // console.log(this.time.elapsedTime)
       this.capturer.capture(this.canvas)
 
-      if (this.time.elapsedTime > this.export.duration) {
-        this.export.recording = false
+      // console.log(this.capturer)
+      // console.log(ok)
+      // console.log(this.export.recordStartTime)
+      // console.log(this.time.elapsedTime)
+
+      const duration = this.controls.parameters.export.duration.value
+
+      if (this.time.elapsedTime > duration + this.export.recordStartTime) {
+        this.export.recording.animation = false
         this.capturer.stop()
         this.capturer.save()
+        // this.controls.parameters.buttons.export.controller.enable()
+        this.controls.parameters.buttons.export.controller.disabled = false
+
+        // Reset text preview
+        if (this.mode.activeMode.name !== 'Text') {
+          if (this.mode.textMode) {
+            this.mode.textMode.text.forEach((text) => {
+              text.visible = this.controls.parameters.buttons.textPreview.value
+            })
+          }
+        }
+
+        // Reset canvas (and particle) size
+        if (this.mode.activeMode.name === 'Pattern') {
+          this.mode.mode.updateParticleSize(this.sizes.width / this.sizes.limit.width)
+        }
+        this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
+        this.sizes.scaleCanvas()
+
+        // Change to keyframe B
+        this.controls.parameters.keyframe.controllers.b.click()
+
         // this.debugFolderTime.controllers.forEach((controller) => controller.enable())
         // const btn = this.debugFolderExport.children.filter((c) =>
         //  c.property === 'export')[0].$button
         // btn.innerHTML = 'Export'
         // btn.style.color = 'white'
+        this.capturer = null
+        this.capturer = new CCapture({
+          format: 'png',
+          framerate: 60,
+          // verbose: true,
+          // timeLimit: this.export.duration,
+          // timeLimit: this.controls.parameters.export.duration.value,
+        })
       }
     }
   }
 
   exportImage = () => {
-    if (this.export.recording) {
+    if (this.export.recording.still && this.controls.parameters.export.save.value.key === 'still') {
       // this.renderer.instance.preserveDrawingBuffer = true
       // const sclFactor = this.controls.parameters.buttons.export.value.scale
+
+      // Hide text preview for Pattern and Image modes
+      if (this.mode.activeMode.name !== 'Text') {
+        if (this.mode.textMode) {
+          this.mode.textMode.text.forEach((text) => {
+            text.visible = false
+          })
+        }
+      }
 
       // Only use export scale on preset sizes (need to limit max render size for performance reasons)
       const sclFactor = this.controls.parameters.size.value.name === 'Custom'
@@ -173,15 +234,6 @@ export default class App {
 
       const width = this.controls.parameters.size.value.width * sclFactor
       const height = this.controls.parameters.size.value.height * sclFactor
-
-      // Prevent text export for Pattern and Image
-      if (this.mode.activeMode.name !== 'Text') {
-        if (this.mode.textMode) {
-          this.mode.textMode.text.forEach((text) => {
-            text.visible = false
-          })
-        }
-      }
 
       // Scale canvas (and particles) to export size
       this.renderer.instance.setSize(width, height)
@@ -194,16 +246,17 @@ export default class App {
       // const imgData = this.renderer.instance.domElement.toDataURL('image/jpeg', 1)
       const a = document.createElement('a')
       a.href = imgData
-      const frequency = Math.round(this.controls.parameters.sliders.frequency.value * 100) / 100
-      const frequencyB = Math.round(this.controls.parameters.sliders.frequencyB.value * 100) / 100
-      const distortion = Math.round(this.controls.parameters.sliders.distortion.value * 100) / 100
-      const scale = Math.round(this.controls.parameters.sliders.scale.value * 100) / 100
+      const keyframe = this.controls.parameters.keyframe.value.key
+      const frequency = Math.round(this.controls.parameters.sliders.frequencyA.value[keyframe] * 100) / 100
+      const frequencyB = Math.round(this.controls.parameters.sliders.frequencyB.value[keyframe] * 100) / 100
+      const distortion = Math.round(this.controls.parameters.sliders.distortion.value[keyframe] * 100) / 100
+      const scale = Math.round(this.controls.parameters.sliders.scale.value[keyframe] * 100) / 100
       // a.download = `wone_fA${frequency}_fB${frequencyB}_d${distortion}_s${scale}.jpg`
       a.download = `wone_fA${frequency}_fB${frequencyB}_d${distortion}_s${scale}_${width}_${height}.png`
       document.body.appendChild(a)
       a.click()
       document.body.removeChild(a)
-      this.export.recording = false
+      this.export.recording.still = false
 
       // Reset canvas (and particle) size
       if (this.mode.activeMode.name === 'Pattern') {
@@ -223,14 +276,67 @@ export default class App {
     }
   }
 
+  animate = () => {
+    if (this.mode.mode.animate) this.mode.mode.animate()
+    else return
+
+    const duration = this.controls.parameters.export.duration.value
+    // const progress = (this.time.elapsedTime - this.export.recordStartTime) / duration
+
+    // console.log(progress)
+
+    // Preview
+    if (this.controls.parameters.buttons.exportPreview.value || this.export.recording.animation) {
+      // console.log(this.export.recordStartTime)
+      // console.log(this.time.elapsedTime)
+      const button = this.export.recording.animation
+        ? this.controls.parameters.buttons.export.controller
+        : this.controls.parameters.buttons.exportPreview.controller
+      const t = ((this.time.elapsedTime - this.export.recordStartTime) % duration) / duration
+      // const colorBg = '#1D1D1B'
+      const colorBg = '#282826'
+      const colorProgress = '#136DEB'
+      button.style.background = `linear-gradient(to right, ${colorProgress} ${t * 100}%, ${colorBg} ${t * 100}%)`
+
+      if (this.export.recording.animation) button.value = 'Exporting'
+
+      if (this.time.elapsedTime > duration + this.export.recordStartTime) {
+        if (this.controls.parameters.buttons.exportPreview.value) {
+          this.controls.parameters.buttons.exportPreview.value = false
+        }
+        if (this.export.recording.animation) button.value = 'Export'
+        button.removeAttribute('style')
+      }
+    }
+
+    if (this.time.elapsedTime > duration + this.export.recordStartTime) {
+      if (this.mode.mode.animate) this.mode.mode.animate()
+
+      // Reset text preview
+      if (this.mode.activeMode.name !== 'Text') {
+        if (this.mode.textMode) {
+          this.mode.textMode.text.forEach((text) => {
+            text.visible = this.controls.parameters.buttons.textPreview.value
+          })
+        }
+      }
+    }
+  }
+
   update = () => {
     // this.camera.update()
     if (this.mode) this.mode.update()
+
+    // Export preview
+    if (this.controls.parameters.buttons.exportPreview.value || this.export.recording.animation) {
+      this.animate()
+    }
+
     if (this.mode && this.mode.mode.effectComposer) this.mode.mode.effectComposer.render()
     else this.renderer.update()
 
-    if (this.export.recording) this.exportImage()
-    // if (this.export.recording) this.exportCC()
+    if (this.export.recording.still) this.exportImage()
+    if (this.export.recording.animation) this.exportCC()
 
     // if (this.time.elapsedTime >= 3 && this.mediaRecorder.state === 'recording') this.mediaRecorder.stop()
 

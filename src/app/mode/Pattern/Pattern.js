@@ -59,19 +59,19 @@ export default class Pattern {
 
   setEvents = () => {
     this.controls.on('parameter-update-slider', () => {
-      console.log('parameter-update-slider pattern')
+      // console.log('parameter-update-slider pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
-      console.log('parameter-update-random pattern')
+      // console.log('parameter-update-random pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateValues()
       }
     })
     this.controls.on('parameter-update-color', () => {
-      console.log('parameter-update-color pattern')
+      // console.log('parameter-update-color pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateColors()
       }
@@ -160,10 +160,18 @@ export default class Pattern {
     // this.velocityUniforms = this.velocityVariable.material.uniforms
     this.positionUniforms = this.positionVariable.material.uniforms
 
-    this.positionUniforms.n = { value: this.controls.getSliderValue('frequencyB') }
-    this.positionUniforms.m = { value: this.controls.getSliderValue('frequency') }
-    this.positionUniforms.uDistortion = { value: this.controls.getSliderValue('distortion') }
-    this.positionUniforms.uScale = { value: this.controls.getSliderValue('scale') }
+    const keys = ['frequencyA', 'frequencyB', 'distortion', 'scale']
+    keys.forEach((key) => {
+      const uniform = `u${key[0].toUpperCase()}${key.substring(1, key.length)}`
+      this.positionUniforms[uniform] = {
+        value: this.controls.getSliderValue(key),
+      }
+    })
+
+    // this.positionUniforms.n = { value: this.controls.getSliderValue('frequencyB') }
+    // this.positionUniforms.m = { value: this.controls.getSliderValue('frequencyA') }
+    // this.positionUniforms.uDistortion = { value: this.controls.getSliderValue('distortion') }
+    // this.positionUniforms.uScale = { value: this.controls.getSliderValue('scale') }
     this.positionUniforms.uAspect = { value: this.camera.aspect }
     this.positionUniforms.uTime = { value: 0 }
     this.positionUniforms.uStartTime = { value: 0 }
@@ -413,10 +421,16 @@ export default class Pattern {
   // }
 
   updateValues = () => {
-    this.positionUniforms.n.value = this.controls.getSliderValue('frequencyB')
-    this.positionUniforms.m.value = this.controls.getSliderValue('frequency')
-    this.positionUniforms.uDistortion.value = this.controls.getSliderValue('distortion')
-    this.positionUniforms.uScale.value = this.controls.getSliderValue('scale')
+    const keys = ['frequencyA', 'frequencyB', 'distortion', 'scale']
+    keys.forEach((key) => {
+      const uniform = `u${key[0].toUpperCase()}${key.substring(1, key.length)}`
+      this.positionUniforms[uniform].value = this.controls.getSliderValue(key)
+    })
+
+    // this.positionUniforms.n.value = this.controls.getSliderValue('frequencyB')
+    // this.positionUniforms.m.value = this.controls.getSliderValue('frequencyA')
+    // this.positionUniforms.uDistortion.value = this.controls.getSliderValue('distortion')
+    // this.positionUniforms.uScale.value = this.controls.getSliderValue('scale')
     this.positionUniforms.uTime.value = this.time.elapsedTime
     this.positionUniforms.uStartTime.value = this.time.elapsedTime
   }
@@ -442,6 +456,10 @@ export default class Pattern {
     // this.particleUniforms.textureVelocity.value = this.gpuCompute.getCurrentRenderTarget(this.velocityVariable).texture
 
     // if (this.material) this.material.uniforms.uTime.value = this.time.elapsedTime
+  }
+
+  animate = () => {
+    this.updateValues()
   }
 
   resize = () => {

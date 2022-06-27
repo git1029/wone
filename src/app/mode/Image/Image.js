@@ -24,16 +24,20 @@ export default class Image {
   init = () => {
     this.destroy()
 
+    const uniforms = {}
+    const keys = ['frequencyA', 'frequencyB', 'distortion', 'displacement', 'scale', 'grain']
+    keys.forEach((key) => {
+      const uniform = `u${key[0].toUpperCase()}${key.substring(1, key.length)}`
+      uniforms[uniform] = {
+        value: this.controls.getSliderValue(key),
+      }
+    })
+
     // Mesh
     this.geometry = new THREE.PlaneGeometry(this.camera.aspect.x, this.camera.aspect.y)
     this.material = new THREE.ShaderMaterial({
       uniforms: {
-        m: { value: this.controls.getSliderValue('frequency') },
-        n: { value: this.controls.getSliderValue('frequencyB') },
-        uDistortion: { value: this.controls.getSliderValue('distortion') },
-        uDisplacement: { value: this.controls.getSliderValue('displacement') },
-        uScale: { value: this.controls.getSliderValue('scale') },
-        uGrain: { value: this.controls.getSliderValue('grain') },
+        ...uniforms,
         uAspect: { value: this.camera.aspect },
         uTexAspect: { value: new THREE.Vector4() },
         uResolution: { value: new THREE.Vector2(this.sizes.width, this.sizes.height) },
@@ -54,13 +58,13 @@ export default class Image {
 
   setEvents = () => {
     this.controls.on('parameter-update-slider', () => {
-      console.log('parameter-update-slider image')
+      // console.log('parameter-update-slider image')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
-      console.log('parameter-update-random pattern')
+      // console.log('parameter-update-random pattern')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
       }
@@ -111,13 +115,22 @@ export default class Image {
     this.init()
   }
 
+  animate = () => {
+    this.updateValues()
+  }
+
   updateValues = () => {
-    this.material.uniforms.n.value = this.controls.getSliderValue('frequencyB')
-    this.material.uniforms.m.value = this.controls.getSliderValue('frequency')
-    this.material.uniforms.uDistortion.value = this.controls.getSliderValue('distortion')
-    this.material.uniforms.uDisplacement.value = this.controls.getSliderValue('displacement')
-    this.material.uniforms.uScale.value = this.controls.getSliderValue('scale')
-    this.material.uniforms.uGrain.value = this.controls.getSliderValue('grain')
+    const keys = ['frequencyA', 'frequencyB', 'distortion', 'displacement', 'scale', 'grain']
+    keys.forEach((key) => {
+      const uniform = `u${key[0].toUpperCase()}${key.substring(1, key.length)}`
+      this.material.uniforms[uniform].value = this.controls.getSliderValue(key)
+    })
+    // this.material.uniforms.uFrequencyA.value = this.controls.getSliderValue('frequencyA')
+    // this.material.uniforms.uFrequencyB.value = this.controls.getSliderValue('frequencyB')
+    // this.material.uniforms.uDistortion.value = this.controls.getSliderValue('distortion')
+    // this.material.uniforms.uDisplacement.value = this.controls.getSliderValue('displacement')
+    // this.material.uniforms.uScale.value = this.controls.getSliderValue('scale')
+    // this.material.uniforms.uGrain.value = this.controls.getSliderValue('grain')
     this.material.needsUpdate = true
   }
 
