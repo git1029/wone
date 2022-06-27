@@ -3,6 +3,7 @@
 import { Text as TText } from 'troika-three-text'
 
 import App from '../../App'
+import * as Utils from '../../utils/controls/utils/Utils'
 
 export default class Text {
   constructor() {
@@ -58,7 +59,7 @@ export default class Text {
           text.lineHeight = this.textSettings.lineHeight
           const windowWidth = this.camera.aspect.x
           const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
-          const eq = this.chladni(0.5, text.position.y)
+          const eq = this.chladni(0.5, text.position.y, text.i, text.r)
           let amp = Math.abs(eq)
           if (amp > 1) amp = 1
           const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
@@ -97,7 +98,7 @@ export default class Text {
       const windowWidth = this.camera.aspect.x
       const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
       // const height = this.textSettings.lineHeight * this.textSettings.fontSize
-      const eq = this.chladni(0.5, text.position.y)
+      const eq = this.chladni(0.5, text.position.y, text.i, text.r)
       // const eq2 = this.chladni(0.5, text.position.y + height/2)
       // const eq = (eq1 + eq2) / 2
       let amp = Math.abs(eq)
@@ -109,7 +110,7 @@ export default class Text {
     })
   }
 
-  getSize = () => this.map(this.controls.parameters.sliders.textSize.value, 12, 128, 0.05, 0.75)
+  getSize = () => Utils.map(this.controls.parameters.sliders.textSize.value, 12, 128, 0.05, 0.75)
 
   updateCanvasBackground = () => {
     this.renderer.instance.setClearColor(0x000000, 0)
@@ -146,6 +147,8 @@ export default class Text {
       })
 
       text.offsetX = 0
+      text.i = i
+      text.r = Math.random()
 
       this.text.push(text)
 
@@ -156,7 +159,7 @@ export default class Text {
     })
   }
 
-  chladni = (x, y) => {
+  chladni = (x, y, i, r) => {
     const m_ = this.controls.getSliderValue('frequencyA')
     const n_ = this.controls.getSliderValue('frequencyB')
     // vec2 pos_ = pos;
@@ -169,8 +172,14 @@ export default class Text {
     const L = { x: 1, y: 1 };
     const a = 1.
     const b = 1.
-    return a * Math.sin(PI*n_*x/L.x+off) * Math.sin(PI*m_*y/L.y+off) + b * Math.sin(PI*m_*x/L.x+off) * Math.sin(PI*n_*y/L.y+off)
+    // return a * Math.sin(PI*n_*x/L.x+off) * Math.sin(PI*m_*y/L.y+off) + b * Math.sin(PI*m_*x/L.x+off) * Math.sin(PI*n_*y/L.y+off)
     // return a * cos(PI*n_*x/L+off) * cos(PI*m_*y/L+off) - b * cos(PI*m_*x/L+off) * cos(PI*n_*y/L+off);
+
+    let m = Utils.map(m_, this.app.controls.parameters.sliders.frequencyA.options.min,this.app.controls.parameters.sliders.frequencyA.options.max,-0., 1 )
+    let n = Utils.map(n_, this.app.controls.parameters.sliders.frequencyB.options.min,this.app.controls.parameters.sliders.frequencyB.options.max,-0., 1 )
+    m = Math.sin(m * Math.PI + r *  Math.PI + n * Math.PI)
+    // let m = Utils.map(m_, this.app.controls.parameters.sliders.frequencyA.options.min,this.app.controls.parameters.sliders.frequencyA.options.max,-0.5, 0.5 )
+    return m
   }
 
 
@@ -179,7 +188,7 @@ export default class Text {
     const windowWidth = this.camera.aspect.x
     if (width + this.padding * 2 < 1) {
       
-      const eq = this.chladni(0.5, text.position.y)
+      const eq = this.chladni(0.5, text.position.y, text.i, text.r)
       let amp = Math.abs(eq)
       if (amp > 1) amp = 1
       const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
@@ -209,7 +218,7 @@ export default class Text {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  map = (value, low1, high1, low2, high2) => low2 + ((high2 - low2) * (value - low1)) / (high1 - low1)
+  // map = (value, low1, high1, low2, high2) => low2 + ((high2 - low2) * (value - low1)) / (high1 - low1)
 
   destroy = () => {
     this.controls.off('parameter-update-slider')
