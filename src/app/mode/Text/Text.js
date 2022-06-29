@@ -4,6 +4,8 @@ import { Text as TText } from 'troika-three-text'
 
 import App from '../../App'
 import * as Utils from '../../utils/controls/utils/Utils'
+// import * as OpenSimplexNoise from '../../utils/OpenSimplexNoise'
+import * as OpenSimplexNoise from 'open-simplex-noise'
 
 export default class Text {
   constructor() {
@@ -17,6 +19,8 @@ export default class Text {
     this.camera = this.app.camera
     // this.camera.controls.reset()
     // this.camera.controls.enabled = false
+
+    this.osn2D = OpenSimplexNoise.makeNoise2D(1000)
 
     this.init()
   }
@@ -200,7 +204,9 @@ export default class Text {
 
       text.offsetX = 0
       text.i = i
-      text.r = random[i] ? random[i] : Math.random()
+      // text.r = random[i] ? random[i] : Math.random()
+      // Use noise instead of random so doesn't change on refresh without text change
+      text.r = random[i] ? random[i] : this.osn2D(i, string.length)
 
       this.text.push(text)
 
@@ -229,7 +235,7 @@ export default class Text {
 
     let m = Utils.map(m_, this.app.controls.parameters.sliders.frequencyA.options.min,this.app.controls.parameters.sliders.frequencyA.options.max,-0., 1 )
     let n = Utils.map(n_, this.app.controls.parameters.sliders.frequencyB.options.min,this.app.controls.parameters.sliders.frequencyB.options.max,-0., 1 )
-    m = Math.sin(m * Math.PI + r *  Math.PI + n * Math.PI)
+    m = Math.sin(m * Math.PI + r * Math.PI + n * Math.PI)
     // let m = Utils.map(m_, this.app.controls.parameters.sliders.frequencyA.options.min,this.app.controls.parameters.sliders.frequencyA.options.max,-0.5, 0.5 )
     return m
   }

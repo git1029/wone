@@ -11,7 +11,7 @@ import ButtonAction from './components/ButtonAction'
 import TextInput from './components/TextInput'
 import ImageUpload from './components/ImageUpload'
 import Slider from './components/Slider'
-import * as Easing from '../easing'
+import * as Easing from '../Easing'
 
 let instance = null
 

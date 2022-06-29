@@ -19,6 +19,7 @@
     "html-webpack-plugin": "^5.5.0",
     "ip": "^1.1.5",
     "mini-css-extract-plugin": "^2.5.3",
+    "open-simplex-noise": "^2.5.0",
     "portfinder-sync": "0.0.2",
     "raw-loader": "^4.0.2",
     "stats-js": "^1.0.1",
