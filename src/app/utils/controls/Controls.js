@@ -131,19 +131,27 @@ export default class Controls extends EventEmitter {
           modes: ['pattern'],
           label: 'Color Palette',
           options: {
-            blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
-            orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
-            red: { name: 'Red', background: '#ED897F', primary: '#C3405B' },
+            // blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
+            // orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
+            // red: { name: 'Red', background: '#ED897F', primary: '#C3405B' },
+            blue: { name: 'Blue', background: '#255682', primary: '#81B0E3' },
+            cyan: { name: 'Cyan', background: '#74A6B7', primary: '#A4D0E3' },
+            pink: { name: 'Pink', background: '#B275BC', primary: '#E5B3EC' },
+            beige: { name: 'Beige', background: '#E2745A', primary: '#F0A48F' },
+            orange: { name: 'Orange', background: '#B72821', primary: '#FD5547' },
           },
           controllers: {},
         },
 
         text: {
-          modes: ['text'],
+          // modes: ['text'],
+          modes: [],
           label: 'Text Color',
           options: {
-            light: { name: 'Light', background: '#1D1D1B', primary: '#E1E0D3' },
-            dark: { name: 'Dark', background: '#E1E0D3', primary: '#1D1D1B' },
+            // light: { name: 'Light', background: '#1D1D1B', primary: '#E1E0D3' },
+            // dark: { name: 'Dark', background: '#E1E0D3', primary: '#1D1D1B' },
+            light: { name: 'Light', background: '#1D1D1B', primary: '#FCFCFC' },
+            dark: { name: 'Dark', background: '#FCFCFC', primary: '#1D1D1B' },
           },
           controllers: {},
         },
@@ -155,6 +163,7 @@ export default class Controls extends EventEmitter {
           modes: [],
           keyframes: true,
           options: {
+            random: true,
             min: 0.1,
             max: 10,
             step: 0.1,
@@ -170,6 +179,7 @@ export default class Controls extends EventEmitter {
           modes: [],
           keyframes: true,
           options: {
+            random: true,
             min: 0.1,
             max: 10,
             step: 0.1,
@@ -184,6 +194,7 @@ export default class Controls extends EventEmitter {
           modes: ['pattern', 'image'],
           keyframes: true,
           options: {
+            random: true,
             min: 0,
             max: 2,
             step: 0.1,
@@ -198,6 +209,7 @@ export default class Controls extends EventEmitter {
           modes: ['pattern', 'image'],
           keyframes: true,
           options: {
+            random: true,
             min: -2,
             max: 2,
             step: 0.1,
@@ -213,6 +225,7 @@ export default class Controls extends EventEmitter {
           modes: ['image'],
           keyframes: true,
           options: {
+            random: false,
             min: 0,
             max: 1,
             step:
@@ -228,6 +241,7 @@ export default class Controls extends EventEmitter {
           modes: ['image'],
           keyframes: true,
           options: {
+            random: false,
             min: 0.5,
             max: 1,
             step: 0.01,
@@ -239,9 +253,11 @@ export default class Controls extends EventEmitter {
         },
 
         textSize: {
-          modes: ['text'],
+          // modes: ['text'],
+          modes: [],
           keyframes: false,
           options: {
+            random: false,
             min: 12,
             max: 128,
             step: 1,
@@ -252,14 +268,16 @@ export default class Controls extends EventEmitter {
         },
 
         textOffset: {
-          modes: ['text'],
+          // modes: ['text'],
+          modes: [],
           keyframes: true,
           options: {
+            random: false,
             min: 0,
             max: 1,
             step: 0.01,
             default: 1,
-            label: 'X Offset',
+            label: 'Text Offset',
             // range: ['12pt', '128pt'],
             // range: ['50%', '200%'],
             range: [],
@@ -282,7 +300,8 @@ export default class Controls extends EventEmitter {
       },
 
       text: {
-        modes: ['text'],
+        // modes: ['text'],
+        modes: [],
         label: 'Text',
       },
 
@@ -304,13 +323,15 @@ export default class Controls extends EventEmitter {
           modes: ['pattern', 'image'],
           value: false,
           name: 'TextPreview',
-          label: 'Show Text Preview',
+          label: 'Show Text',
           handleClick: () => {
             if (this.app.mode && this.app.mode.textMode && this.app.mode.activeMode.name !== 'Text') {
               this.parameters.buttons.textPreview.value = !this.parameters.buttons.textPreview.value
               this.app.mode.textMode.text.forEach((text) => {
                 text.visible = this.parameters.buttons.textPreview.value
               })
+              // const textInputs = document.querySelector('#input-text-container')
+              // textInputs.style.display = this.parameters.buttons.textPreview.value ? 'block' : 'none'
             }
           },
         },
@@ -346,14 +367,14 @@ export default class Controls extends EventEmitter {
               // Change to keyframe A
               this.parameters.keyframe.controllers.a.click()
 
-              // Hide text preview for Pattern and Image modes
-              if (this.app.mode.activeMode.name !== 'Text') {
-                if (this.app.mode.textMode) {
-                  this.app.mode.textMode.text.forEach((text) => {
-                    text.visible = false
-                  })
-                }
-              }
+              // // Hide text preview for Pattern and Image modes
+              // if (this.app.mode.activeMode.name !== 'Text') {
+              //   if (this.app.mode.textMode) {
+              //     this.app.mode.textMode.text.forEach((text) => {
+              //       text.visible = false
+              //     })
+              //   }
+              // }
 
               this.parameters.buttons.export.controller.value = 'Preparing Export'
 
@@ -420,14 +441,14 @@ export default class Controls extends EventEmitter {
             // this.time.restart()
             this.app.export.recordStartTime = this.time.elapsedTime
 
-            // Hide text preview for Pattern and Image modes
-            if (this.app.mode.activeMode.name !== 'Text') {
-              if (this.app.mode.textMode) {
-                this.app.mode.textMode.text.forEach((text) => {
-                  text.visible = false
-                })
-              }
-            }
+            // // Hide text preview for Pattern and Image modes
+            // if (this.app.mode.activeMode.name !== 'Text') {
+            //   if (this.app.mode.textMode) {
+            //     this.app.mode.textMode.text.forEach((text) => {
+            //       text.visible = false
+            //     })
+            //   }
+            // }
             // this.export.recording = true
 
             // const exportBtn = this.debugFolderExport.children.filter((c) => c.property === 'export')[0].$button
@@ -466,16 +487,38 @@ export default class Controls extends EventEmitter {
     this.setParameter(params, 'color', 'pattern', this.parameters.color.pattern.options.blue)
     this.setParameter(params, 'color', 'text', this.parameters.color.text.options.dark)
     Object.keys(this.parameters.sliders).forEach((key) => {
-      // Initialize default values for slider (value for each keyframe)
-      if (this.parameters.sliders[key].keyframes) {
-        const value = this.parameters.sliders[key].options.default
-        this.parameters.sliders[key].options.default = {}
-        Object.keys(this.parameters.keyframe.options).forEach((keyframe) => {
-          this.parameters.sliders[key].options.default[keyframe] = value
-        })
+      // Check for default value in localStorage
+      if (params && params.sliders && params.sliders[key] && params.sliders[key].default) {
+        this.parameters.sliders[key].options.default = typeof params.sliders[key].default === 'object'
+          ? { ...params.sliders[key].default }
+          : params.sliders[key].default
+      } else {
+        // Initialize default values for slider (value for each keyframe)
+        // eslint-disable-next-line no-lonely-if
+        if (this.parameters.sliders[key].keyframes) {
+          const value = this.parameters.sliders[key].options.random
+            ? this.getRandomSliderValue(this.parameters.sliders[key])
+            : this.parameters.sliders[key].options.default
+
+          this.parameters.sliders[key].options.default = {}
+          Object.keys(this.parameters.keyframe.options).forEach((keyframe) => {
+            this.parameters.sliders[key].options.default[keyframe] = value
+          })
+
+          // this.setParameter(params, 'sliders', key, { ...this.parameters.sliders[key].options.default })
+        } else {
+          // eslint-disable-next-line no-lonely-if
+          if (this.parameters.sliders[key].options.random) {
+            this.parameters.sliders[key].options.default = this.getRandomSliderValue(this.parameters.sliders[key])
+          }
+          // this.setParameter(params, 'sliders', key, this.parameters.sliders[key].options.default)
+        }
       }
 
-      this.setParameter(params, 'sliders', key, this.parameters.sliders[key].options.default)
+      const defaultValue = typeof this.parameters.sliders[key].options.default === 'object'
+        ? { ...this.parameters.sliders[key].options.default }
+        : this.parameters.sliders[key].options.default
+      this.setParameter(params, 'sliders', key, defaultValue)
     })
     this.setParameter(params, null, 'text', 'WONE IS\nA NEW MODEL\nOF HEALTH FOR\nTHE\nMODERN\nWORKPLACE')
 
@@ -519,6 +562,12 @@ export default class Controls extends EventEmitter {
     this.setToggleButton()
 
     this.updateLocalStorage()
+  }
+
+  getRandomSliderValue = (slider) => {
+    const { min, max } = slider.options
+    const pres = Utils.precision(slider.options.step)
+    return Math.round((Math.random() * (max - min) + min) * 10 ** pres) / 10 ** pres
   }
 
   // eslint-disable-next-line default-param-last
@@ -598,9 +647,12 @@ export default class Controls extends EventEmitter {
     Object.keys(this.parameters.sliders).forEach((key) => {
       values.sliders[key] = {
         value: this.parameters.sliders[key].value,
+        default: this.parameters.sliders[key].options.default,
       }
     })
 
+    // console.log('values', JSON.stringify(values))
+    // console.log('values', JSON.parse(JSON.stringify(values)))
     window.localStorage.setItem('woneParams', JSON.stringify(values))
   }
 

@@ -1,12 +1,12 @@
 #include <common>
 
 // varying vec3 vColor;
-varying float vIndex;
 
 uniform vec3 sandColor;
 // uniform vec3 bgColor;
 
 varying vec3 vPosition;
+varying float vIndex;
 
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
@@ -182,5 +182,7 @@ void main() {
   // col.y = 0.;
   // col.z = 0.;
   gl_FragColor = vec4(sc, strength);
+
+  // vPosition = 
 
 }

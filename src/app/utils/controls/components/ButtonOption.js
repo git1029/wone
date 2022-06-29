@@ -103,7 +103,14 @@ export default class ButtonOption {
           })
           // update modes
           if (this.app.mode && this.app.mode.mode && this.app.mode.mode.updateValues) {
-            this.app.mode.mode.updateValues()
+            // Do not restart time if slider values are equal between keyframes or if updating text values
+            if (this.app.mode.activeMode.name === 'Pattern') {
+              this.app.mode.mode.updateValues(this.app.mode.mode.checkValues())
+            } else this.app.mode.mode.updateValues()
+
+            if (this.app.mode.activeMode.name !== 'Text') {
+              this.app.mode.textMode.updateValues()
+            }
           }
         } else if (name === 'scale') {
           const label = document.querySelector('#input-export-scale > label')

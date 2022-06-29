@@ -36,7 +36,7 @@ $color-error: rgb(244, 37, 14);
 html,
 body
 {
-  background: $color-window;
+  background: color.adjust($color-bg, $lightness: -2%);
   color: $color-text-light;
   font-family: RobotoMono, monospace;
   height: 100%;
@@ -234,6 +234,29 @@ body {
   .inputs-bottom {
     margin-top: auto;
   }
+
+  #input-text-container {
+    padding: 20px;
+    border-radius: 4px;
+    border: 1px dashed color.adjust($color-border, $lightness: -25%);
+    margin-top: 20px;
+    display: none;
+  }
+
+  &.mode-text {
+    #input-text-container {
+      padding: 0;
+      border: none; 
+      margin-top: 0;
+      display: block;
+    }
+  }
+
+  &.preview-text {
+    #input-text-container {
+      display: block;
+    }
+  }
 }
 
 .input-group,
@@ -277,6 +300,10 @@ body {
 
   &#input-scene label.input-group-label {
     border-top: none;
+  }
+
+  &#input-text-preview-button {
+    margin-bottom: 0;
   }
 }
 
@@ -767,7 +794,7 @@ input[type='number'] {
 // ----------------------------------------------------------
 .button-colors {
   display: flex;
-  gap: 0 15px;
+  gap: 15px;
   align-items: center;
 
   .button-color {
@@ -1172,6 +1199,15 @@ textarea {
     label {
       margin-top: 5px;
     }
+
+    &.textOffset {
+      display: none;
+
+      .preview-text &,
+      .mode-text & {
+        display: block;
+      }
+    }
   }
 
   .input-slider {
@@ -1416,9 +1452,24 @@ textarea {
 
 @media screen and (max-width: 599px) {
   .button-colors {
+    flex-wrap: wrap;
+
     .button-color {
-      max-width: 50%;
+      max-width: calc(50% - 7.5px);
+      min-width: calc(50% - 7.5px);
     }
+  }
+
+  #input-export-mode {
+    display: none;
+  }
+      
+
+  .logo img {
+    width: 90px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
   }
 
   #input-buttons-controls,
@@ -1547,6 +1598,7 @@ textarea {
       }
     }
   }
+
   
   // #generator {
   //   display: flex;

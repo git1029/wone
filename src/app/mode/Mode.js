@@ -13,11 +13,15 @@ export default class Mode extends EventEmitter {
     this.resources = this.app.resources
     this.controls = this.app.controls
 
-    this.textMode = new Text()
+    this.activeMode = this.controls.parameters.mode.value
 
+    // Initialize text mode
+    // if (this.activeMode.name !== 'Text') {
+    this.textMode = new Text()
     this.textMode.text.forEach((text) => {
       text.visible = false
     })
+    // }
   }
 
   setMode = () => {
@@ -44,6 +48,16 @@ export default class Mode extends EventEmitter {
       this.mode = null
     }
 
+    // Show/hide text inputs if on pattern/image mode
+    // const textInputs = document.querySelector('#input-text-container')
+    // if (this.mode && this.activeMode.name !== 'Text') {
+    //   if (this.textMode) {
+    //     textInputs.style.display = this.controls.parameters.buttons.textPreview.value ? 'block' : 'none'
+    //   }
+    // } else {
+    //   textInputs.style.display = 'block'
+    // }
+
     // if (this.textMode) {
     //   this.textMode.destroy()
     // } else {
@@ -65,6 +79,8 @@ export default class Mode extends EventEmitter {
 
   resize = () => {
     if (this.mode && this.mode.resize) this.mode.resize()
+
+    if (this.textMode && this.textMode.resize && this.activeMode.name !== 'Text') this.textMode.resize()
   }
 
   destroy = () => {

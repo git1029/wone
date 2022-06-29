@@ -177,14 +177,14 @@ export default class App {
         // this.controls.parameters.buttons.export.controller.enable()
         this.controls.parameters.buttons.export.controller.disabled = false
 
-        // Reset text preview
-        if (this.mode.activeMode.name !== 'Text') {
-          if (this.mode.textMode) {
-            this.mode.textMode.text.forEach((text) => {
-              text.visible = this.controls.parameters.buttons.textPreview.value
-            })
-          }
-        }
+        // // Reset text preview
+        // if (this.mode.activeMode.name !== 'Text') {
+        //   if (this.mode.textMode) {
+        //     this.mode.textMode.text.forEach((text) => {
+        //       text.visible = this.controls.parameters.buttons.textPreview.value
+        //     })
+        //   }
+        // }
 
         // Reset canvas (and particle) size
         if (this.mode.activeMode.name === 'Pattern') {
@@ -218,14 +218,14 @@ export default class App {
       // this.renderer.instance.preserveDrawingBuffer = true
       // const sclFactor = this.controls.parameters.buttons.export.value.scale
 
-      // Hide text preview for Pattern and Image modes
-      if (this.mode.activeMode.name !== 'Text') {
-        if (this.mode.textMode) {
-          this.mode.textMode.text.forEach((text) => {
-            text.visible = false
-          })
-        }
-      }
+      // // Hide text preview for Pattern and Image modes
+      // if (this.mode.activeMode.name !== 'Text') {
+      //   if (this.mode.textMode) {
+      //     this.mode.textMode.text.forEach((text) => {
+      //       text.visible = false
+      //     })
+      //   }
+      // }
 
       // Only use export scale on preset sizes (need to limit max render size for performance reasons)
       const sclFactor = this.controls.parameters.size.value.name === 'Custom'
@@ -265,20 +265,27 @@ export default class App {
       this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
       // this.renderer.instance.preserveDrawingBuffer = false
 
-      // Reset text preview
-      if (this.mode.activeMode.name !== 'Text') {
-        if (this.mode.textMode) {
-          this.mode.textMode.text.forEach((text) => {
-            text.visible = this.controls.parameters.buttons.textPreview.value
-          })
-        }
-      }
+      // // Reset text preview
+      // if (this.mode.activeMode.name !== 'Text') {
+      //   if (this.mode.textMode) {
+      //     this.mode.textMode.text.forEach((text) => {
+      //       text.visible = this.controls.parameters.buttons.textPreview.value
+      //     })
+      //   }
+      // }
     }
   }
 
   animate = () => {
-    if (this.mode.mode.animate) this.mode.mode.animate()
-    else return
+    if (this.mode.mode.animate) {
+      this.mode.mode.animate()
+
+      if (this.mode.activeMode.name !== 'Text') {
+        if (this.mode.textMode && this.controls.parameters.buttons.textPreview.value) {
+          if (this.mode.textMode.animate) this.mode.textMode.animate()
+        }
+      }
+    } else return
 
     const duration = this.controls.parameters.export.duration.value
     // const progress = (this.time.elapsedTime - this.export.recordStartTime) / duration
@@ -312,14 +319,14 @@ export default class App {
     if (this.time.elapsedTime > duration + this.export.recordStartTime) {
       if (this.mode.mode.animate) this.mode.mode.animate()
 
-      // Reset text preview
-      if (this.mode.activeMode.name !== 'Text') {
-        if (this.mode.textMode) {
-          this.mode.textMode.text.forEach((text) => {
-            text.visible = this.controls.parameters.buttons.textPreview.value
-          })
-        }
-      }
+      // // Reset text preview
+      // if (this.mode.activeMode.name !== 'Text') {
+      //   if (this.mode.textMode) {
+      //     this.mode.textMode.text.forEach((text) => {
+      //       text.visible = this.controls.parameters.buttons.textPreview.value
+      //     })
+      //   }
+      // }
     }
   }
 

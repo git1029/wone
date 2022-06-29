@@ -12,16 +12,21 @@ export default class Slider {
 
   reset = () => {
     Object.keys(this.parameters.sliders).forEach((key) => {
-      const parameter = this.parameters.sliders[key]
-      const value = parameter.options.default
-      this.update(parameter, value, true)
+      if (key !== 'textSize') {
+        const slider = this.parameters.sliders[key]
+        const value = typeof slider.options.default === 'object'
+          ? { ...slider.options.default }
+          : slider.options.default
+        // if (key === 'frequencyA') console.log('resetting', key, 'to', value)
+        this.update(slider, value, true)
+      }
     })
     this.controls.updateLocalStorage()
     this.controls.trigger('parameter-update-slider')
   }
 
   randomize = () => {
-    const keyframe = this.parameters.keyframe.value.key
+    // const keyframe = this.parameters.keyframe.value.key
 
     // if (this.parameters.mode.value.name === 'Text') {
     //   if (this.app.mode && this.app.mode.activeMode.name === 'Text'
@@ -29,54 +34,75 @@ export default class Slider {
     //     this.app.mode.mode.randomizeXOffset()
     //   }
     // } else {
-      const { sliders } = this.parameters
-      const keys = ['frequencyA', 'frequencyB', 'distortion', 'scale']
-      keys.forEach((key) => {
-        const slider = sliders[key]
-        const { min, max } = slider.options
-        const pres = Utils.precision(slider.options.step)
-        const value = Math.round((Math.random() * (max - min) + min) * 10 ** pres) / 10 ** pres
+    const { sliders } = this.parameters
+    const keys = ['frequencyA', 'frequencyB', 'distortion', 'scale']
+    keys.forEach((key) => {
+      const slider = sliders[key]
+      const { min, max } = slider.options
+      const pres = Utils.precision(slider.options.step)
+      const value = Math.round((Math.random() * (max - min) + min) * 10 ** pres) / 10 ** pres
 
-        if (slider.keyframes) slider.value[keyframe] = value
-        else slider.value = value
-        slider.controller.value = value
+      // if (slider.keyframes) slider.value[keyframe] = value
+      // else slider.value = value
+      // slider.controller.value = value
 
-        const sliderInput = slider.controller
-        const sliderValue = sliderInput.nextElementSibling
-        sliderValue.innerHTML = value
-        const left = Utils.map(value, min, max, 0, sliderInput.offsetWidth - sliderValue.offsetWidth)
-        sliderValue.style.left = `${left}px`
-      })
-      
-      if (this.app.mode && this.app.mode.activeMode.name === 'Text'
-      && this.app.mode.mode && this.app.mode.mode.randomizeXOffset) {
-        this.app.mode.mode.randomizeXOffset()
-      }
+      // const sliderInput = slider.controller
+      // const sliderValue = sliderInput.nextElementSibling
+      // sliderValue.innerHTML = value
+      // const left = Utils.map(value, min, max, 0, sliderInput.offsetWidth - sliderValue.offsetWidth)
+      // sliderValue.style.left = `${left}px`
 
-      this.controls.trigger('parameter-update-slider-random')
-      this.controls.updateLocalStorage()
-    // }
+      this.update(slider, value, true)
+    })
+
+    if (this.app.mode && this.app.mode.activeMode.name === 'Text'
+    && this.app.mode.mode && this.app.mode.mode.randomizeXOffset) {
+      this.app.mode.mode.randomizeXOffset()
+    }
+
+    this.controls.trigger('parameter-update-slider-random')
+    this.controls.updateLocalStorage()
+  // }
   }
 
   // eslint-disable-next-line class-methods-use-this
   update = (parameter, value, updateInput = false) => {
+    // console.log(value)
     const keyframe = this.parameters.keyframe.value.key
 
+    parameter.prevValue = typeof parameter.value === 'object'
+      ? { ...parameter.value }
+      : parameter.value
+
+    if (parameter.keyframes) {
+      if (typeof value === 'object') parameter.value = value
+      else parameter.value[keyframe] = value
+    } else parameter.value = value
+
+    const valueSlider = parameter.keyframes ? parameter.value[keyframe] : parameter.value
+    // console.log(valueSlider)
+      // if (slider.keyframes) slider.value[keyframe] = value
+      // else slider.value = value
+      // slider.controller.value = value
+
+      // const sliderInput = slider.controller
+      // const sliderValue = sliderInput.nextElementSibling
+      // sliderValue.innerHTML = value
+      // const left = Utils.map(value, min, max, 0, sliderInput.offsetWidth - sliderValue.offsetWidth)
+      // sliderValue.style.left = `${left}px`
+
+      // console.log(parameter.controller.value)
+      // console.log
+      // console.log(keyframe)
+    if (updateInput) parameter.controller.value = valueSlider
+
     const sliderValue = parameter.controller.nextElementSibling
-
-    if (parameter.keyframes) parameter.value[keyframe] = value
-    else parameter.value = value
-    sliderValue.innerHTML = value
-
-    if (updateInput) {
-      const sliderInput = parameter.controller
-      sliderInput.value = value
-    }
+    sliderValue.innerHTML = valueSlider
 
     // sliderValue.style.left = `${this.map(slider.value, slider.options.min, slider.options.max, 0, 100)}%`
     // const leftMax = sliderInput.offsetWidth - sliderValue.offsetWidth
     const leftMax = document.querySelector('#input-sliders').offsetWidth - sliderValue.offsetWidth
-    const left = Utils.map(value, parameter.options.min, parameter.options.max, 0, leftMax)
+    const left = Utils.map(valueSlider, parameter.options.min, parameter.options.max, 0, leftMax)
     sliderValue.style.left = `${left}px`
 
     // const slider = sliders[key]
@@ -99,9 +125,11 @@ export default class Slider {
     const keyframe = this.parameters.keyframe.value.key
 
     const parameter = this.parameters.sliders[name]
-    parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
+    // parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
     const value = parameter.keyframes ? parameter.value[keyframe] : parameter.value
+    // Set previous value
+    parameter.prevValue = parameter.value
 
     const inputContainer = document.createElement('div')
     inputContainer.classList.add('input', name)
@@ -135,7 +163,8 @@ export default class Slider {
       this.update(parameter, targetValue)
 
       this.controls.updateLocalStorage()
-      this.controls.trigger('parameter-update-slider')
+      if (name === 'textSize') this.controls.trigger('parameter-update-slider-textSize')
+      else this.controls.trigger('parameter-update-slider')
     })
 
     parameter.controller = sliderInput

@@ -14,7 +14,7 @@ attribute float aMass;
 // varying vec3 vColor;
 varying vec3 vPosition;
 varying float vIndex;
-varying float vEq;
+// varying float vEq;
 
 // float radiusFromMass( float mass ) {
 //   // Calculate radius of a sphere from mass and density
@@ -54,13 +54,18 @@ void main() {
   //   gl_PointSize = mass*1. * uSize;
   // }
 
-  gl_PointSize = aMass * uSize;
+  float scl = 1.-(eq);
+  scl = (1.-clamp(eq, 0., 1.))*.5 + .5;
+  // scl = 1.-clamp(abs(eq), 0., 1.);
+  // scl = .0 + 1.*(1.-clamp(abs(eq), 0., 1.));
+  // scl = 1.;
+  gl_PointSize = aMass * uSize * scl;
 
   gl_Position = projectionMatrix * mvPosition;
 
   vPosition = pos;
   // vColor = color;
   vIndex = aIndex;
-  vEq = eq;
+  // vEq = eq;
 
 }

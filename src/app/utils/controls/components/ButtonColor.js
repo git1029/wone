@@ -39,7 +39,7 @@ export default class ButtonColor {
         parameter.value = value
 
         if (name !== 'text') this.controls.renderer.instance.setClearColor(value.background)
-        this.controls.trigger('parameter-update-color')
+        this.controls.trigger(`parameter-update-color-${name}`)
 
         this.controls.updateLocalStorage()
       })

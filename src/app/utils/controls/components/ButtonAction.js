@@ -31,9 +31,9 @@ export default class ButtonAction {
         inputs.classList.toggle('preview-text')
 
         if (inputs.classList.contains('preview-text')) {
-          buttonInput.value = 'Hide Text Preview'
+          buttonInput.value = 'Hide Text'
         } else {
-          buttonInput.value = 'Show Text Preview'
+          buttonInput.value = 'Show Text'
         }
       }
 

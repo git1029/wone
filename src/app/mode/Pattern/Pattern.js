@@ -61,16 +61,18 @@ export default class Pattern {
     this.controls.on('parameter-update-slider', () => {
       // console.log('parameter-update-slider pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
-        this.updateValues()
+        this.updateValues(this.checkValues())
+        if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
       // console.log('parameter-update-random pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateValues()
+        if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
-    this.controls.on('parameter-update-color', () => {
+    this.controls.on('parameter-update-color-pattern', () => {
       // console.log('parameter-update-color pattern')
       if (this.app.mode.activeMode.name === 'Pattern') {
         this.updateColors()
@@ -420,7 +422,7 @@ export default class Pattern {
   //   this.effectComposer.addPass(this.repeatPass)
   // }
 
-  updateValues = () => {
+  updateValues = (restartTime = true) => {
     const keys = ['frequencyA', 'frequencyB', 'distortion', 'scale']
     keys.forEach((key) => {
       const uniform = `u${key[0].toUpperCase()}${key.substring(1, key.length)}`
@@ -432,7 +434,7 @@ export default class Pattern {
     // this.positionUniforms.uDistortion.value = this.controls.getSliderValue('distortion')
     // this.positionUniforms.uScale.value = this.controls.getSliderValue('scale')
     this.positionUniforms.uTime.value = this.time.elapsedTime
-    this.positionUniforms.uStartTime.value = this.time.elapsedTime
+    if (restartTime) this.positionUniforms.uStartTime.value = this.time.elapsedTime
   }
 
   updateColors = () => {
@@ -458,8 +460,26 @@ export default class Pattern {
     // if (this.material) this.material.uniforms.uTime.value = this.time.elapsedTime
   }
 
+  // Do not restart time if slider values are equal between keyframes or if updating text values
+  checkValues = () => {
+    let restartTime = true
+    const keys = ['frequencyA', 'frequencyB', 'distortion', 'scale']
+    keys.forEach((key) => {
+      const slider = this.controls.parameters.sliders[key]
+      if (slider.keyframes) {
+        restartTime = restartTime && (
+          (this.controls.parameters.sliders[key].value.a === this.controls.parameters.sliders[key].value.b)
+          && (this.controls.parameters.sliders[key].value.a === this.controls.parameters.sliders[key].prevValue.b)
+          && (this.controls.parameters.sliders[key].value.a === this.controls.parameters.sliders[key].prevValue.a)
+          && (this.controls.parameters.sliders[key].value.b === this.controls.parameters.sliders[key].prevValue.b)
+        )
+      }
+    })
+    return !restartTime
+  }
+
   animate = () => {
-    this.updateValues()
+    this.updateValues(this.checkValues())
   }
 
   resize = () => {
@@ -470,7 +490,7 @@ export default class Pattern {
   destroy = () => {
     this.controls.off('parameter-update-slider')
     this.controls.off('parameter-update-slider-random')
-    this.controls.off('parameter-update-color')
+    this.controls.off('parameter-update-color-pattern')
     if (this.mesh) {
       if (this.mesh.geometry) this.mesh.geometry.dispose()
       if (this.mesh.material) this.mesh.material.dispose()

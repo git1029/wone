@@ -61,12 +61,14 @@ export default class Image {
       // console.log('parameter-update-slider image')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
+        if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
-      // console.log('parameter-update-random pattern')
+      // console.log('parameter-update-random image')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
+        if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
   }

@@ -183,21 +183,38 @@ void main() {
 
 
   float tf = 1.;
-  // // if ((uTime - uStartTime) < 1.) tf = 1.;
-  // if ((uTime - uStartTime) < 4.) {
-  //   // tf = 1.-((uTime - uStartTime)-1.);
-  //   tf = map(uTime - uStartTime, 0., 4., 1., 0.);
-  //   // tf = cubicInOut(tf);
-  //   tf = map(tf, 1., 0., 1., 0.1);
-  // }
-  // else tf = 0.1;
+  // if ((uTime - uStartTime) < 1.) tf = 1.;
+  float easeDuration = 6.;
+  if ((uTime - uStartTime) < easeDuration) {
+    // tf = 1.-((uTime - uStartTime)-1.);
+    tf = map(uTime - uStartTime, 0., easeDuration, 1., 0.);
+    // tf = cubicInOut(tf);
+    tf = map(tf, 1., 0., 1., 0.);
+  }
+  else tf = 0.;
   // tf = 1.;
   
-  // for (int i = 0; i < 1; i++) {
+  
+  // for (int i = 0; i < 4; i++) {
     vel.x = rand(uv + pos.y + 3.143284 + uTime) * amp * 2. - amp;
     vel.y = rand(uv + pos.x + 124.32347 + uTime) * amp * 2. - amp;
+    // vel.x *= .25;
+    // vel.y *= .25;
     vel.z = 0.;
-    pos += vel * delta * 4. * tf;
+
+    vec3 vel2 = vec3(0.);
+    vel2.x = (snoise(uv + pos.y + 3.143284 + uTime * .5)*.5+.5) * amp * 2. - amp;
+    vel2.y = (snoise(uv + pos.x + 124.32347 + uTime * .5)*.5+.5) * amp * 2. - amp;
+
+    // pos += (vel * delta * 4. * tf);
+    // pos += (vel * delta * 4. * tf) + (vel2 * delta * .025 * (1.-tf));
+    pos += (vel * delta * (4. - 4.*(1.-tf)) * tf) + (vel2 * delta * .025 * (1.-tf));
+
+
+    if (pos.x < -.5 * uAspect.x) pos.x = -.5 * uAspect.x; 
+    if (pos.x >= .5 * uAspect.x) pos.x = .5 * uAspect.x; 
+    if (pos.y < (-.5) * uAspect.y) pos.y = (-.5) * uAspect.y; 
+    if (pos.y >= (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
   // }
   // vel.z = rand(uv + pos.x + 124.32347) * amp * 2. - amp;
   // vel.x = amp;
@@ -207,10 +224,6 @@ void main() {
 
   
 
-  if (pos.x < -.5 * uAspect.x) pos.x = -.5 * uAspect.x; 
-  if (pos.x >= .5 * uAspect.x) pos.x = .5 * uAspect.x; 
-  if (pos.y < (-.5) * uAspect.y) pos.y = (-.5) * uAspect.y; 
-  if (pos.y >= (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
   pos.z = (abs(eq)) * .04;
 
   gl_FragColor = vec4( pos, abs(eq) );

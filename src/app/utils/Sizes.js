@@ -57,6 +57,18 @@ export default class Sizes extends EventEmitter {
   }
 
   scaleCanvas = (render = false) => {
+    // Disable image sequence export below 600px screen width
+    if (window.innerWidth < 600) {
+      if (this.app.controls && this.app.controls.parameters) {
+        this.app.controls.parameters.export.save.controllers.still.click()
+        // if (this.app.controls.parameters.export.save && this.app.controls.parameters.export.save.controllers) {
+        //   if (this.app.controls.parameters.export.save.controllers.still) {
+
+        //   }
+        // }
+      }
+    }
+
     let pad = 30
     if (window.innerWidth < 1200) {
       pad = 10
