@@ -1169,6 +1169,32 @@ textarea {
   }
 }
 
+// Moving up so can get correct offsetWidth for positioning in script
+.input-slider-value {
+  // display: none;
+  opacity: 0;
+  transition: opacity 0.1s ease-in-out;
+  position: absolute;
+  font-size: 14px;
+  top: -24px;
+  // text-align: center;
+  left: 0;
+  // margin-left: 5px;
+  color: $color-text-medium;
+  width: 100%;
+  background: red;
+  // height: 20px;
+  // width: 60px;
+  // visibility: hidden;
+  display: block;
+
+  span {
+    position: absolute;
+    left: 0;
+    display: inline-block;
+  }
+}
+
 .sliders {
   padding-top: 10px;
   // margin-bottom: 0;
@@ -1226,19 +1252,6 @@ textarea {
       background: $color-text-light;
       pointer-events: none;
     }
-
-    .input-slider-value {
-      // display: none;
-      opacity: 0;
-      transition: opacity 0.1s ease-in-out;
-      position: absolute;
-      font-size: 14px;
-      top: -24px;
-      text-align: center;
-      left: 0;
-      color: $color-text-medium;
-      // visibility: hidden;
-    }
   }
 
   .slider {
@@ -1255,6 +1268,7 @@ textarea {
       width: 20px;
       height: 20px;
       background: $color-bg;
+      // background: transparent;
       cursor: pointer;
       border: 2px solid $color-text-light;
       border-radius: 50%;
@@ -1262,6 +1276,7 @@ textarea {
 
       &:hover {
         background: $color-text-light;
+        // background: transparent;
       }
     }
     
@@ -1279,6 +1294,7 @@ textarea {
     &:active {
       &::-webkit-slider-thumb {
         background: $color-text-light;
+        // background: transparent;
       }
 
       &::-moz-range-thumb {
@@ -1305,7 +1321,8 @@ textarea {
     margin: 10px 0 0;
 
     div {
-      width: 33.333%;
+      // width: 33.333%;
+      width: 25%;
 
       &.max {
         text-align: right;
@@ -1315,7 +1332,7 @@ textarea {
     label {
       text-align: center;
       margin-top: 0;
-      width: 33.333%;
+      width: 50%;
     }
   }
 }
@@ -1454,10 +1471,10 @@ textarea {
   .button-colors {
     flex-wrap: wrap;
 
-    .button-color {
-      max-width: calc(50% - 7.5px);
-      min-width: calc(50% - 7.5px);
-    }
+    // .button-color {
+    //   max-width: calc(50% - 7.5px);
+    //   min-width: calc(50% - 7.5px);
+    // }
   }
 
   #input-export-mode,
@@ -1474,12 +1491,34 @@ textarea {
     margin: 0 auto;
   }
 
+  .controls.controls-open {
+    height: min-content;
+
+    .controls-header {
+      z-index: 10;
+      position: sticky;
+      top: 0;
+    }
+  }
+
+  .controls {
+    #inputs {
+      overflow: auto;
+    }
+
+    .controls-inner {
+      overflow: auto;
+    }
+  }
+
+
   #input-buttons-controls,
   #input-buttons-export {
     gap: 10px 20px;
     flex-direction: column;
   }
 
+ 
 
   .input-multi-group-inner {
 
@@ -1688,3 +1727,78 @@ textarea {
 // 1200px for large devices
 
 
+
+
+
+@media screen and (max-height: 799px) {
+  .controls {
+    &:not(.controls-open) {
+      .controls-header {
+        background: transparent;
+        padding-top: 23px;
+  
+        .controls-header-inner {
+          justify-content: flex-end;
+        }
+  
+        #controls-toggle {
+          position: relative;
+          right: 0;
+        }
+  
+        h1 {
+          display: none;
+        }
+  
+        .border {
+          display: none;
+        }
+      }
+  
+      .logo {
+        display: none;
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+
+@media screen and (max-height: 799px) and (min-width: 600px) {
+  .controls {
+    // &.controls-open {
+    //   // height: min-content;
+    //   overflow: scroll;
+    //   height: 100vh;
+    // }    
+
+    // #inputs {
+    //   overflow: auto;
+    // }
+
+    // .controls-inner {
+    //   overflow: auto;
+    // }
+    
+    // .controls-header {
+    //   z-index: 10;
+    //   position: sticky;
+    //   position: relative;
+    //   top: 0;
+    // }
+
+    .controls-header,
+    .logo {
+      max-width: 600px;
+      min-width: 600px;
+      margin-left: auto;
+    }
+
+    .logo img {
+      width: 90px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+}

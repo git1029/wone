@@ -90,10 +90,11 @@ export default class Sizes extends EventEmitter {
     const scaleY = availableHeight < height * scaleX ? availableHeight / (height * scaleX) : 1
     let scale = scaleX * scaleY
 
+    // console.log(availableWidth)
+
     if (render) {
       scale *= (width * scaleX) / this.app.controls.parameters.size.value.width
     }
-
 
     // document.querySelector('.canvas').style.width = `${widnwo}px`
 

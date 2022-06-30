@@ -131,14 +131,14 @@ export default class Controls extends EventEmitter {
           modes: ['pattern'],
           label: 'Color Palette',
           options: {
-            // blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
-            // orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
-            // red: { name: 'Red', background: '#ED897F', primary: '#C3405B' },
-            blue: { name: 'Blue', background: '#255682', primary: '#81B0E3' },
-            cyan: { name: 'Cyan', background: '#74A6B7', primary: '#A4D0E3' },
-            pink: { name: 'Pink', background: '#B275BC', primary: '#E5B3EC' },
-            beige: { name: 'Beige', background: '#E2745A', primary: '#F0A48F' },
-            orange: { name: 'Orange', background: '#B72821', primary: '#FD5547' },
+            blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
+            orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
+            red: { name: 'Red', background: '#ED897F', primary: '#C3405B' },
+            // blue: { name: 'Blue', background: '#255682', primary: '#81B0E3' },
+            // cyan: { name: 'Cyan', background: '#74A6B7', primary: '#A4D0E3' },
+            // pink: { name: 'Pink', background: '#B275BC', primary: '#E5B3EC' },
+            // beige: { name: 'Beige', background: '#E2745A', primary: '#F0A48F' },
+            // orange: { name: 'Orange', background: '#B72821', primary: '#FD5547' },
           },
           controllers: {},
         },
@@ -542,6 +542,7 @@ export default class Controls extends EventEmitter {
       // if (key === 'loopDuration') parent = document.querySelector('#input-loop-duration')
       if (key === 'textSize') parent = document.querySelector('#input-text-settings')
       this.slider.create(key, parent)
+      // this.slider.setValuePosition(this.parameters.sliders[key])
     })
     this.buttonAction.create('randomize', document.querySelector('#input-buttons-controls'))
     this.buttonAction.create('reset', document.querySelector('#input-buttons-controls'))
@@ -562,6 +563,10 @@ export default class Controls extends EventEmitter {
     this.setToggleButton()
 
     this.updateLocalStorage()
+
+    // Object.keys(this.parameters.sliders).forEach((key) => {
+    //   this.slider.setValuePosition(this.parameters.sliders[key])
+    // })
   }
 
   getRandomSliderValue = (slider) => {
@@ -702,11 +707,13 @@ export default class Controls extends EventEmitter {
     const button = document.querySelector('#controls-toggle')
     const buttonLabel = button.querySelector('label')
     const controls = document.querySelector('.controls-inner')
+    const controlsContainer = document.querySelector('.controls')
 
     button.addEventListener('click', (event) => {
       event.preventDefault()
 
       controls.classList.toggle('hidden')
+      controlsContainer.classList.toggle('controls-open')
       button.classList.toggle('hide')
 
       if (controls.classList.contains('hidden')) {

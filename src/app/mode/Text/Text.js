@@ -205,7 +205,7 @@ export default class Text {
       text.offsetX = 0
       text.i = i
       // text.r = random[i] ? random[i] : Math.random()
-      // Use noise instead of random so doesn't change on refresh without text change
+      // Use OS noise instead of random so doesn't change on refresh without text change
       text.r = random[i] ? random[i] : this.osn2D(i, string.length)
 
       this.text.push(text)
