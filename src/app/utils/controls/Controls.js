@@ -134,6 +134,7 @@ export default class Controls extends EventEmitter {
             blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
             orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
             red: { name: 'Red', background: '#ED897F', primary: '#C3405B' },
+            pink: { name: 'Pink', background: '#E5B3EC', primary: '#A4D0E3' },
             // blue: { name: 'Blue', background: '#255682', primary: '#81B0E3' },
             // cyan: { name: 'Cyan', background: '#74A6B7', primary: '#A4D0E3' },
             // pink: { name: 'Pink', background: '#B275BC', primary: '#E5B3EC' },

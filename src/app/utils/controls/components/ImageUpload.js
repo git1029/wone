@@ -41,8 +41,21 @@ export default class ImageUpload {
     const label = document.createElement('label')
     label.innerHTML = parameter.label
 
-    parent.appendChild(dropzone)
-    parent.appendChild(label)
+    parent.prepend(label)
+    parent.prepend(dropzone)
+
+    // ********************
+    // const controls = document.createElement('div')
+    // parent.appendChild(controls)
+
+    // const buttonInput = document.createElement('input')
+    // buttonInput.setAttribute('type', 'submit')
+    // // buttonInput.setAttribute('id', name)
+    // buttonInput.setAttribute('value', parameter.label)
+    // buttonInput.setAttribute('tabindex', '0')
+    // controls.appendChild(buttonInput)
+
+    // *******************
 
     parameter.controller = dropzone
     this.controls.controllers.push(dropzone)
