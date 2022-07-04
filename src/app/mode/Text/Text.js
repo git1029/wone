@@ -66,7 +66,7 @@ export default class Text {
           this.textSettings.fontSize = this.getSize()
           // this.textSettings.lineHeight = this.controls.parameters.sliders.lineHeight.value
           text.fontSize = this.textSettings.fontSize
-          text.lineHeight = this.textSettings.lineHeight
+          // text.lineHeight = this.textSettings.lineHeight
           text.sync(() => {
             text.position.y = this.getYPos(i)
             this.getXOffset(text)
@@ -147,18 +147,20 @@ export default class Text {
 
   updateValues = () => {
     this.text.forEach((text) => {
-      const windowWidth = this.camera.aspect.x
-      const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
-      // const height = this.textSettings.lineHeight * this.textSettings.fontSize
-      const eq = this.chladni(0.5, text.position.y, text.i, text.r)
-      // const eq2 = this.chladni(0.5, text.position.y + height/2)
-      // const eq = (eq1 + eq2) / 2
-      let amp = Math.abs(eq)
-      if (amp > 1) amp = 1
-      const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
-      text.offsetX = offset
-      text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
-      text.position.x -= (windowWidth * 0.5) - this.padding
+      this.getXOffset(text)
+
+      // const windowWidth = this.camera.aspect.x
+      // const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
+      // // const height = this.textSettings.lineHeight * this.textSettings.fontSize
+      // const eq = this.chladni(0.5, text.position.y, text.i, text.r)
+      // // const eq2 = this.chladni(0.5, text.position.y + height/2)
+      // // const eq = (eq1 + eq2) / 2
+      // let amp = Math.abs(eq)
+      // if (amp > 1) amp = 1
+      // const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
+      // text.offsetX = offset
+      // text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
+      // text.position.x -= (windowWidth * 0.5) - this.padding
     })
   }
 
@@ -245,7 +247,9 @@ export default class Text {
 
     const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
     const windowWidth = this.camera.aspect.x
-    if (width + this.padding * 2 < 1) {
+    // console.log('width', width)
+    // console.log('windowWidth', windowWidth)
+    if ((width + this.padding * 2) < windowWidth) {
       
       const eq = this.chladni(0.5, text.position.y, text.i, text.r)
       let amp = Math.abs(eq)
