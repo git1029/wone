@@ -77,6 +77,21 @@ export default class Controls extends EventEmitter {
         controllers: {},
       },
 
+      imageScale: {
+        modes: ['image'],
+        name: 'imageScale',
+        label: 'Scale %:',
+        // label: null,
+        default: 100,
+        options: {
+          type: 'number',
+          min: '50',
+          max: '200',
+          onChangeEmit: 'parameter-update-image-scale',
+        },
+        controllers: {},
+      },
+
       export: {
         save: {
           modes: [],
@@ -103,10 +118,17 @@ export default class Controls extends EventEmitter {
 
         duration: {
           modes: [],
+          name: 'exportDuration',
           label: 'Duration (seconds)',
           exportModes: ['animation'],
-          // label: null,
           default: 8,
+          options: {
+            type: 'number',
+            min: '0.1',
+            max: '30',
+            onChangeEmit: 'parameter-update-export-duration',
+          },
+          // label: null,
           controllers: {},
         },
 
@@ -257,6 +279,7 @@ export default class Controls extends EventEmitter {
           // modes: ['text'],
           modes: [],
           keyframes: false,
+          ignoreReset: true,
           options: {
             random: false,
             min: 12,
@@ -265,6 +288,38 @@ export default class Controls extends EventEmitter {
             default: 22,
             label: 'Text Size',
             range: ['12pt', '128pt'],
+          },
+        },
+
+        imageOffsetX: {
+          // modes: ['text'],
+          modes: [],
+          keyframes: false,
+          ignoreReset: true,
+          options: {
+            random: false,
+            min: -100,
+            max: 100,
+            step: 1,
+            default: 0,
+            label: 'X',
+            range: ['-100', '100'],
+          },
+        },
+
+        imageOffsetY: {
+          // modes: ['text'],
+          modes: [],
+          keyframes: false,
+          ignoreReset: true,
+          options: {
+            random: false,
+            min: -100,
+            max: 100,
+            step: 1,
+            default: 0,
+            label: 'Y',
+            range: ['-100', '100'],
           },
         },
 
@@ -315,7 +370,7 @@ export default class Controls extends EventEmitter {
       buttons: {
         randomize: {
           modes: [],
-          name: 'Randomize',
+          name: 'randomize',
           label: 'Randomize',
           handleClick: () => this.slider.randomize(),
         },
@@ -323,7 +378,7 @@ export default class Controls extends EventEmitter {
         textPreview: {
           modes: ['pattern', 'image'],
           value: false,
-          name: 'TextPreview',
+          name: 'textPreview',
           label: 'Show Text',
           handleClick: () => {
             if (this.app.mode && this.app.mode.textMode && this.app.mode.activeMode.name !== 'Text') {
@@ -339,14 +394,14 @@ export default class Controls extends EventEmitter {
 
         reset: {
           modes: [],
-          name: 'Reset',
+          name: 'reset',
           label: 'Reset',
           handleClick: () => this.slider.reset(),
         },
 
         export: {
           modes: [],
-          name: 'Export',
+          name: 'export',
           label: 'Export',
           options: {
             scale: [1, 2, 3, 4],
@@ -426,7 +481,7 @@ export default class Controls extends EventEmitter {
         exportPreview: {
           modes: [],
           exportModes: ['animation'],
-          name: 'Preview',
+          name: 'exportPreview',
           label: 'Preview',
           value: false,
           handleClick: () => {
@@ -457,6 +512,34 @@ export default class Controls extends EventEmitter {
             // exportBtn.style.color = 'lime'
           },
         },
+
+        image: {
+          fitWidth: {
+            modes: ['image'],
+            name: 'imageFitWidth',
+            label: 'Width',
+            // handleClick: () => this.slider.randomize(),
+            handleClick: () => {
+              // console.log('Image fit width')
+              if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
+                this.app.mode.mode.fitImageToWidth()
+              }
+            },
+          },
+
+          fitHeight: {
+            modes: ['image'],
+            name: 'imageFitHeight',
+            label: 'Height',
+            // handleClick: () => this.slider.randomize(),
+            handleClick: () => {
+              // console.log('Image fit height')
+              if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
+                this.app.mode.mode.fitImageToHeight()
+              }
+            },
+          },
+        }
       },
     }
 
@@ -487,6 +570,7 @@ export default class Controls extends EventEmitter {
     this.setParameter(params, 'export', 'duration', this.parameters.export.duration.default)
     this.setParameter(params, 'color', 'pattern', this.parameters.color.pattern.options.blue)
     this.setParameter(params, 'color', 'text', this.parameters.color.text.options.dark)
+    this.setParameter(params, null, 'imageScale', this.parameters.imageScale.default)
     Object.keys(this.parameters.sliders).forEach((key) => {
       // Check for default value in localStorage
       if (params && params.sliders && params.sliders[key] && params.sliders[key].default) {
@@ -530,6 +614,7 @@ export default class Controls extends EventEmitter {
     this.sizes.resize()
     this.app.resize()
 
+
     // Create controllers
     this.buttonOption.create('mode', null, document.querySelector('#input-mode'))
     this.buttonOption.create('size', null, document.querySelector('#input-size'))
@@ -542,18 +627,24 @@ export default class Controls extends EventEmitter {
       let parent = document.querySelector('#input-sliders')
       // if (key === 'loopDuration') parent = document.querySelector('#input-loop-duration')
       if (key === 'textSize') parent = document.querySelector('#input-text-settings')
+      else if (key.includes('imageOffset')) parent = document.querySelector('#input-image-position')
+
       this.slider.create(key, parent)
       // this.slider.setValuePosition(this.parameters.sliders[key])
     })
-    this.buttonAction.create('randomize', document.querySelector('#input-buttons-controls'))
-    this.buttonAction.create('reset', document.querySelector('#input-buttons-controls'))
+    this.buttonAction.create(this.parameters.buttons.randomize, document.querySelector('#input-buttons-controls'))
+    this.buttonAction.create(this.parameters.buttons.reset, document.querySelector('#input-buttons-controls'))
     this.buttonOption.create('save', 'export', document.querySelector('#input-export-mode'))
     this.buttonOption.create('loop', 'export', document.querySelector('#input-export-loop'))
     this.buttonOption.create('scale', 'export', document.querySelector('#input-export-scale'))
-    this.textInput.createInput('duration', 'export', document.querySelector('#input-export-duration'))
-    this.buttonAction.create('exportPreview', document.querySelector('#input-buttons-export'))
-    this.buttonAction.create('export', document.querySelector('#input-buttons-export'))
-    this.buttonAction.create('textPreview', document.querySelector('#input-text-preview-button'))
+    this.textInput.createInput(this.parameters.export.duration, document.querySelector('#input-export-duration'))
+    this.buttonAction.create(this.parameters.buttons.exportPreview, document.querySelector('#input-buttons-export'))
+    this.buttonAction.create(this.parameters.buttons.export, document.querySelector('#input-buttons-export'))
+    this.buttonAction.create(this.parameters.buttons.textPreview, document.querySelector('#input-text-preview-button'))
+
+    this.buttonAction.create(this.parameters.buttons.image.fitWidth, document.querySelector('#input-image-scale-buttons'))
+    this.buttonAction.create(this.parameters.buttons.image.fitHeight, document.querySelector('#input-image-scale-buttons'))
+    // this.textInput.createInput(this.parameters.imageScale, document.querySelector('#input-image-scale-input'))
     // Object.keys(this.parameters.buttons).forEach((key) => {
     //   this.buttonAction.create(key, document.querySelector('#input-buttons'))
     // })
@@ -631,6 +722,7 @@ export default class Controls extends EventEmitter {
       image: {},
       sliders: {},
       export: {},
+      imageScale: { value: this.parameters.imageScale.value },
     }
 
     Object.keys(this.parameters.export).forEach((key) => {

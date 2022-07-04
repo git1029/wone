@@ -6,8 +6,9 @@ export default class ButtonAction {
     this.parameters = this.controls.parameters
   }
 
-  create = (name, parent = document.querySelector('#inputs')) => {
-    const parameter = this.parameters.buttons[name]
+  create = (parameter, parent = document.querySelector('#inputs')) => {
+    // const parameter = this.parameters.buttons[name]
+    const { name } = parameter
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
     const buttonContainer = document.createElement('div')

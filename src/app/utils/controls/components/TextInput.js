@@ -34,8 +34,8 @@ export default class TextInput {
     this.controls.controllers.push(textarea)
   }
 
-  createInput = (name, paramParent = null, parent = document.querySelector('#inputs')) => {
-    const parameter = paramParent ? this.parameters[paramParent][name] : this.parameters[name]
+  createInput = (parameter, parent = document.querySelector('#inputs')) => {
+    const { name, options } = parameter
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
     if (parameter.exportModes) {
@@ -46,16 +46,18 @@ export default class TextInput {
     const label = document.createElement('label')
 
     input.setAttribute('tabindex', '0')
-    input.setAttribute('type', 'number')
-    input.setAttribute('class', 'input-export-duration-input')
-    input.setAttribute('min', '0.1')
-    input.setAttribute('max', '30')
+    input.setAttribute('type', options.type)
+    input.setAttribute('class', name)
+    if (options.type === 'number') {
+      input.setAttribute('min', options.min)
+      input.setAttribute('max', options.max)
+    }
     input.value = parameter.value
 
     input.addEventListener('keyup', (event) => {
       parameter.value = parseFloat(event.target.value)
 
-      this.controls.trigger('parameter-update-export-duration')
+      if (options.onChangeEmit) this.controls.trigger(options.onChangeEmit)
 
       this.controls.updateLocalStorage()
     })

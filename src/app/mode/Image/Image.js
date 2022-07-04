@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import * as Utils from '../../utils/controls/utils/Utils'
 import App from '../../App'
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
@@ -14,6 +15,7 @@ export default class Image {
     this.resources = this.app.resources
     this.controls = this.app.controls
     this.camera = this.app.camera
+    this.renderer = this.app.renderer
     // this.camera.controls.reset()
     // this.camera.controls.enabled = false
     this.time = this.app.time
@@ -24,6 +26,10 @@ export default class Image {
   init = () => {
     this.destroy()
 
+    this.renderer.instance.setClearColor(0x000000, 0)
+    this.renderer.instance.setClearAlpha(0)
+    this.app.canvas.style.background = '#1D1D1B'
+
     const uniforms = {}
     const keys = ['frequencyA', 'frequencyB', 'distortion', 'displacement', 'scale', 'grain']
     keys.forEach((key) => {
@@ -32,6 +38,11 @@ export default class Image {
         value: this.controls.getSliderValue(key),
       }
     })
+
+    const imgOffset = new THREE.Vector2(
+      this.controls.parameters.sliders.imageOffsetX.value / 100,
+      this.controls.parameters.sliders.imageOffsetY.value / 100,
+    )
 
     // Mesh
     this.geometry = new THREE.PlaneGeometry(this.camera.aspect.x, this.camera.aspect.y)
@@ -43,6 +54,11 @@ export default class Image {
         uResolution: { value: new THREE.Vector2(this.sizes.width, this.sizes.height) },
         uImage: { value: null },
         uTime: { value: 0 },
+        uImgOffset: { value: imgOffset },
+        uImgFitWidth: { value: false },
+        uImgFitHeight: { value: false },
+        uImgScaleCustom: { value: false },
+        uImgScale: { value: this.controls.parameters.imageScale.value },
       },
       vertexShader,
       fragmentShader,
@@ -62,6 +78,27 @@ export default class Image {
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
         if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
+      }
+    })
+    this.controls.on('parameter-update-image-position', () => {
+      // console.log('parameter-update-image-position image')
+      if (this.app.mode.activeMode.name === 'Image') {
+        this.material.uniforms.uImgOffset.value.x = this.controls.parameters.sliders.imageOffsetX.value / 100
+        this.material.uniforms.uImgOffset.value.y = this.controls.parameters.sliders.imageOffsetY.value / 100
+        this.material.needsUpdate = true
+        // this.updateValues()
+        // if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
+      }
+    })
+    this.controls.on('parameter-update-image-scale', () => {
+      // console.log('parameter-update-image-scale image')
+      if (this.app.mode.activeMode.name === 'Image') {
+        const scale = this.controls.parameters.imageScale
+        // this.material.uniforms.uImgScale.value = Utils.map(scale.value, scale.options.min, scale.options.max, 1, 0.5)
+        this.material.uniforms.uImgScale.value = scale.value
+        this.material.needsUpdate = true
+        // this.updateValues()
+        // if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
@@ -141,9 +178,22 @@ export default class Image {
     this.material.needsUpdate = true
   }
 
+  fitImageToWidth = () => {
+    this.material.uniforms.uImgFitWidth.value = true
+    this.material.uniforms.uImgFitHeight.value = false
+    this.material.needsUpdate = true
+  }
+
+  fitImageToHeight = () => {
+    this.material.uniforms.uImgFitWidth.value = false
+    this.material.uniforms.uImgFitHeight.value = true
+    this.material.needsUpdate = true
+  }
+
   destroy = () => {
     this.controls.off('texture-update')
     this.controls.off('parameter-update-slider')
+    this.controls.off('parameter-update-image-position')
     this.controls.off('parameter-update-slider-random')
     if (this.mesh) {
       if (this.mesh.geometry) this.mesh.geometry.dispose()

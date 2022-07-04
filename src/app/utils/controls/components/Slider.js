@@ -12,7 +12,7 @@ export default class Slider {
 
   reset = () => {
     Object.keys(this.parameters.sliders).forEach((key) => {
-      if (key !== 'textSize') {
+      if (!this.parameters.sliders[key].ignoreReset) {
         const slider = this.parameters.sliders[key]
         const value = typeof slider.options.default === 'object'
           ? { ...slider.options.default }
@@ -169,6 +169,7 @@ export default class Slider {
 
       this.controls.updateLocalStorage()
       if (name === 'textSize') this.controls.trigger('parameter-update-slider-textSize')
+      else if (name.includes('imageOffset')) this.controls.trigger('parameter-update-image-position')
       else this.controls.trigger('parameter-update-slider')
     })
 

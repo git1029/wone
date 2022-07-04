@@ -947,6 +947,75 @@ textarea {
   // border: 1px dashed color.adjust($color-border, $lightness: -25%);
 }
 
+
+  
+
+
+.input-image-position-container {
+  display: flex;
+  gap: 0 10px;
+
+  label {
+    // margin-top: 30px;
+    margin-bottom: 10px;
+    width: 35%;
+  }
+
+  #input-image-position {
+    // display: flex;
+    // flex-direction: row;
+    // gap: 0 20px;
+    flex: 1 1 0;
+
+    .input {
+      flex: 1 1 0;
+      margin-bottom: 30px;
+
+      &.imageOffsetY {
+        label {
+          margin-bottom: 10px;
+        }
+      }
+
+      label {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+.imageScale:after {
+  content: 'hello'
+}
+
+#input-image-scale-buttons,
+#input-image-scale-input {
+  display: flex;
+  gap: 0 10px;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+
+  label {
+    margin-top: 0;
+    // margin-right: 20px;
+    width: 35%;
+  }
+
+  input[type=number] {
+    order: 1
+  }
+  
+  .input.button {
+    flex: 1 0 25%;
+
+    input {
+      height: 55px;
+      font-size: 16px;
+    }
+  }
+}
+
 .input.button {
   // flex: 1 1 0;
   margin-bottom: 0;
@@ -984,6 +1053,8 @@ textarea {
     border: 1px solid $color-border;
     border-radius: 4px;
     background: $color-bg;
+    // background: $color-bg-lighter;
+    background: color.adjust($color-bg, $lightness: 2.5%);
     color: $color-text-light;
     font-family: RobotoMono, monospace;
     cursor: pointer;
@@ -1420,6 +1491,81 @@ textarea {
   body {
     justify-content: center;
   }
+}
+
+
+@media screen and (max-width: 449px) {
+  .input-image-position-container {
+    display: flex;
+    flex-direction: column;
+    // gap: 0 10px;
+  
+    // label {
+    //   // margin-top: 30px;
+    //   margin-bottom: 10px;
+    //   width: 35%;
+    // }
+  
+    // #input-image-position {
+    //   // display: flex;
+    //   // flex-direction: row;
+    //   // gap: 0 20px;
+    //   flex: 1 1 0;
+  
+    //   .input {
+    //     flex: 1 1 0;
+    //     margin-bottom: 30px;
+  
+    //     &.imageOffsetY {
+    //       label {
+    //         margin-bottom: 10px;
+    //       }
+    //     }
+  
+    //     label {
+    //       margin-bottom: 0;
+    //     }
+    //   }
+    // }
+  }
+  
+  #input-image-scale-buttons,
+  #input-image-scale-input {
+    flex-direction: column;
+    gap: 10px 0;
+
+    .input.button,
+    input,
+    label {
+      width: 100%;
+    }
+  }
+  // #input-image-scale-input {
+  //   display: flex;
+  //   gap: 0 10px;
+  //   align-items: center;
+  //   justify-content: center;
+  //   margin-bottom: 20px;
+  
+  //   label {
+  //     margin-top: 0;
+  //     // margin-right: 20px;
+  //     width: 35%;
+  //   }
+  
+  //   input[type=number] {
+  //     order: 1
+  //   }
+    
+  //   .input.button {
+  //     flex: 1 0 25%;
+  
+  //     input {
+  //       height: 55px;
+  //       font-size: 16px;
+  //     }
+  //   }
+  // }
 }
 
 @media screen and (min-width: 450px) {

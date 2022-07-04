@@ -12,6 +12,11 @@ uniform vec2 uAspect;
 uniform vec4 uTexAspect;
 uniform vec4 uResolution;
 uniform float uTime;
+uniform vec2 uImgOffset;
+uniform bool uImgFitWidth;
+uniform bool uImgFitHeight;
+uniform bool uImgScaleCustom;
+uniform float uImgScale;
 
 // #define delta ( 1.0 / 60.0 )
 
@@ -164,14 +169,20 @@ void main() {
     uTexAspect.x / uResolution.x,
     uTexAspect.y / uResolution.y
   );
+
+
+  float imgScale = clamp(uImgScale, 50., 200.);
+  imgScale = 1. / (imgScale / 100.);
   
   // Reset texture aspect
   imgUv /= uvF;
 
+  float offSide = uImgFitWidth ? uResolution.x / uTexAspect.x : uResolution.y / uTexAspect.y;
+  // offSide /= imgScale;
 
   vec2 uvOff = vec2(
-    (uResolution.x - uTexAspect.x * (uResolution.x / uTexAspect.x)),
-    (uResolution.y - uTexAspect.y * (uResolution.x / uTexAspect.x))
+    (uResolution.x - uTexAspect.x * offSide),
+    (uResolution.y - uTexAspect.y * offSide)
   );
 
 
@@ -189,9 +200,12 @@ void main() {
 
 
 
-  imgUv *= (uTexAspect.x / uResolution.x);
+  // imgUv *= (uTexAspect.y / uResolution.y);
+  imgUv *= uImgFitWidth ? uTexAspect.x / uResolution.x : uTexAspect.y / uResolution.y;
 
+  // imgUv *= imgScale;
 
+  imgUv += uImgOffset;
 
   // if (uTexAspect.w > uTexAspect.z) {
   //   imgUv.x /= .5;
@@ -199,7 +213,9 @@ void main() {
   // if (uTexAspect.z > uTexAspect.w) imgUv.x *= uAspect.x/uTexAspect.z;
   // else if (uTexAspect.w > uTexAspect.z) imgUv.y *= uAspect.y/uTexAspect.w;
 
-  imgUv = fract(imgUv);
+  // imgUv = fract(imgUv);
+  if (imgUv.x < 0. || imgUv.x >= 1. || imgUv.y < 0. || imgUv.y >= 1.) discard; 
+
 
 
   // imgUv.y *= uAspect.y/uTexAspect.w;
@@ -228,6 +244,7 @@ void main() {
   }
 
   color = texture2D(uImage, imgUv + dispUv);
+  // color.a = texture2D(uImage, imgUv).a;
   // color.rgb = vec3(1.-(eq*.5+.5)) * (1.-length(dispUv)) * rand(uv);
   // color.rgb = vec3(1.-pow(abs(eq),2.)) * (1.-length(dispUv)) * rand(uv);
 
