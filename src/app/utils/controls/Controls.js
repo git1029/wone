@@ -51,7 +51,7 @@ export default class Controls extends EventEmitter {
 
       size: {
         modes: [],
-        label: 'Size',
+        label: 'Canvas Size',
         options: {
           square: {
             name: 'Square', aspect: '1:1', width: 1080, height: 1080,
@@ -151,7 +151,7 @@ export default class Controls extends EventEmitter {
       color: {
         pattern: {
           modes: ['pattern'],
-          label: 'Color Palette',
+          label: 'Pattern Colour',
           options: {
             blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
             orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
@@ -169,7 +169,7 @@ export default class Controls extends EventEmitter {
         text: {
           // modes: ['text'],
           modes: [],
-          label: 'Text Color',
+          label: 'Text Colour',
           options: {
             // light: { name: 'Light', background: '#1D1D1B', primary: '#E1E0D3' },
             // dark: { name: 'Dark', background: '#E1E0D3', primary: '#1D1D1B' },
