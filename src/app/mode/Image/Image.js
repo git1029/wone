@@ -55,8 +55,8 @@ export default class Image {
         uImage: { value: null },
         uTime: { value: 0 },
         uImgOffset: { value: imgOffset },
-        uImgFitWidth: { value: false },
-        uImgFitHeight: { value: false },
+        uImgFitWidth: { value: this.controls.parameters.buttons.image.fitWidth.value },
+        uImgFitHeight: { value: this.controls.parameters.buttons.image.fitHeight.value },
         uImgScaleCustom: { value: false },
         uImgScale: { value: this.controls.parameters.imageScale.value },
       },
@@ -178,17 +178,17 @@ export default class Image {
     this.material.needsUpdate = true
   }
 
-  fitImageToWidth = () => {
-    this.material.uniforms.uImgFitWidth.value = true
-    this.material.uniforms.uImgFitHeight.value = false
+  fitImage = () => {
+    this.material.uniforms.uImgFitWidth.value = this.controls.parameters.buttons.image.fitWidth.value
+    this.material.uniforms.uImgFitHeight.value = this.controls.parameters.buttons.image.fitHeight.value
     this.material.needsUpdate = true
   }
 
-  fitImageToHeight = () => {
-    this.material.uniforms.uImgFitWidth.value = false
-    this.material.uniforms.uImgFitHeight.value = true
-    this.material.needsUpdate = true
-  }
+  // fitImageToHeight = () => {
+  //   this.material.uniforms.uImgFitWidth.value = false
+  //   this.material.uniforms.uImgFitHeight.value = true
+  //   this.material.needsUpdate = true
+  // }
 
   destroy = () => {
     this.controls.off('texture-update')

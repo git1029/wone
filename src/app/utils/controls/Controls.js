@@ -151,7 +151,7 @@ export default class Controls extends EventEmitter {
       color: {
         pattern: {
           modes: ['pattern'],
-          label: 'Pattern Colour',
+          label: 'Colour Palette',
           options: {
             blue: { name: 'Blue', background: '#BEC0E1', primary: '#0F57E5' },
             orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
@@ -518,12 +518,16 @@ export default class Controls extends EventEmitter {
             modes: ['image'],
             name: 'imageFitWidth',
             label: 'Width',
+            default: true,
             // handleClick: () => this.slider.randomize(),
             handleClick: () => {
               // console.log('Image fit width')
+              this.parameters.buttons.image.fitWidth.value = true
+              this.parameters.buttons.image.fitHeight.value = false
               if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
-                this.app.mode.mode.fitImageToWidth()
+                this.app.mode.mode.fitImage()
               }
+              this.updateLocalStorage()
             },
           },
 
@@ -531,15 +535,23 @@ export default class Controls extends EventEmitter {
             modes: ['image'],
             name: 'imageFitHeight',
             label: 'Height',
+            default: false,
             // handleClick: () => this.slider.randomize(),
             handleClick: () => {
               // console.log('Image fit height')
+              // if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
+              //   this.app.mode.mode.fitImageToHeight()
+              // }
+              this.parameters.buttons.image.fitWidth.value = false
+              this.parameters.buttons.image.fitHeight.value = true
               if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
-                this.app.mode.mode.fitImageToHeight()
+                this.app.mode.mode.fitImage()
               }
+              this.updateLocalStorage()
             },
           },
-        }
+        },
+
       },
     }
 
@@ -607,13 +619,31 @@ export default class Controls extends EventEmitter {
     })
     this.setParameter(params, null, 'text', 'WONE IS\nA NEW MODEL\nOF HEALTH FOR\nTHE\nMODERN\nWORKPLACE')
 
+    // Check fitWidth/fitHeight
+    const imgKeys = ['fitWidth', 'fitHeight']
+    imgKeys.forEach((key) => {
+      const fallback = this.parameters.buttons.image[key].default
+      if (params) {
+        if (params[key] && typeof params[key].value !== 'undefined') {
+          if (Utils.compareKeys(params[key].value, fallback)) {
+            this.parameters.buttons.image[key].value = params[key].value
+          } else {
+            this.parameters.buttons.image[key].value = fallback
+          }
+        } else {
+          this.parameters.buttons.image[key].value = fallback
+        }
+      } else {
+        this.parameters.buttons.image[key].value = fallback
+      }
+    })
+
     // console.log(this.parameters)
 
     // Initialize canvas size
     this.sizes.size = this.parameters.size.value
     this.sizes.resize()
     this.app.resize()
-
 
     // Create controllers
     this.buttonOption.create('mode', null, document.querySelector('#input-mode'))
@@ -723,6 +753,8 @@ export default class Controls extends EventEmitter {
       sliders: {},
       export: {},
       imageScale: { value: this.parameters.imageScale.value },
+      fitWidth: { value: this.parameters.buttons.image.fitWidth.value },
+      fitHeight: { value: this.parameters.buttons.image.fitHeight.value },
     }
 
     Object.keys(this.parameters.export).forEach((key) => {
