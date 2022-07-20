@@ -4,6 +4,11 @@ export default [
     type: 'texture',
     path: 'images/img.jpg',
   },
+  {
+    name: 'logoTexture',
+    type: 'texture',
+    path: 'images/logo.png',
+  },
   // {
   //   name: 'textFont',
   //   type: 'font',

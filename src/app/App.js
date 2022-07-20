@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import Stats from 'stats-js'
+// import Stats from 'stats-js'
 import CCapture from 'ccapture.js-npmfixed'
 
 import Sizes from './utils/Sizes'
@@ -22,11 +22,11 @@ export default class App {
     }
     instance = this
 
-    // Stats
-    this.stats = new Stats()
-    this.stats.domElement.style.bottom = 0
-    this.stats.domElement.style.top = 'auto'
-    document.body.appendChild(this.stats.dom)
+    // // Stats
+    // this.stats = new Stats()
+    // this.stats.domElement.style.bottom = 0
+    // this.stats.domElement.style.top = 'auto'
+    // document.body.appendChild(this.stats.dom)
 
     this.export = {
       recording: {
@@ -119,6 +119,28 @@ export default class App {
     // Mode
     this.setMode()
 
+    // Logo overlay
+    this.logoMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({
+        map: null,
+        transparent: true,
+        // color: 0x000000,
+      }),
+    )
+    this.logoMesh.position.z = 15
+    this.logoMesh.visible = false
+    this.scene.add(this.logoMesh)
+
+    this.resources.on('ready', () => {
+      this.logoMesh.material.map = this.resources.items.logoTexture.file
+      this.logoMesh.material.needsUpdate = true
+    })
+    this.resources.on('ready-logoTexture', () => {
+      this.logoMesh.material.map = this.resources.itemsUser.logoTexture.file
+      this.logoMesh.material.needsUpdate = true
+    })
+
     // Add events
     this.sizes.on('resize', this.resize)
     this.time.on('tick', this.update)
@@ -154,6 +176,12 @@ export default class App {
     this.camera.resize()
     this.renderer.resize()
     if (this.mode && this.mode.resize) this.mode.resize()
+
+    // Update logo plane size
+    if (this.logoMesh) {
+      this.logoMesh.scale.x = this.camera.aspect.x
+      this.logoMesh.scale.y = this.camera.aspect.y
+    }
   }
 
   exportCC = () => {
@@ -342,12 +370,21 @@ export default class App {
     if (this.mode && this.mode.mode.effectComposer) this.mode.mode.effectComposer.render()
     else this.renderer.update()
 
+    // if (this.resources.items.logoTexture) {
+    //   const c = this.canvas
+    //   const ctx = c.getContext('webgl')
+    //   console.log(ctx)
+    //   const img = this.resources.items.logoTexture.file.image
+    //   console.log(img)
+    //   ctx.drawImage(img, 10, 10)
+    // }
+
     if (this.export.recording.still) this.exportImage()
     if (this.export.recording.animation) this.exportCC()
 
     // if (this.time.elapsedTime >= 3 && this.mediaRecorder.state === 'recording') this.mediaRecorder.stop()
 
-    this.stats.update()
+    // this.stats.update()
 
     // if (this.export.recording) {
     //   // this.debugFolderTime.controllers.forEach((controller) => controller.disable())

@@ -361,10 +361,18 @@ export default class Controls extends EventEmitter {
         label: 'Text',
       },
 
-      image: {
-        modes: ['image'],
-        label: 'Image Upload',
-        name: 'patternTexture',
+      images: {
+        patternTexture: {
+          modes: ['image'],
+          label: 'Image Upload',
+          name: 'patternTexture',
+        },
+
+        logoTexture: {
+          modes: [],
+          label: 'Logo Image Upload',
+          name: 'logoTexture',
+        },
       },
 
       buttons: {
@@ -375,11 +383,25 @@ export default class Controls extends EventEmitter {
           handleClick: () => this.slider.randomize(),
         },
 
+        logoPreview: {
+          modes: [],
+          value: false,
+          name: 'logoPreview',
+          label: 'Show Logo',
+          config: true,
+          handleClick: () => {
+            if (this.app.logoMesh) {
+              this.app.logoMesh.visible = !this.app.logoMesh.visible
+            }
+          },
+        },
+
         textPreview: {
           modes: ['pattern', 'image'],
           value: false,
           name: 'textPreview',
           label: 'Show Text',
+          // config: true,
           handleClick: () => {
             if (this.app.mode && this.app.mode.textMode && this.app.mode.activeMode.name !== 'Text') {
               this.parameters.buttons.textPreview.value = !this.parameters.buttons.textPreview.value
@@ -652,7 +674,8 @@ export default class Controls extends EventEmitter {
     this.buttonColor.create('text', document.querySelector('#input-color-text'))
     this.buttonOption.create('keyframe', null, document.querySelector('#input-keyframe'))
     this.textInput.createTextarea(document.querySelector('#input-text'))
-    this.imageUpload.create(document.querySelector('#input-image'))
+    this.imageUpload.create('patternTexture', 'images', document.querySelector('#input-image'))
+    this.imageUpload.create('logoTexture', 'images', document.querySelector('#input-logo'))
     Object.keys(this.parameters.sliders).forEach((key) => {
       let parent = document.querySelector('#input-sliders')
       // if (key === 'loopDuration') parent = document.querySelector('#input-loop-duration')
@@ -671,6 +694,7 @@ export default class Controls extends EventEmitter {
     this.buttonAction.create(this.parameters.buttons.exportPreview, document.querySelector('#input-buttons-export'))
     this.buttonAction.create(this.parameters.buttons.export, document.querySelector('#input-buttons-export'))
     this.buttonAction.create(this.parameters.buttons.textPreview, document.querySelector('#input-text-preview-button'))
+    this.buttonAction.create(this.parameters.buttons.logoPreview, document.querySelector('#input-logo-preview-button'))
 
     this.buttonAction.create(this.parameters.buttons.image.fitWidth, document.querySelector('#input-image-scale-buttons'))
     this.buttonAction.create(this.parameters.buttons.image.fitHeight, document.querySelector('#input-image-scale-buttons'))
@@ -749,7 +773,7 @@ export default class Controls extends EventEmitter {
         text: { value: this.parameters.color.text.value },
       },
       text: { value: this.parameters.text.value },
-      image: {},
+      images: {},
       sliders: {},
       export: {},
       imageScale: { value: this.parameters.imageScale.value },
@@ -765,14 +789,18 @@ export default class Controls extends EventEmitter {
       }
     })
 
-    if (this.parameters.image.value) {
-      if (this.parameters.image.value.source) {
-        values.image.value = {
-          ...this.parameters.image.value,
-          source: { ...this.parameters.image.value.source, data: null },
+    Object.keys(this.parameters.images).forEach((key) => {
+      if (this.parameters.images[key].value) {
+        if (this.parameters.images[key].value.source) {
+          values.images[key] = {
+            value: {
+              ...this.parameters.images[key].value,
+              source: { ...this.parameters.images[key].value.source, data: null },
+            },
+          }
         }
       }
-    }
+    })
 
     Object.keys(this.parameters.sliders).forEach((key) => {
       values.sliders[key] = {

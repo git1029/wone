@@ -13,6 +13,7 @@ export default class ButtonAction {
 
     const buttonContainer = document.createElement('div')
     buttonContainer.classList.add('input', 'button', name)
+    if (parameter.config) buttonContainer.classList.add('button-config')
 
     if (parameter.exportModes) {
       buttonContainer.classList.add(...parameter.exportModes.map((mode) => `${mode}-save`))
@@ -23,6 +24,7 @@ export default class ButtonAction {
     buttonInput.setAttribute('id', name)
     buttonInput.setAttribute('value', parameter.label)
     buttonInput.setAttribute('tabindex', '0')
+    if (parameter.config) buttonInput.classList.add('button-config-input-main')
 
     buttonInput.addEventListener('click', (event) => {
       event.preventDefault()
@@ -38,41 +40,75 @@ export default class ButtonAction {
         }
       }
 
+      if (name === 'logoPreview') {
+        const inputs = document.querySelector('#inputs')
+        inputs.classList.toggle('preview-logo')
+
+        if (inputs.classList.contains('preview-logo')) {
+          buttonInput.value = 'Hide Logo'
+        } else {
+          buttonInput.value = 'Show Logo'
+        }
+      }
+
       parameter.handleClick()
     })
 
     parameter.controller = buttonInput
     this.controls.controllers.push(buttonInput)
 
-    // if (name === 'export') {
-    //   const exportButtonContainer = document.createElement('div')
-    //   const buttonConfigInput = document.createElement('input')
+    buttonContainer.appendChild(buttonInput)
 
-    //   exportButtonContainer.setAttribute('class', 'export-button-container')
-    //   buttonConfigInput.setAttribute('type', 'submit')
-    //   buttonConfigInput.setAttribute('id', 'export-config')
-    //   buttonConfigInput.setAttribute('value', '1x')
+    // if (parameter.config) {
+    //   // const exportButtonContainer = document.createElement('div')
+    //   const buttonConfigInput = document.createElement('div')
+
+    //   const buttonConfigInputImg = document.createElement('div')
+    //   const buttonConfigInputSpan = document.createElement('span')
+    //   buttonConfigInputImg.classList.add('button-config-img')
+    //   buttonConfigInputSpan.innerHTML = 'Edit'
+
+    //   // exportButtonContainer.setAttribute('class', 'export-button-container')
+    //   // buttonConfigInput.setAttribute('type', 'submit')
+    //   buttonConfigInput.setAttribute('id', `config-${name}`)
+    //   // buttonConfigInput.setAttribute('value', 'Edit')
     //   buttonConfigInput.setAttribute('tabindex', '0')
+    //   buttonConfigInput.setAttribute('class', 'button-config-input')
 
     //   buttonConfigInput.addEventListener('click', () => {
-    //     const exportConfigOptions = document.querySelector('#export-options')
-    //     exportConfigOptions.style.display = exportConfigOptions.style.display === 'none'
-    //       ? 'flex' : 'none'
+    //     if (name === 'textPreview') {
+    //       const inputs = document.querySelector('#inputs')
+    //       inputs.classList.toggle('preview-text-config')
+    //     }
+
+    //     if (name === 'logoPreview') {
+    //       const inputs = document.querySelector('#inputs')
+    //       inputs.classList.toggle('preview-logo-config')
+    //     }
+
+    //     // const exportConfigOptions = document.querySelector('#export-options')
+    //     // exportConfigOptions.style.display = exportConfigOptions.style.display === 'none'
+    //     //   ? 'flex' : 'none'
     //     // if (exportButtonContainer.classList.contains('config-open')) {
     //     //   exportButtonContainer.classList.remove('config-open')
     //     // } else {
     //     //   exportButtonContainer.classList.add('config-open')
     //     // }
-    //     exportButtonContainer.classList.toggle('config-open')
-    //     exportConfigOptions.style.top = `-${exportConfigOptions.offsetHeight + 10}px`
+    //     // exportButtonContainer.classList.toggle('config-open')
+    //     // exportConfigOptions.style.top = `-${exportConfigOptions.offsetHeight + 10}px`
     //   })
-    //   exportButtonContainer.appendChild(buttonInput)
-    //   exportButtonContainer.appendChild(buttonConfigInput)
-    //   buttonContainer.appendChild(exportButtonContainer)
-    // } else {
-    //   buttonContainer.appendChild(buttonInput)
+
+    //   buttonConfigInput.appendChild(buttonConfigInputImg)
+    //   buttonConfigInput.appendChild(buttonConfigInputSpan)
+
+    //   // buttonContainer.appendChild(buttonInput)
+    //   buttonContainer.appendChild(buttonConfigInput)
+    //   // buttonContainer.appendChild(exportButtonContainer)
+    // // } else {
+    //   // buttonContainer.appendChild(buttonInput)
     // }
-    buttonContainer.appendChild(buttonInput)
+
+
 
     parent.appendChild(buttonContainer)
   }

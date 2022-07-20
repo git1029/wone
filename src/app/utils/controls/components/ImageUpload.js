@@ -6,8 +6,10 @@ export default class ImageUpload {
     this.parameters = this.controls.parameters
   }
 
-  create = (parent = document.querySelector('#inputs')) => {
-    const parameter = this.parameters.image
+  create = (name, paramParent = null, parent = document.querySelector('#inputs')) => {
+    const parameter = paramParent ? this.parameters[paramParent][name] : this.parameters[name]
+    // create = (parent = document.querySelector('#inputs')) => {
+    // const parameter = this.parameters.image
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
     const dropzone = document.createElement('div')
@@ -108,29 +110,36 @@ export default class ImageUpload {
   }
 
   setTextures = () => {
-    const { image } = this.parameters
+    const { images } = this.parameters
 
-    // Resources (already loaded)
-    if (this.controls.resources.itemsUser[image.name]) {
-      this.updateTexture('itemsUser')
-    } else if (this.controls.resources.items[image.name]) {
-      this.updateTexture('items')
-    }
+    Object.keys(images).forEach((key) => {
+      const image = images[key]
+
+      // Resources (already loaded)
+      if (this.controls.resources.itemsUser[image.name]) {
+        this.updateTexture('itemsUser', image)
+      } else if (this.controls.resources.items[image.name]) {
+        this.updateTexture('items', image)
+      }
+
+      // Uploaded resources
+      this.controls.resources.on(`ready-${image.name}`, () => {
+        this.updateTexture('itemsUser', image)
+      })
+    })
 
     // Default resources (new load)
     this.controls.resources.on('ready', () => {
-      this.updateTexture('items')
-    })
-
-    // Uploaded resources
-    this.controls.resources.on(`ready-${image.name}`, () => {
-      this.updateTexture('itemsUser')
+      Object.keys(images).forEach((key) => {
+        const image = images[key]
+        this.updateTexture('items', image)
+      })
     })
   }
 
-  updateTexture = (items) => {
+  updateTexture = (items, image) => {
     // Update image value
-    const { image } = this.parameters
+    // const { image } = this.parameters
     image.value = this.controls.resources[items][image.name]
 
     // Update drag and drop background image

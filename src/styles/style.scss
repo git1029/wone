@@ -191,7 +191,7 @@ body {
     }
   }
 
-  .logo {
+  .wone-logo {
     font-size: 30px;
     text-transform: lowercase;
     text-align: center;
@@ -241,11 +241,21 @@ body {
     border: 1px dashed color.adjust($color-border, $lightness: -25%);
     margin-top: 20px;
     // display: none;
+    // margin-bottom: 20px;
 
-    &#input-text-container {
+    &#input-text-container,
+    &#input-logo-container {
       display: none;
+      // margin-top: -21px;
+      // border-radius: 0 0 4px 4px;
+      // margin-bottom: 20px;
+      margin-bottom: 0;
+      // border: 1px solid $color-border;
     }
 
+    &#input-text-container {
+      margin-bottom: 20px;
+    }
     // &#input-image-container {
     //   display: none;
     // }
@@ -260,8 +270,16 @@ body {
     }
   }
 
+  // &.preview-text-config {
   &.preview-text {
     #input-text-container {
+      display: block;
+    }
+  }
+
+  // &.preview-logo-config {
+  &.preview-logo {
+    #input-logo-container {
       display: block;
     }
   }
@@ -310,8 +328,17 @@ body {
     border-top: none;
   }
 
-  &#input-text-preview-button {
+  &#input-text-preview-button,
+  &#input-logo-preview-button {
+    margin-bottom: 20px;
+  }
+
+  &#input-logo-preview-button {
     margin-bottom: 0;
+
+    .mode-text & {
+      margin-top: 40px;
+    }
   }
 }
 
@@ -889,6 +916,10 @@ textarea {
   overflow: hidden;
   padding: 0px;
 
+  #input-logo-container & {
+    // height: 100px;
+  }
+
   &:hover,
   &:focus {
     cursor: pointer;
@@ -929,6 +960,7 @@ textarea {
     top: 0;
     left: 0;
     background: $color-bg-overlay;
+    background: color.adjust($color-bg-overlay, $lightness: 2%);
     z-index: 0;
     // transition: all 0.1s ease-in-out;
   }
@@ -1016,6 +1048,38 @@ textarea {
   }
 }
 
+
+
+.preview-logo-config #config-logoPreview,
+.preview-text-config #config-textPreview {
+  .button-config-img {
+    background-position: -120px -180px;
+  }
+}
+
+
+// // .preview-logo-config {
+// .preview-logo {
+//   .input.button.button-config.logoPreview {
+//     input {
+//       border-radius: 4px 4px 0 0;
+//       // border-bottom-style: dashed;
+//       // border-bottom: 1px dashed color.adjust($color-border, $lightness: -25%);
+//     }
+//   }
+// }
+
+// // .preview-text-config {
+// .preview-text {
+//   .input.button.button-config.textPreview {
+//     input {
+//       border-radius: 4px 4px 0 0;
+//       // border-bottom-style: dashed;
+//       // border-bottom: 1px dashed color.adjust($color-border, $lightness: -25%);
+//     }
+//   }
+// }
+
 .input.button {
   // flex: 1 1 0;
   margin-bottom: 0;
@@ -1032,17 +1096,84 @@ textarea {
     }
   }
 
-  .export-button-container {
+  &.button-config {
     display: flex;
-    flex-direction: row;
-    position: relative;
+    
+    .button-config-input-main {
+      // border-radius: 4px 0 0 4px;
+      // border-right-style: dashed;
+    }
+
+    .button-config-input {
+      // padding: 0 20px;
+      // padding-right: 20px;
+      display: flex;
+      height: 100%;
+      height: 65px;
+      justify-content: center;
+      align-items: center;
+      border-radius: 0 4px 4px 0;
+      border: 1px solid $color-border;
+      border-left: 0;
+      cursor: pointer;
+      background: color.adjust($color-bg, $lightness: 2.5%);
+      // width: 40px;
+      // height: 40px;
+      // text-indent: 35px;
+
+      .button-config-img {
+        width: 55px;
+        height: 100%;
+        background-image: url('../../static/images/icons.png');
+        background-position: 0 -240px;
+      }
+
+      span {
+        display: none;
+      }
+
+      &:focus,
+      &:active {
+        z-index: 1;
+      }
+    
   
-    &.config-open {
-      #export-config {
+      &:hover,
+      &:focus {
         background: $color-bg-lighter;
       }
+  
+      &:active {
+        background: color.adjust($color-bg-lighter, $lightness: 2%);
+      }
+  
+      &:disabled {
+        // display: none; 
+        // opacity: 0.5;
+        cursor: default;
+    
+        &:hover,
+        &:focus,
+        &:active {
+          // background: $color-bg;
+        }
+      }
+      // border-right-style: solid
     }
   }
+
+
+  // .export-button-container {
+  //   display: flex;
+  //   flex-direction: row;
+  //   position: relative;
+  
+  //   &.config-open {
+  //     #export-config {
+  //       background: $color-bg-lighter;
+  //     }
+  //   }
+  // }
 
   input {
     height: 65px;
@@ -1060,14 +1191,8 @@ textarea {
     cursor: pointer;
     text-align: center;
 
-    &#export {
-      // flex: 1 1 0;
-      // border-radius: 4px 0 0 4px;
-      // border-right-style: dashed;
-      // text-indent: 60px;
-    }
 
-    &#export-config {
+    &.button-config-input {
       width: auto;
       padding: 0 20px;
       // width: 65px;
@@ -1581,6 +1706,18 @@ textarea {
       }
     }
   }
+
+  .input.button.button-config {
+    .button-config-input {
+      // padding: 0 20px;
+      padding-right: 20px;
+  
+      span {
+        display: block;
+      }
+    }
+  }
+
 }
 
 @media screen and (min-width: 600px) {
@@ -1638,7 +1775,7 @@ textarea {
 
       
 
-  .logo img {
+  .wone-logo img {
     width: 90px;
     height: auto;
     display: block;
@@ -1809,7 +1946,7 @@ textarea {
     right: 0;
     
 
-    .logo {
+    .wone-logo {
       padding: 0 0 15px;
     }
 
@@ -1909,7 +2046,7 @@ textarea {
         }
       }
   
-      .logo {
+      .wone-logo {
         display: none;
         background-color: transparent;
       }
@@ -1942,13 +2079,13 @@ textarea {
     // }
 
     .controls-header,
-    .logo {
+    .wone-logo {
       max-width: 600px;
       min-width: 600px;
       margin-left: auto;
     }
 
-    .logo img {
+    .wone-logo img {
       width: 90px;
       height: auto;
       display: block;
