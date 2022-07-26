@@ -119,27 +119,7 @@ export default class App {
     // Mode
     this.setMode()
 
-    // Logo overlay
-    this.logoMesh = new THREE.Mesh(
-      new THREE.PlaneGeometry(1, 1),
-      new THREE.MeshBasicMaterial({
-        map: null,
-        transparent: true,
-        // color: 0x000000,
-      }),
-    )
-    this.logoMesh.position.z = 15
-    this.logoMesh.visible = false
-    this.scene.add(this.logoMesh)
-
-    this.resources.on('ready', () => {
-      this.logoMesh.material.map = this.resources.items.logoTexture.file
-      this.logoMesh.material.needsUpdate = true
-    })
-    this.resources.on('ready-logoTexture', () => {
-      this.logoMesh.material.map = this.resources.itemsUser.logoTexture.file
-      this.logoMesh.material.needsUpdate = true
-    })
+    this.setLogo()
 
     // Add events
     this.sizes.on('resize', this.resize)
@@ -172,6 +152,54 @@ export default class App {
     this.mode.setMode()
   }
 
+  setLogo = () => {
+    // Logo overlay
+    this.logoMesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(1, 1),
+      new THREE.MeshBasicMaterial({
+        map: null,
+        transparent: true,
+        // color: this.controls.parameters.color.logo.value.primary,
+      }),
+    )
+    this.logoMesh.position.z = 15
+    this.logoMesh.visible = this.controls.parameters.buttons.logoPreview.value
+    this.scene.add(this.logoMesh)
+
+    this.resources.on('ready', () => {
+      // console.log(this.sizes.width, this.sizes.height)
+      this.logoMesh.material.map = this.resources.items.logoTexture.file
+      this.logoMesh.material.needsUpdate = true
+      this.setLogoPosition()
+    })
+
+    // this.controls.on('parameter-update-color-logo', () => {
+    //   this.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.logo.value.primary)
+    //   this.logoMesh.material.needsUpdate = true
+    // })
+    // this.resources.on('ready-logoTexture', () => {
+    //   this.logoMesh.material.map = this.resources.itemsUser.logoTexture.file
+    //   this.logoMesh.material.needsUpdate = true
+    // })
+  }
+
+  setLogoPosition = () => {
+    const padding = 40
+    const texture = this.resources.items.logoTexture.file
+    const logoSize = new THREE.Vector2(texture.image.width, texture.image.height)
+    const logoAspect = new THREE.Vector2(1, logoSize.height / logoSize.width)
+    const width = Math.min(200, this.controls.parameters.size.value.width * 0.2)
+    if (this.logoMesh) {
+      const scale = (width / this.controls.parameters.size.value.width) * this.camera.aspect.x
+      this.logoMesh.scale.x = logoAspect.x * scale
+      this.logoMesh.scale.y = logoAspect.y * scale
+      this.logoMesh.position.y = -this.camera.aspect.y / 2
+      this.logoMesh.position.y += this.logoMesh.scale.y / 2
+      this.logoMesh.position.y += (padding / this.controls.parameters.size.value.height) * this.camera.aspect.y
+      if (this.controls.parameters.size.value.height < 160) this.logoMesh.position.y = 0
+    }
+  }
+
   resize = () => {
     this.camera.resize()
     this.renderer.resize()
@@ -179,8 +207,9 @@ export default class App {
 
     // Update logo plane size
     if (this.logoMesh) {
-      this.logoMesh.scale.x = this.camera.aspect.x
-      this.logoMesh.scale.y = this.camera.aspect.y
+      this.setLogoPosition()
+      // this.logoMesh.scale.x = this.camera.aspect.x
+      // this.logoMesh.scale.y = this.camera.aspect.y
     }
   }
 
@@ -263,6 +292,8 @@ export default class App {
       const width = this.controls.parameters.size.value.width * sclFactor
       const height = this.controls.parameters.size.value.height * sclFactor
 
+      this.setLogoPosition()
+
       // Scale canvas (and particles) to export size
       this.renderer.instance.setSize(width, height)
       const scl = (this.controls.parameters.size.value.width * sclFactor) / this.sizes.limit.width
@@ -291,6 +322,7 @@ export default class App {
         this.mode.mode.updateParticleSize(this.sizes.width / this.sizes.limit.width)
       }
       this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
+      this.setLogoPosition()
       // this.renderer.instance.preserveDrawingBuffer = false
 
       // // Reset text preview

@@ -11,6 +11,8 @@ export default class ButtonAction {
     const { name } = parameter
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
+    const inputs = document.querySelector('#inputs')
+
     const buttonContainer = document.createElement('div')
     buttonContainer.classList.add('input', 'button', name)
     if (parameter.config) buttonContainer.classList.add('button-config')
@@ -26,11 +28,20 @@ export default class ButtonAction {
     buttonInput.setAttribute('tabindex', '0')
     if (parameter.config) buttonInput.classList.add('button-config-input-main')
 
+    if (name === 'logoPreview') {
+      if (parameter.value) {
+        buttonInput.value = 'Hide Logo'
+        inputs.classList.add('preview-logo')
+      } else {
+        buttonInput.value = 'Show Logo'
+        inputs.classList.remove('preview-logo')
+      }
+    }
+
     buttonInput.addEventListener('click', (event) => {
       event.preventDefault()
 
       if (name === 'textPreview') {
-        const inputs = document.querySelector('#inputs')
         inputs.classList.toggle('preview-text')
 
         if (inputs.classList.contains('preview-text')) {
@@ -41,7 +52,6 @@ export default class ButtonAction {
       }
 
       if (name === 'logoPreview') {
-        const inputs = document.querySelector('#inputs')
         inputs.classList.toggle('preview-logo')
 
         if (inputs.classList.contains('preview-logo')) {

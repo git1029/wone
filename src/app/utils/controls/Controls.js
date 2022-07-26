@@ -178,6 +178,16 @@ export default class Controls extends EventEmitter {
           },
           controllers: {},
         },
+
+        // logo: {
+        //   modes: [],
+        //   label: 'Logo Colour',
+        //   options: {
+        //     light: { name: 'Light', background: '#1D1D1B', primary: '#FCFCFC' },
+        //     dark: { name: 'Dark', background: '#FCFCFC', primary: '#1D1D1B' },
+        //   },
+        //   controllers: {},
+        // },
       },
 
       sliders: {
@@ -368,11 +378,11 @@ export default class Controls extends EventEmitter {
           name: 'patternTexture',
         },
 
-        logoTexture: {
-          modes: [],
-          label: 'Logo Image Upload',
-          name: 'logoTexture',
-        },
+        // logoTexture: {
+        //   modes: [],
+        //   label: 'Logo Image Upload',
+        //   name: 'logoTexture',
+        // },
       },
 
       buttons: {
@@ -390,9 +400,11 @@ export default class Controls extends EventEmitter {
           label: 'Show Logo',
           config: true,
           handleClick: () => {
+            this.parameters.buttons.logoPreview.value = !this.parameters.buttons.logoPreview.value
             if (this.app.logoMesh) {
-              this.app.logoMesh.visible = !this.app.logoMesh.visible
+              this.app.logoMesh.visible = this.parameters.buttons.logoPreview.value
             }
+            this.updateLocalStorage()
           },
         },
 
@@ -594,6 +606,8 @@ export default class Controls extends EventEmitter {
       params = JSON.parse(window.localStorage.getItem('woneParams'))
     }
 
+    console.log(params)
+
     // Initialize values
     this.setParameter(params, null, 'mode', this.parameters.mode.options.pattern)
     this.setParameter(params, null, 'size', this.parameters.size.options.square)
@@ -604,7 +618,9 @@ export default class Controls extends EventEmitter {
     this.setParameter(params, 'export', 'duration', this.parameters.export.duration.default)
     this.setParameter(params, 'color', 'pattern', this.parameters.color.pattern.options.blue)
     this.setParameter(params, 'color', 'text', this.parameters.color.text.options.dark)
+    // this.setParameter(params, 'color', 'logo', this.parameters.color.logo.options.light)
     this.setParameter(params, null, 'imageScale', this.parameters.imageScale.default)
+    this.setParameter(params, 'buttons', 'logoPreview', false)
     Object.keys(this.parameters.sliders).forEach((key) => {
       // Check for default value in localStorage
       if (params && params.sliders && params.sliders[key] && params.sliders[key].default) {
@@ -672,10 +688,11 @@ export default class Controls extends EventEmitter {
     this.buttonOption.create('size', null, document.querySelector('#input-size'))
     this.buttonColor.create('pattern', document.querySelector('#input-color-pattern'))
     this.buttonColor.create('text', document.querySelector('#input-color-text'))
+    // this.buttonColor.create('logo', document.querySelector('#input-color-logo'))
     this.buttonOption.create('keyframe', null, document.querySelector('#input-keyframe'))
     this.textInput.createTextarea(document.querySelector('#input-text'))
     this.imageUpload.create('patternTexture', 'images', document.querySelector('#input-image'))
-    this.imageUpload.create('logoTexture', 'images', document.querySelector('#input-logo'))
+    // this.imageUpload.create('logoTexture', 'images', document.querySelector('#input-logo'))
     Object.keys(this.parameters.sliders).forEach((key) => {
       let parent = document.querySelector('#input-sliders')
       // if (key === 'loopDuration') parent = document.querySelector('#input-loop-duration')
@@ -771,6 +788,7 @@ export default class Controls extends EventEmitter {
       color: {
         pattern: { value: this.parameters.color.pattern.value },
         text: { value: this.parameters.color.text.value },
+        // logo: { value: this.parameters.color.logo.value },
       },
       text: { value: this.parameters.text.value },
       images: {},
@@ -779,6 +797,9 @@ export default class Controls extends EventEmitter {
       imageScale: { value: this.parameters.imageScale.value },
       fitWidth: { value: this.parameters.buttons.image.fitWidth.value },
       fitHeight: { value: this.parameters.buttons.image.fitHeight.value },
+      buttons: {
+        logoPreview: { value: this.parameters.buttons.logoPreview.value },
+      },
     }
 
     Object.keys(this.parameters.export).forEach((key) => {

@@ -7,7 +7,7 @@ export default [
   {
     name: 'logoTexture',
     type: 'texture',
-    path: 'images/logo.png',
+    path: 'images/logo2.png',
   },
   // {
   //   name: 'textFont',
