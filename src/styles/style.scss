@@ -200,10 +200,17 @@ body {
     background: $color-bg;
     // margin: 0;
     margin-top: auto;
-    padding: 0 20px 15px;
+    // padding: 0 20px 15px;
+    padding: 0 20px;
 
     .border {
-      margin-bottom: 20px;
+      // margin-bottom: 20px;
+      margin-bottom: 5px;
+    }
+
+    img {
+      width: 150px;
+      height: auto;
     }
   }
 
@@ -1758,6 +1765,53 @@ textarea {
   }
 }
 
+
+@media screen and (max-width: 1199px) {
+  .controls {
+    // display: none;
+    // display: none;
+    position: absolute;
+    right: 0;
+    
+
+    .wone-logo {
+      // padding: 0 0 15px;
+      padding: 0;
+      // padding: 0 0 5px;
+
+      .border {
+        margin-bottom: 5px;
+      }
+    }
+
+    .controls-header {
+      // padding: 0 15px;
+      margin: 0;
+      // padding: 30px 20px 25px;
+      padding: 30px 0 0;
+
+      // .controls-header-inner {
+      //   padding: 0 20px;
+
+      //   #controls-toggle {
+      //     right: 20px;
+      //   }
+      // }
+    }
+  }
+
+  .canvas {
+    padding: 0px;
+    min-width: auto;
+    width: 100%;
+  }
+
+  // #generator {
+  //   display: flex;
+  // }
+}
+
+
 @media screen and (max-width: 599px) {
   .button-colors {
     flex-wrap: wrap;
@@ -1775,11 +1829,19 @@ textarea {
 
       
 
-  .wone-logo img {
-    width: 90px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
+  .controls .wone-logo {
+    padding: 0 0 5px;
+
+    .border {
+      margin-bottom: 10px;
+    }
+
+    img {
+      width: 110px;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
   }
 
   .controls.controls-open {
@@ -1937,45 +1999,6 @@ textarea {
   // }
 }
 
-
-@media screen and (max-width: 1199px) {
-  .controls {
-    // display: none;
-    // display: none;
-    position: absolute;
-    right: 0;
-    
-
-    .wone-logo {
-      padding: 0 0 15px;
-    }
-
-    .controls-header {
-      // padding: 0 15px;
-      margin: 0;
-      // padding: 30px 20px 25px;
-      padding: 30px 0 0;
-
-      // .controls-header-inner {
-      //   padding: 0 20px;
-
-      //   #controls-toggle {
-      //     right: 20px;
-      //   }
-      // }
-    }
-  }
-
-  .canvas {
-    padding: 0px;
-    min-width: auto;
-    width: 100%;
-  }
-
-  // #generator {
-  //   display: flex;
-  // }
-}
 
 
 @media screen and (min-width: 1200px) {

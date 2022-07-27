@@ -1,3 +1,5 @@
+import * as THREE from 'three'
+
 import EventEmitter from '../utils/EventEmitter'
 import App from '../App'
 import Pattern from './pattern/Pattern'
@@ -21,6 +23,8 @@ export default class Mode extends EventEmitter {
     this.textMode.text.forEach((text) => {
       text.visible = false
     })
+
+    this.setLogoColor()
     // }
   }
 
@@ -48,6 +52,8 @@ export default class Mode extends EventEmitter {
       this.mode = null
     }
 
+    this.setLogoColor()
+
     // Show/hide text inputs if on pattern/image mode
     // const textInputs = document.querySelector('#input-text-container')
     // if (this.mode && this.activeMode.name !== 'Text') {
@@ -70,6 +76,16 @@ export default class Mode extends EventEmitter {
       this.textMode.text.forEach((text) => {
         text.visible = value
       })
+    }
+  }
+
+  setLogoColor = () => {
+    if (this.app.logoMesh) {
+      if (this.activeMode.name !== 'Text') {
+        this.app.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.text.options.light.primary)
+      } else {
+        this.app.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.text.value.primary)
+      }
     }
   }
 

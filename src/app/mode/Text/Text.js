@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 
+import * as THREE from 'three'
 import { Text as TText } from 'troika-three-text'
 
 import App from '../../App'
@@ -132,6 +133,11 @@ export default class Text {
         if (this.app.mode.activeMode.name === 'Text') {
           this.updateCanvasBackground()
         }
+
+      if (this.app.logoMesh) {
+        this.app.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.text.value.primary)
+        this.app.logoMesh.material.needsUpdate = true
+      }
     })
     this.controls.on('parameter-update-text', () => {
       // console.log('parameter-update-text text')

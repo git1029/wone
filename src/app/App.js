@@ -159,6 +159,7 @@ export default class App {
       new THREE.MeshBasicMaterial({
         map: null,
         transparent: true,
+        // color: 0xffffff,
         // color: this.controls.parameters.color.logo.value.primary,
       }),
     )
