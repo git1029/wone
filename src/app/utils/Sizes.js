@@ -57,15 +57,11 @@ export default class Sizes extends EventEmitter {
   }
 
   scaleCanvas = (render = false) => {
-    // Disable image sequence export below 600px screen width
+    // Disable image sequence export below 600px screen width (mobile)
     if (window.innerWidth < 600) {
       if (this.app.controls && this.app.controls.parameters) {
+        // Toggle image still export
         this.app.controls.parameters.export.save.controllers.still.click()
-        // if (this.app.controls.parameters.export.save && this.app.controls.parameters.export.save.controllers) {
-        //   if (this.app.controls.parameters.export.save.controllers.still) {
-
-        //   }
-        // }
       }
     }
 
@@ -83,22 +79,14 @@ export default class Sizes extends EventEmitter {
 
     const { width, height } = this
 
-    // const width = render ? this.app.controls.parameters.size.value.width : this.width
-    // const height = render ? this.app.controls.parameters.size.value.height : this.height
-
     const scaleX = availableWidth < width ? availableWidth / width : 1
     const scaleY = availableHeight < height * scaleX ? availableHeight / (height * scaleX) : 1
     let scale = scaleX * scaleY
-
-    // console.log(availableWidth)
 
     if (render) {
       scale *= (width * scaleX) / this.app.controls.parameters.size.value.width
     }
 
-    // document.querySelector('.canvas').style.width = `${widnwo}px`
-
     if (window.innerWidth > 320) this.canvas.style.transform = `scale(${scale}, ${scale})`
-    // else this.canvas.style.transform = 'scale(1, 1)'
   }
 }

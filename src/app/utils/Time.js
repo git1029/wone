@@ -28,13 +28,6 @@ export default class Time extends EventEmitter {
   restart = () => {
     this.stop()
 
-    // this.clock.start()
-    // this.elapsedTime = 0
-    // this.pausedTime = 0
-    // this.pauseDuration = 0
-    // this.paused = false
-    // this.tick()
-
     setTimeout(() => {
       this.clock.start()
       this.elapsedTime = 0

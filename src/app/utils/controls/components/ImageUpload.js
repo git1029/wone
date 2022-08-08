@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import Controls from '../Controls'
 
 export default class ImageUpload {
@@ -8,8 +10,6 @@ export default class ImageUpload {
 
   create = (name, paramParent = null, parent = document.querySelector('#inputs')) => {
     const parameter = paramParent ? this.parameters[paramParent][name] : this.parameters[name]
-    // create = (parent = document.querySelector('#inputs')) => {
-    // const parameter = this.parameters.image
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
     const dropzone = document.createElement('div')
@@ -45,19 +45,6 @@ export default class ImageUpload {
 
     parent.prepend(label)
     parent.prepend(dropzone)
-
-    // ********************
-    // const controls = document.createElement('div')
-    // parent.appendChild(controls)
-
-    // const buttonInput = document.createElement('input')
-    // buttonInput.setAttribute('type', 'submit')
-    // // buttonInput.setAttribute('id', name)
-    // buttonInput.setAttribute('value', parameter.label)
-    // buttonInput.setAttribute('tabindex', '0')
-    // controls.appendChild(buttonInput)
-
-    // *******************
 
     parameter.controller = dropzone
     this.controls.controllers.push(dropzone)
@@ -139,7 +126,6 @@ export default class ImageUpload {
 
   updateTexture = (items, image) => {
     // Update image value
-    // const { image } = this.parameters
     image.value = this.controls.resources[items][image.name]
 
     // Update drag and drop background image

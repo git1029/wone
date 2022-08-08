@@ -10,7 +10,6 @@ export default class ButtonColor {
     const parameter = this.parameters.color[name]
     parent.classList.add(...parameter.modes.map((mode) => `${mode}-mode`))
 
-    // const buttonContainer = parent.querySelector('.color-blocks')
     const buttonContainer = document.createElement('div')
     buttonContainer.setAttribute('class', `button-colors colors-${name}`)
 

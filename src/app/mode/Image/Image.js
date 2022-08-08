@@ -1,5 +1,4 @@
 import * as THREE from 'three'
-import * as Utils from '../../utils/controls/utils/Utils'
 import App from '../../App'
 import vertexShader from './shaders/vertex.glsl'
 import fragmentShader from './shaders/fragment.glsl'
@@ -16,8 +15,6 @@ export default class Image {
     this.controls = this.app.controls
     this.camera = this.app.camera
     this.renderer = this.app.renderer
-    // this.camera.controls.reset()
-    // this.camera.controls.enabled = false
     this.time = this.app.time
 
     this.init()
@@ -74,35 +71,26 @@ export default class Image {
 
   setEvents = () => {
     this.controls.on('parameter-update-slider', () => {
-      // console.log('parameter-update-slider image')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
         if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
     this.controls.on('parameter-update-image-position', () => {
-      // console.log('parameter-update-image-position image')
       if (this.app.mode.activeMode.name === 'Image') {
         this.material.uniforms.uImgOffset.value.x = this.controls.parameters.sliders.imageOffsetX.value / 100
         this.material.uniforms.uImgOffset.value.y = this.controls.parameters.sliders.imageOffsetY.value / 100
         this.material.needsUpdate = true
-        // this.updateValues()
-        // if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
     this.controls.on('parameter-update-image-scale', () => {
-      // console.log('parameter-update-image-scale image')
       if (this.app.mode.activeMode.name === 'Image') {
         const scale = this.controls.parameters.imageScale
-        // this.material.uniforms.uImgScale.value = Utils.map(scale.value, scale.options.min, scale.options.max, 1, 0.5)
         this.material.uniforms.uImgScale.value = scale.value
         this.material.needsUpdate = true
-        // this.updateValues()
-        // if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
       }
     })
     this.controls.on('parameter-update-slider-random', () => {
-      // console.log('parameter-update-random image')
       if (this.app.mode.activeMode.name === 'Image') {
         this.updateValues()
         if (this.app.mode.textMode) this.app.mode.textMode.updateValues()
@@ -164,12 +152,6 @@ export default class Image {
       const uniform = `u${key[0].toUpperCase()}${key.substring(1, key.length)}`
       this.material.uniforms[uniform].value = this.controls.getSliderValue(key)
     })
-    // this.material.uniforms.uFrequencyA.value = this.controls.getSliderValue('frequencyA')
-    // this.material.uniforms.uFrequencyB.value = this.controls.getSliderValue('frequencyB')
-    // this.material.uniforms.uDistortion.value = this.controls.getSliderValue('distortion')
-    // this.material.uniforms.uDisplacement.value = this.controls.getSliderValue('displacement')
-    // this.material.uniforms.uScale.value = this.controls.getSliderValue('scale')
-    // this.material.uniforms.uGrain.value = this.controls.getSliderValue('grain')
     this.material.needsUpdate = true
   }
 
@@ -183,12 +165,6 @@ export default class Image {
     this.material.uniforms.uImgFitHeight.value = this.controls.parameters.buttons.image.fitHeight.value
     this.material.needsUpdate = true
   }
-
-  // fitImageToHeight = () => {
-  //   this.material.uniforms.uImgFitWidth.value = false
-  //   this.material.uniforms.uImgFitHeight.value = true
-  //   this.material.needsUpdate = true
-  // }
 
   destroy = () => {
     this.controls.off('texture-update')

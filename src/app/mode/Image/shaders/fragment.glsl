@@ -18,10 +18,7 @@ uniform bool uImgFitHeight;
 uniform bool uImgScaleCustom;
 uniform float uImgScale;
 
-// #define delta ( 1.0 / 60.0 )
-
 varying vec2 vUv;
-
 
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
@@ -113,19 +110,11 @@ float chladni(float x, float y, float a, float b, vec2 pos) {
   // return a * cos(PI*n_*x/L+off) * cos(PI*m_*y/L+off) - b * cos(PI*m_*x/L+off) * cos(PI*n_*y/L+off);
 }
 
-
-// float rand(vec2 co){
-//     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-// }
-
 float map(float value, float min1, float max1, float min2, float max2) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
 
 void main() {
-  // highp vec4 colorDiff = texture2D(tDiffuse, vUv);
-  // float b = brightness(colorDiff.rgb);
-  // b = pow(b, 5.);
   vec2 uv = gl_FragCoord.xy/uResolution.xy;
   vec2 newUv = vUv - vec2(.5);
 
@@ -134,34 +123,20 @@ void main() {
   else if (uScale >= 0.) scl = 1./(abs(uScale) + 1.);
   newUv *= scl;
 
-  // highp vec4 color = texture2D(uImage, newUv);
-
   vec4 color = vec4(1.);
 
   float eq = chladni(newUv.x * uAspect.x, newUv.y * uAspect.y, 1., 1., newUv/scl);
 
   float amp = 1. * abs(eq);
-  // if (amp < 0.002) amp = 0.002;
-  // if (amp < 0.008) amp = 0.008;
   amp = clamp(amp, 0., 1.);
   if (amp < 0.08) amp = 0.08;
-  // if (amp >= .4 && amp < .5) amp = map(amp, .4, .5, .45, 1.);
   if (amp >= .08 && amp < .5) amp = map(amp, .08, .5, .08, 1.);
   else if (amp >= .5) amp = 1.;
-  // else if (amp >= .5) amp = rand(vUv)* (amp-.5)*2.;
-  // if (amp > 1.) amp = 1.;
-  // color.r = 1.;
 
   color.rgb = vec3(1.-pow(amp,.5));
 
   vec2 disp = vec2(1.-pow(amp, .1)) * .2;
   disp *= uDisplacement;
-
-
-
-  // if (vUv.x < .5) disp.x *= -1.;
-  // if (vUv.y < .5) disp.y *= -1.;
-  // if (vUv.x >= .5) disp.x *= 1.;
 
   vec2 imgUv = vUv;
 
@@ -169,7 +144,6 @@ void main() {
     uTexAspect.x / uResolution.x,
     uTexAspect.y / uResolution.y
   );
-
 
   float imgScale = clamp(uImgScale, 50., 200.);
   imgScale = 1. / (imgScale / 100.);
@@ -185,57 +159,22 @@ void main() {
     (uResolution.y - uTexAspect.y * offSide)
   );
 
-
   uvOff *= .5;
   uvOff /= uTexAspect.xy;
-  // uvOff /= uResolution.xy;
-  // uvOff /= uAspect;
-  // uvOff.x = 0.;
+
   imgUv -= uvOff;
-
-  // float offy = (uResolution.y - uTexAspect.y * (uTexAspect.x / uResolution.x));
-  // offy /= (uTexAspect.y) * (uTexAspect.x / uResolution.x);
-  // // offy *= .5;
-  // imgUv.y -= offy;
-
-
-
-  // imgUv *= (uTexAspect.y / uResolution.y);
   imgUv *= uImgFitWidth ? uTexAspect.x / uResolution.x : uTexAspect.y / uResolution.y;
-
-  // imgUv *= imgScale;
-
   imgUv += uImgOffset;
 
-  // if (uTexAspect.w > uTexAspect.z) {
-  //   imgUv.x /= .5;
-  // }
-  // if (uTexAspect.z > uTexAspect.w) imgUv.x *= uAspect.x/uTexAspect.z;
-  // else if (uTexAspect.w > uTexAspect.z) imgUv.y *= uAspect.y/uTexAspect.w;
-
-  // imgUv = fract(imgUv);
   if (imgUv.x < 0. || imgUv.x >= 1. || imgUv.y < 0. || imgUv.y >= 1.) discard; 
 
-
-
-  // imgUv.y *= uAspect.y/uTexAspect.w;
-
-  // imgUv.y -= abs(uResolution.y - uTexAspect.y)/uResolution.y * .5 * uAspect;
-  // imgUv.y -= (1. - uTexAspect.w/uAspect.y) * .5;
   vec2 dispUv = disp;
   float r = rand(vUv + uTime*.1);
   r *= length(disp);
   r *= (smoothstep(-.2, 1., abs(eq) * (1.-pow(abs(eq),.2))) * 5.);
   dispUv += r * uGrain; 
 
-  // if (rand(vUv + uTime*.1) < abs(eq) * 1.) {
-  //   dispUv += rand(vUv + uTime*.1) * uGrain * pow(abs(eq),1.);
-  // }
-
-
   float n = snoise(vUv*2.);
-  // n = pow(n, 4.);
-  // dispUv *= n;
 
   color.rgb = vec3(length(dispUv)*8.);
 
@@ -244,20 +183,6 @@ void main() {
   }
 
   color = texture2D(uImage, imgUv + dispUv);
-  // color.a = texture2D(uImage, imgUv).a;
-  // color.rgb = vec3(1.-(eq*.5+.5)) * (1.-length(dispUv)) * rand(uv);
-  // color.rgb = vec3(1.-pow(abs(eq),2.)) * (1.-length(dispUv)) * rand(uv);
-
-// color.rgb = vec3(smoothstep(-.2, 1., abs(eq) * (1.-pow(abs(eq),.2))) * 8.);
-
-  // if (rand(uv) < 0.5) {
-  //   color.rgb += (1.-length(dispUv)) * rand(uv); 
-  // }
-
-  // if (length(color.rgb) < .5) color.rgb += vec3(length(dispUv)*8.)+rand(vUv);
-  // color.rgb = vec3(1.-amp);
-  // color.rgb = vec3(1.-pow(amp,.5));
-  
 
   gl_FragColor = color;
 }

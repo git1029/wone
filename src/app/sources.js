@@ -9,9 +9,4 @@ export default [
     type: 'texture',
     path: 'images/logo.png',
   },
-  // {
-  //   name: 'textFont',
-  //   type: 'font',
-  //   path: 'fonts/GT_America_Regular.json',
-  // },
 ]

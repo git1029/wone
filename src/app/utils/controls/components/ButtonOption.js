@@ -238,9 +238,6 @@ export default class ButtonOption {
       parent.classList.remove('error')
       applyBtn.disabled = false
 
-      // const parameter = this.parameters.size
-      // const width = parseFloat(inputs.width.value)
-      // const height = parseFloat(inputs.height.value)
       parameter.options.custom.width = width
       parameter.options.custom.height = height
       if (parameter.value.name === 'Custom') {

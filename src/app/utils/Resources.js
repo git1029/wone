@@ -94,7 +94,6 @@ export default class Resources extends EventEmitter {
     if (this.loaded === this.toLoad) {
       console.log(`${this.loaded} ${this.loaded === 1 ? 'file' : 'files'} loaded`)
       this.trigger('ready')
-      // console.log(this.items)
     }
   }
 
@@ -124,8 +123,6 @@ export default class Resources extends EventEmitter {
       }
       this.itemsUser[name].file.needsUpdate = true
       this.trigger(`ready-${name}`)
-      // console.log(this.itemsUser)
-      // console.log(`ready-${name}`)
     }
     img.src = event.target.result
 

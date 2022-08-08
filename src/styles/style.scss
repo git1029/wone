@@ -507,6 +507,12 @@ body {
         background: color.adjust($color-bg, $lightness: 2%);
       }
 
+      &.disabled {
+        opacity: 0.5;
+        cursor: default;
+        pointer-events: none;
+      }
+
       .option-img {
         display: none;
       }
@@ -689,6 +695,12 @@ input[type='number'] {
   font-family: RobotoMono, monospace;
   font-size: 16px;
   // order: 1;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: default;
+    pointer-events: none;
+  }
 
   &.error {
     border-color: $color-error;
@@ -1182,6 +1194,25 @@ textarea {
   //   }
   // }
 
+  .button-cancel {
+    display: none;
+    color: $color-text-medium;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    text-align: center;
+    font-size: 14px;
+    z-index: 99;
+    pointer-events: none;
+  }
+
+  &.progress {
+    .button-cancel {
+      display: block;
+    }
+  }
+
   input {
     height: 65px;
     width: 100%;
@@ -1197,7 +1228,6 @@ textarea {
     font-family: RobotoMono, monospace;
     cursor: pointer;
     text-align: center;
-
 
     &.button-config-input {
       width: auto;
@@ -1226,13 +1256,13 @@ textarea {
 
     &:disabled {
       // display: none; 
-      // opacity: 0.5;
+      opacity: 0.5;
       cursor: default;
   
       &:hover,
       &:focus,
       &:active {
-        // background: $color-bg;
+        background: color.adjust($color-bg, $lightness: 2.5%);
       }
     }
   }

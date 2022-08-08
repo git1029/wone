@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-param-reassign */
 /* eslint-disable class-methods-use-this */
 
@@ -40,7 +41,6 @@ export default class Controls extends EventEmitter {
       mode: {
         modes: [],
         label: 'Mode',
-        // label: null,
         options: {
           pattern: { name: 'Pattern' },
           image: { name: 'Image' },
@@ -68,7 +68,6 @@ export default class Controls extends EventEmitter {
 
       keyframe: {
         modes: [],
-        // label: null,
         label: 'Keyframe',
         options: {
           a: { name: 'Keyframe A', key: 'a' },
@@ -81,7 +80,6 @@ export default class Controls extends EventEmitter {
         modes: ['image'],
         name: 'imageScale',
         label: 'Scale %:',
-        // label: null,
         default: 100,
         options: {
           type: 'number',
@@ -96,7 +94,6 @@ export default class Controls extends EventEmitter {
         save: {
           modes: [],
           label: 'Export As',
-          // label: null,
           options: {
             still: { name: 'Image', key: 'still' },
             animation: { name: 'Image Sequence', key: 'animation' },
@@ -108,7 +105,6 @@ export default class Controls extends EventEmitter {
           modes: [],
           label: 'Sequence Mode',
           exportModes: ['animation'],
-          // label: null,
           options: {
             linear: { name: 'Linear (A → B)', key: 'linear' },
             loop: { name: 'Loop (A → B → A)', key: 'loop' },
@@ -128,7 +124,6 @@ export default class Controls extends EventEmitter {
             max: '30',
             onChangeEmit: 'parameter-update-export-duration',
           },
-          // label: null,
           controllers: {},
         },
 
@@ -137,7 +132,6 @@ export default class Controls extends EventEmitter {
           label: 'Image Scaling',
           exportModes: ['still'],
           sizeModes: ['square', 'portrait'],
-          // label: null,
           options: {
             x1: { name: '1x', scale: 1 },
             x2: { name: '2x', scale: 2 },
@@ -157,22 +151,14 @@ export default class Controls extends EventEmitter {
             orange: { name: 'Orange', background: '#D6B2D9', primary: '#C55F36' },
             red: { name: 'Red', background: '#ED897F', primary: '#C3405B' },
             pink: { name: 'Pink', background: '#E5C7EA', primary: '#7AB3E5' },
-            // blue: { name: 'Blue', background: '#255682', primary: '#81B0E3' },
-            // cyan: { name: 'Cyan', background: '#74A6B7', primary: '#A4D0E3' },
-            // pink: { name: 'Pink', background: '#B275BC', primary: '#E5B3EC' },
-            // beige: { name: 'Beige', background: '#E2745A', primary: '#F0A48F' },
-            // orange: { name: 'Orange', background: '#B72821', primary: '#FD5547' },
           },
           controllers: {},
         },
 
         text: {
-          // modes: ['text'],
           modes: [],
           label: 'Text Colour',
           options: {
-            // light: { name: 'Light', background: '#1D1D1B', primary: '#E1E0D3' },
-            // dark: { name: 'Dark', background: '#E1E0D3', primary: '#1D1D1B' },
             light: { name: 'Light', background: '#1D1D1B', primary: '#FCFCFC' },
             dark: { name: 'Dark', background: '#FCFCFC', primary: '#1D1D1B' },
           },
@@ -192,7 +178,6 @@ export default class Controls extends EventEmitter {
 
       sliders: {
         frequencyA: {
-          // modes: ['pattern', 'image'],
           modes: [],
           keyframes: true,
           options: {
@@ -202,13 +187,11 @@ export default class Controls extends EventEmitter {
             step: 0.1,
             default: 7,
             label: 'Frequency A',
-            // range: ['0hz', '600hz'],
             range: [],
           },
         },
 
         frequencyB: {
-          // modes: ['pattern', 'image'],
           modes: [],
           keyframes: true,
           options: {
@@ -218,7 +201,6 @@ export default class Controls extends EventEmitter {
             step: 0.1,
             default: 7,
             label: 'Frequency B',
-            // range: ['0hz', '600hz'],
             range: [],
           },
         },
@@ -233,7 +215,6 @@ export default class Controls extends EventEmitter {
             step: 0.1,
             default: 0,
             label: 'Distortion',
-            // range: ['0', '100'],
             range: [],
           },
         },
@@ -248,13 +229,11 @@ export default class Controls extends EventEmitter {
             step: 0.1,
             default: 0,
             label: 'Scale',
-            // range: ['0', '100'],
             range: [],
           },
         },
 
         grain: {
-          // modes: ['pattern', 'image'],
           modes: ['image'],
           keyframes: true,
           options: {
@@ -265,7 +244,6 @@ export default class Controls extends EventEmitter {
             0.01,
             default: 1,
             label: 'Grain',
-            // range: ['0', '100'],
             range: [],
           },
         },
@@ -280,13 +258,11 @@ export default class Controls extends EventEmitter {
             step: 0.01,
             default: 1,
             label: 'Displacement',
-            // range: ['0', '100'],
             range: [],
           },
         },
 
         textSize: {
-          // modes: ['text'],
           modes: [],
           keyframes: false,
           ignoreReset: true,
@@ -302,7 +278,6 @@ export default class Controls extends EventEmitter {
         },
 
         imageOffsetX: {
-          // modes: ['text'],
           modes: [],
           keyframes: false,
           ignoreReset: true,
@@ -318,7 +293,6 @@ export default class Controls extends EventEmitter {
         },
 
         imageOffsetY: {
-          // modes: ['text'],
           modes: [],
           keyframes: false,
           ignoreReset: true,
@@ -334,7 +308,6 @@ export default class Controls extends EventEmitter {
         },
 
         textOffset: {
-          // modes: ['text'],
           modes: [],
           keyframes: true,
           options: {
@@ -344,29 +317,12 @@ export default class Controls extends EventEmitter {
             step: 0.01,
             default: 1,
             label: 'Text Offset',
-            // range: ['12pt', '128pt'],
-            // range: ['50%', '200%'],
             range: [],
           },
         },
-
-        // loopDuration: {
-        //   modes: ['pattern', 'image', 'text'],
-        //   options: {
-        //     min: 1,
-        //     max: 15,
-        //     step: 1,
-        //     default: 8,
-        //     label: 'Duration (sec)',
-        //     // range: ['12pt', '128pt'],
-        //     // range: ['50%', '200%'],
-        //     range: [],
-        //   },
-        // },
       },
 
       text: {
-        // modes: ['text'],
         modes: [],
         label: 'Text',
       },
@@ -413,15 +369,12 @@ export default class Controls extends EventEmitter {
           value: false,
           name: 'textPreview',
           label: 'Show Text',
-          // config: true,
           handleClick: () => {
             if (this.app.mode && this.app.mode.textMode && this.app.mode.activeMode.name !== 'Text') {
               this.parameters.buttons.textPreview.value = !this.parameters.buttons.textPreview.value
               this.app.mode.textMode.text.forEach((text) => {
                 text.visible = this.parameters.buttons.textPreview.value
               })
-              // const textInputs = document.querySelector('#input-text-container')
-              // textInputs.style.display = this.parameters.buttons.textPreview.value ? 'block' : 'none'
             }
           },
         },
@@ -444,71 +397,44 @@ export default class Controls extends EventEmitter {
             scale: 1,
           },
           handleClick: () => {
-            // this.export.export = () => {
-            //   this.time.paused = false
-            //   const animateBtn = this.debugFolderTime.children.filter((c) =>
-            //      c.property === 'animate')[0].$button
-            //   animateBtn.innerHTML = 'Pause'
-            //   animateBtn.style.color = 'white'
-
             if (this.parameters.export.save.value.key === 'animation') {
               // this.time.restart()
 
               // Change to keyframe A
               this.parameters.keyframe.controllers.a.click()
 
-              // // Hide text preview for Pattern and Image modes
-              // if (this.app.mode.activeMode.name !== 'Text') {
-              //   if (this.app.mode.textMode) {
-              //     this.app.mode.textMode.text.forEach((text) => {
-              //       text.visible = false
-              //     })
-              //   }
-              // }
-
               this.parameters.buttons.export.controller.value = 'Preparing Export'
 
-              // Wait for pattern to settle before beginning recording
-              setTimeout(() => {
-                this.app.export.recordStartTime = this.time.elapsedTime
-                // console.log(this.app.export.recordStartTime)
-                this.app.export.recording.animation = true
-                // const button = this.parameters.buttons.export.controller
-                // button.disabled = true
-                this.parameters.buttons.export.controller.disabled = true
+              // Cancel running export
+              if (this.app.export.recording.animation) {
+                this.app.stopExportCC(false)
+                this.disableControls(false)
+                // if (this.app.mode.activeMode.name === 'Pattern') this.app.mode.mode.positionUniforms.uStartTime.value = this.time.elapsedTime
+              } else {
+                // Wait for pattern to settle before beginning recording
+                setTimeout(() => {
+                  this.app.export.recordStartTime = this.time.elapsedTime
+                  this.app.export.recording.animation = true
+                  // this.parameters.buttons.exportPreview.controller.disabled = true
+                  // this.parameters.export.duration.controller.disabled = true
+                  this.disableControls(true)
 
-                const { width, height } = this.parameters.size.value
+                  const { width, height } = this.parameters.size.value
 
-                // Scale canvas (and particles) to export size
-                this.app.renderer.instance.setSize(width, height)
+                  // Scale canvas (and particles) to export size
+                  this.app.renderer.instance.setSize(width, height)
 
-                this.app.sizes.scaleCanvas(true)
+                  this.app.sizes.scaleCanvas(true)
 
-                const scl = (this.parameters.size.value.width) / this.app.sizes.limit.width
-                if (this.app.mode.activeMode.name === 'Pattern') this.app.mode.mode.updateParticleSize(scl)
+                  const scl = (this.parameters.size.value.width) / this.app.sizes.limit.width
+                  if (this.app.mode.activeMode.name === 'Pattern') this.app.mode.mode.updateParticleSize(scl)
 
-                this.app.capturer.start()
-              }, 2000)
+                  this.app.capturer.start()
+                }, 2000)
+              }
             } else {
               this.app.export.recording.still = true
             }
-
-            //   this.export.recording = true
-
-            //   const exportBtn = this.debugFolderExport.children.filter((c) =>
-            //      c.property === 'export')[0].$button
-            //   exportBtn.innerHTML = 'Exporting...'
-            //   exportBtn.style.color = 'lime'
-
-            //   this.capture = null
-            //   // eslint-disable-next-line no-undef
-            //   this.capturer = new CCapture({
-            //     format: 'png',
-            //     framerate: 30,
-            //     // verbose: true,
-            //     timeLimit: this.export.duration,
-            //   })
-            // }
           },
         },
 
@@ -519,31 +445,26 @@ export default class Controls extends EventEmitter {
           label: 'Preview',
           value: false,
           handleClick: () => {
-            console.log('Export Preview')
-            // this.time.restart()
+            // console.log('Export Preview')
 
             if (this.parameters.export.save.value.key !== 'animation') return
-            // this.time.paused = false
-            // const animateBtn = this.debugFolderTime.children.filter((c) => c.property === 'animate')[0].$button
-            // animateBtn.innerHTML = 'Pause'
-            // animateBtn.style.color = 'white'
-            this.parameters.buttons.exportPreview.value = true
-            // this.time.restart()
-            this.app.export.recordStartTime = this.time.elapsedTime
 
-            // // Hide text preview for Pattern and Image modes
-            // if (this.app.mode.activeMode.name !== 'Text') {
-            //   if (this.app.mode.textMode) {
-            //     this.app.mode.textMode.text.forEach((text) => {
-            //       text.visible = false
-            //     })
-            //   }
-            // }
-            // this.export.recording = true
-
-            // const exportBtn = this.debugFolderExport.children.filter((c) => c.property === 'export')[0].$button
-            // exportBtn.innerHTML = 'Exporting...'
-            // exportBtn.style.color = 'lime'
+            if (this.parameters.buttons.exportPreview.value) {
+              this.parameters.buttons.exportPreview.value = false
+              if (this.app.mode.mode.animate) this.app.mode.mode.animate()
+              this.parameters.buttons.exportPreview.controller.removeAttribute('style')
+              this.parameters.buttons.exportPreview.controller.parentNode.classList.remove('progress')
+              this.disableControls(false, 'preview')
+              // this.parameters.buttons.exportPreview.controller.removeEventListener('mouseover', this.app.handleMouseOver, true)
+              // this.parameters.buttons.exportPreview.controller.removeEventListener('mouseout', this.app.handleMouseOut, true)
+              // this.parameters.buttons.exportPreview.controller.value = 'Preview'
+            } else {
+              this.parameters.buttons.exportPreview.value = true
+              this.disableControls(true, 'preview')
+              // this.parameters.buttons.exportPreview.controller.value = 'Cancel'
+              this.app.export.recordStartTime = this.time.elapsedTime
+              this.parameters.buttons.exportPreview.controller.parentNode.classList.add('progress')
+            }
           },
         },
 
@@ -553,9 +474,7 @@ export default class Controls extends EventEmitter {
             name: 'imageFitWidth',
             label: 'Width',
             default: true,
-            // handleClick: () => this.slider.randomize(),
             handleClick: () => {
-              // console.log('Image fit width')
               this.parameters.buttons.image.fitWidth.value = true
               this.parameters.buttons.image.fitHeight.value = false
               if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
@@ -570,12 +489,7 @@ export default class Controls extends EventEmitter {
             name: 'imageFitHeight',
             label: 'Height',
             default: false,
-            // handleClick: () => this.slider.randomize(),
             handleClick: () => {
-              // console.log('Image fit height')
-              // if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
-              //   this.app.mode.mode.fitImageToHeight()
-              // }
               this.parameters.buttons.image.fitWidth.value = false
               this.parameters.buttons.image.fitHeight.value = true
               if (this.app.mode && this.app.mode.activeMode.name === 'Image') {
@@ -621,6 +535,7 @@ export default class Controls extends EventEmitter {
     // this.setParameter(params, 'color', 'logo', this.parameters.color.logo.options.light)
     this.setParameter(params, null, 'imageScale', this.parameters.imageScale.default)
     this.setParameter(params, 'buttons', 'logoPreview', false)
+
     Object.keys(this.parameters.sliders).forEach((key) => {
       // Check for default value in localStorage
       if (params && params.sliders && params.sliders[key] && params.sliders[key].default) {
@@ -639,14 +554,11 @@ export default class Controls extends EventEmitter {
           Object.keys(this.parameters.keyframe.options).forEach((keyframe) => {
             this.parameters.sliders[key].options.default[keyframe] = value
           })
-
-          // this.setParameter(params, 'sliders', key, { ...this.parameters.sliders[key].options.default })
         } else {
           // eslint-disable-next-line no-lonely-if
           if (this.parameters.sliders[key].options.random) {
             this.parameters.sliders[key].options.default = this.getRandomSliderValue(this.parameters.sliders[key])
           }
-          // this.setParameter(params, 'sliders', key, this.parameters.sliders[key].options.default)
         }
       }
 
@@ -676,8 +588,6 @@ export default class Controls extends EventEmitter {
       }
     })
 
-    // console.log(this.parameters)
-
     // Initialize canvas size
     this.sizes.size = this.parameters.size.value
     this.sizes.resize()
@@ -693,14 +603,13 @@ export default class Controls extends EventEmitter {
     this.textInput.createTextarea(document.querySelector('#input-text'))
     this.imageUpload.create('patternTexture', 'images', document.querySelector('#input-image'))
     // this.imageUpload.create('logoTexture', 'images', document.querySelector('#input-logo'))
+
     Object.keys(this.parameters.sliders).forEach((key) => {
       let parent = document.querySelector('#input-sliders')
-      // if (key === 'loopDuration') parent = document.querySelector('#input-loop-duration')
       if (key === 'textSize') parent = document.querySelector('#input-text-settings')
       else if (key.includes('imageOffset')) parent = document.querySelector('#input-image-position')
 
       this.slider.create(key, parent)
-      // this.slider.setValuePosition(this.parameters.sliders[key])
     })
     this.buttonAction.create(this.parameters.buttons.randomize, document.querySelector('#input-buttons-controls'))
     this.buttonAction.create(this.parameters.buttons.reset, document.querySelector('#input-buttons-controls'))
@@ -715,21 +624,26 @@ export default class Controls extends EventEmitter {
 
     this.buttonAction.create(this.parameters.buttons.image.fitWidth, document.querySelector('#input-image-scale-buttons'))
     this.buttonAction.create(this.parameters.buttons.image.fitHeight, document.querySelector('#input-image-scale-buttons'))
-    // this.textInput.createInput(this.parameters.imageScale, document.querySelector('#input-image-scale-input'))
-    // Object.keys(this.parameters.buttons).forEach((key) => {
-    //   this.buttonAction.create(key, document.querySelector('#input-buttons'))
-    // })
-    // this.buttonAction.createExportButtons()
-
-    // this.setTextures()
 
     this.setToggleButton()
 
     this.updateLocalStorage()
+  }
 
-    // Object.keys(this.parameters.sliders).forEach((key) => {
-    //   this.slider.setValuePosition(this.parameters.sliders[key])
-    // })
+  disableControls = (value, mode = 'export') => {
+    if (value) {
+      if (mode === 'preview') this.parameters.buttons.export.controller.disabled = value
+      else this.parameters.buttons.exportPreview.controller.disabled = value
+    } else {
+      this.parameters.buttons.export.controller.disabled = value
+      this.parameters.buttons.exportPreview.controller.disabled = value
+    }
+    this.parameters.export.duration.controller.disabled = value
+    Object.keys(this.parameters.export.loop.controllers).forEach((key) => {
+      if (value) this.parameters.export.loop.controllers[key].classList.add('disabled')
+      else this.parameters.export.loop.controllers[key].classList.remove('disabled')
+      this.parameters.export.loop.controllers[key].inert = value
+    })
   }
 
   getRandomSliderValue = (slider) => {
@@ -830,8 +744,6 @@ export default class Controls extends EventEmitter {
       }
     })
 
-    // console.log('values', JSON.stringify(values))
-    // console.log('values', JSON.parse(JSON.stringify(values)))
     window.localStorage.setItem('woneParams', JSON.stringify(values))
   }
 
@@ -842,13 +754,9 @@ export default class Controls extends EventEmitter {
 
       let value = slider.value[keyframe]
 
-      // console.log(this.time.elapsedTime)
-
       if (this.parameters.buttons.exportPreview.value || this.app.export.recording.animation) {
         const duration = this.parameters.export.duration.value
         let t = ((this.time.elapsedTime - this.app.export.recordStartTime) % duration) / duration
-        // if (name === 'frequencyA') console.log(t)
-        // // t = easeInOutCubic(t)
         const pad = 0.2
 
         // Need to bias ending pattern so has time to settle (>2s generally)
@@ -859,19 +767,12 @@ export default class Controls extends EventEmitter {
         } else if (this.parameters.export.loop.value.key === 'loop') {
           if (t < 0.5) t = Utils.map(t, 0, 0.5, 0, 1)
           else t = Utils.map(t, 0.5, 1, 1, 0)
-          // t = Math.sin(t * (Math.PI / 2))
         }
         t = Easing.easeInOutCubic(t)
         value = Utils.lerp(slider.value.a, slider.value.b, t)
       }
 
       return value
-
-      // const values = []
-      // Object.keys(slider.value).sort().forEach((keyframe) => {
-      //   values.push(slider.value[keyframe])
-      // })
-      // return new THREE.Vector2(...values)
     }
 
     return slider.value

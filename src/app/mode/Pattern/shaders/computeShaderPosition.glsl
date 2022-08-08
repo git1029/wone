@@ -7,15 +7,8 @@ uniform vec2 uAspect;
 uniform float uScale;
 uniform float uTime;
 uniform float uStartTime;
-// uniform float uScaleMax;
 
 #define delta ( 1.0 / 60.0 )
-
-
-// float rand(vec2 co){
-//     return fract(sin(dot(co, vec2(12.9898, 78.233))) * 43758.5453);
-// }
-
 
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
@@ -122,77 +115,40 @@ float map(float value, float min1, float max1, float min2, float max2) {
   return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
 
+vec2 rotate(vec2 p, float a) {
+  return vec2(
+    p.x * cos(a) - p.y * sin(a),
+    p.x * sin(a) + p.y * cos(a)
+  );
+}
+
 void main() {
-
-// vec2 resolution = vec2(1080., 1080.)
   vec2 uv = gl_FragCoord.xy / resolution.xy;
-
-  // uv *= .5;
 
   vec4 tmpPos = texture2D( texturePosition, uv );
   vec3 pos = tmpPos.xyz;
 
-  // vec4 tmpVel = texture2D( textureVelocity, uv );
-  // vec3 vel = tmpVel.xyz;
-  // float mass = tmpVel.w;
-
-  // if ( mass == 0.0 ) {
-  //   vel = vec3( 0.0 );
-  // }
-
   vec3 vel = vec3(0.);
-  // float mass = 0.;
-
-
-    // // perform one random walk
-    // this.x += random(-this.stochasticAmplitude, this.stochasticAmplitude);
-    // this.y += random(-this.stochasticAmplitude, this.stochasticAmplitude);
-
-  // Dynamics
-  // distance = velocity * time
-  // pos += vel * delta;
 
   float scl = uScale;
   if (uScale < 0.) scl = abs(uScale) + 1.;
   else if (uScale >= 0.) scl = 1./(abs(uScale) + 1.);
-  float eq = chladni((pos.x*scl), (pos.y*scl), 1., 1., pos);
+  vec3 pos2 = pos;
+  float eq = chladni((pos2.x*scl), (pos2.y*scl), 1., 1., pos2);
 
-  // vec2 pos2 = vec2(pos.x, pos.y);
-  // for (float i = -1.; i <= 1.; i += 1.) {
-  //   for (float j = -1.; j <= 1.; j += 1.) {
-  //     if (i == 0. && j == 0.) continue;
-  //     float x = pos.x + i / resolution.x; 
-  //     float y = pos.y + j / resolution.y;
-  //     if (x < -0.5 || x > 0.5) continue;
-  //     if (y < -0.5 || y > 0.5) continue;
-  //     float eq2 = chladni(x*scl, y*scl, 1., 1., pos);
-  //     if (abs(eq2) < abs(eq)) pos2 = vec2(x, y);
-  //   }
-  // }
-
-  // pos.xy = pos2;
-
-  // float v = 0. + length(uv) * 0.5;
   float amp = 0.5 * abs(eq);
-  // if (amp < 0.002) amp = 0.002;
   if (amp < 0.008) amp = 0.008;
-  // if (abs(eq) < 0.0001) amp = 0.0001;
-  // if (amp < 0.04) amp = 0.04;
 
 
 
 
   float tf = 1.;
-  // if ((uTime - uStartTime) < 1.) tf = 1.;
   float easeDuration = 6.;
   if ((uTime - uStartTime) < easeDuration) {
-    // tf = 1.-((uTime - uStartTime)-1.);
     tf = map(uTime - uStartTime, 0., easeDuration, 1., 0.);
-    // tf = cubicInOut(tf);
     tf = map(tf, 1., 0., 1., 0.);
   }
   else tf = 0.;
-  // tf = 1.;
   
   
   // for (int i = 0; i < 4; i++) {
@@ -202,30 +158,21 @@ void main() {
     // vel.y *= .25;
     vel.z = 0.;
 
+    // Velocity end (slowed down)
     vec3 vel2 = vec3(0.);
     vel2.x = (snoise(uv + pos.y + 3.143284 + uTime * .5)*.5+.5) * amp * 2. - amp;
     vel2.y = (snoise(uv + pos.x + 124.32347 + uTime * .5)*.5+.5) * amp * 2. - amp;
 
-    // pos += (vel * delta * 4. * tf);
-    // pos += (vel * delta * 4. * tf) + (vel2 * delta * .025 * (1.-tf));
     pos += (vel * delta * (4. - 4.*(1.-tf)) * tf) + (vel2 * delta * .025 * (1.-tf));
-
 
     if (pos.x < -.5 * uAspect.x) pos.x = -.5 * uAspect.x; 
     if (pos.x >= .5 * uAspect.x) pos.x = .5 * uAspect.x; 
     if (pos.y < (-.5) * uAspect.y) pos.y = (-.5) * uAspect.y; 
     if (pos.y >= (.5) * uAspect.y) pos.y = (.5) * uAspect.y; 
   // }
-  // vel.z = rand(uv + pos.x + 124.32347) * amp * 2. - amp;
-  // vel.x = amp;
-  // vel.y = amp;
-
-
-
-  
 
   pos.z = (abs(eq)) * .04;
 
-  gl_FragColor = vec4( pos, abs(eq) );
+  gl_FragColor = vec4(pos, abs(eq));
 
 }

@@ -1,7 +1,6 @@
 import * as THREE from 'three'
-
-// import Stats from 'stats-js'
 import CCapture from 'ccapture.js-npmfixed'
+import Stats from 'stats.js'
 
 import Sizes from './utils/Sizes'
 import Time from './utils/Time'
@@ -22,11 +21,11 @@ export default class App {
     }
     instance = this
 
-    // // Stats
-    // this.stats = new Stats()
-    // this.stats.domElement.style.bottom = 0
-    // this.stats.domElement.style.top = 'auto'
-    // document.body.appendChild(this.stats.dom)
+    // Stats
+    this.stats = new Stats()
+    this.stats.domElement.style.bottom = 0
+    this.stats.domElement.style.top = 'auto'
+    document.body.appendChild(this.stats.dom)
 
     this.export = {
       recording: {
@@ -35,13 +34,6 @@ export default class App {
       },
       recordStartTime: 0,
     }
-    // eslint-disable-next-line no-undef
-    // this.capturer = new CCapture({
-    //   format: 'png',
-    //   framerate: 30,
-    //   // verbose: true,
-    //   timeLimit: this.export.duration,
-    // })
 
     // Setup
     this.canvas = canvas
@@ -53,69 +45,6 @@ export default class App {
     this.renderer = new Renderer()
     this.controls = new Controls()
 
-    // this.animate = {
-    //   duration: 8,
-    //   animate: () => {
-    //     const btn = this.debugFolderTime.children.filter((c) =>
-    //        c.property === 'animate')[0].$button
-    //     if (this.time.paused) {
-    //       btn.innerHTML = 'Pause'
-    //       btn.style.color = 'white'
-    //       return this.time.start()
-    //     }
-    //     btn.innerHTML = 'Play'
-    //     btn.style.color = 'lime'
-    //     return this.time.stop()
-    //   },
-    //   restart: () => {
-    //     this.time.paused = false
-    //     const btn = this.debugFolderTime.children.filter((c) =>
-    //        c.property === 'animate')[0].$button
-    //     btn.innerHTML = 'Pause'
-    //     btn.style.color = 'white'
-    //     this.time.restart()
-    //   },
-    // }
-    // this.debugFolderTime = this.debug.ui.addFolder('Animation')
-    // this.debugFolderTime.$title.style.backgroundColor = '#111111'
-    // // this.debugFolderTime.add(this.animate, 'duration').min(1).max(15).step(1)
-    // //   .name('Loop Duration')
-    // this.debugFolderTime.add(this.animate, 'animate').name('Pause')
-    // this.debugFolderTime.add(this.animate, 'restart').name('Restart')
-
-    // this.export.export = () => {
-    //   this.time.paused = false
-    //   const animateBtn = this.debugFolderTime.children.filter((c) =>
-    //      c.property === 'animate')[0].$button
-    //   animateBtn.innerHTML = 'Pause'
-    //   animateBtn.style.color = 'white'
-
-    //   this.time.restart()
-    //   this.export.recording = true
-
-    //   const exportBtn = this.debugFolderExport.children.filter((c) =>
-    //      c.property === 'export')[0].$button
-    //   exportBtn.innerHTML = 'Exporting...'
-    //   exportBtn.style.color = 'lime'
-
-    //   this.capture = null
-    //   // eslint-disable-next-line no-undef
-    //   this.capturer = new CCapture({
-    //     format: 'png',
-    //     framerate: 30,
-    //     // verbose: true,
-    //     timeLimit: this.export.duration,
-    //   })
-    //   this.capturer.start()
-    // }
-    // this.debugFolderExport = this.debug.ui.addFolder('Export (Image Sequence)')
-    // this.debugFolderExport.$title.style.backgroundColor = '#111111'
-    // this.debugFolderExportDuration = this.debugFolderExport.add(this.export, 'duration')
-    //    .min(1).max(30).step(1)
-    //   .name('Duration')
-    //   .disable()
-    // this.debugFolderExport.add(this.export, 'export').name('Export')
-
     // Mode
     this.setMode()
 
@@ -125,26 +54,12 @@ export default class App {
     this.sizes.on('resize', this.resize)
     this.time.on('tick', this.update)
 
-    // this.exportVideo()
-
-    // this.capture = null
     // eslint-disable-next-line no-undef
     this.capturer = new CCapture({
       format: 'png',
       framerate: 60,
       // verbose: true,
-      // timeLimit: this.export.duration,
-      // timeLimit: this.controls.parameters.export.duration.value,
     })
-    // this.capturer.start()
-    // this.capturer = new CCapture({
-    //   format: 'webm',
-    //   framerate: 60,
-    //   quality: 0.95,
-    //   // verbose: true,
-    //   // timeLimit: this.export.duration,
-    // })
-    // this.capturer.start()
   }
 
   setMode = () => {
@@ -159,7 +74,6 @@ export default class App {
       new THREE.MeshBasicMaterial({
         map: null,
         transparent: true,
-        // color: 0xffffff,
         // color: this.controls.parameters.color.logo.value.primary,
       }),
     )
@@ -168,12 +82,10 @@ export default class App {
     this.scene.add(this.logoMesh)
 
     this.resources.on('ready', () => {
-      // console.log(this.sizes.width, this.sizes.height)
       this.logoMesh.material.map = this.resources.items.logoTexture.file
       this.logoMesh.material.needsUpdate = true
       this.setLogoPosition()
     })
-
     // this.controls.on('parameter-update-color-logo', () => {
     //   this.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.logo.value.primary)
     //   this.logoMesh.material.needsUpdate = true
@@ -209,8 +121,6 @@ export default class App {
     // Update logo plane size
     if (this.logoMesh) {
       this.setLogoPosition()
-      // this.logoMesh.scale.x = this.camera.aspect.x
-      // this.logoMesh.scale.y = this.camera.aspect.y
     }
   }
 
@@ -218,73 +128,57 @@ export default class App {
     if (this.export.recording.animation && this.controls.parameters.export.save.value.key === 'animation') {
       // this.debugFolderTime.controllers.forEach((controller) => controller.disable())
 
-      // console.log(this.time.elapsedTime)
       this.capturer.capture(this.canvas)
-
-      // console.log(this.capturer)
-      // console.log(ok)
-      // console.log(this.export.recordStartTime)
-      // console.log(this.time.elapsedTime)
 
       const duration = this.controls.parameters.export.duration.value
 
+      // End capture
       if (this.time.elapsedTime > duration + this.export.recordStartTime) {
-        this.export.recording.animation = false
-        this.capturer.stop()
-        this.capturer.save()
-        // this.controls.parameters.buttons.export.controller.enable()
-        this.controls.parameters.buttons.export.controller.disabled = false
-
-        // // Reset text preview
-        // if (this.mode.activeMode.name !== 'Text') {
-        //   if (this.mode.textMode) {
-        //     this.mode.textMode.text.forEach((text) => {
-        //       text.visible = this.controls.parameters.buttons.textPreview.value
-        //     })
-        //   }
-        // }
-
-        // Reset canvas (and particle) size
-        if (this.mode.activeMode.name === 'Pattern') {
-          this.mode.mode.updateParticleSize(this.sizes.width / this.sizes.limit.width)
-        }
-        this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
-        this.sizes.scaleCanvas()
-
-        // Change to keyframe B
-        this.controls.parameters.keyframe.controllers.b.click()
-
-        // this.debugFolderTime.controllers.forEach((controller) => controller.enable())
-        // const btn = this.debugFolderExport.children.filter((c) =>
-        //  c.property === 'export')[0].$button
-        // btn.innerHTML = 'Export'
-        // btn.style.color = 'white'
-        this.capturer = null
-        this.capturer = new CCapture({
-          format: 'png',
-          framerate: 60,
-          // verbose: true,
-          // timeLimit: this.export.duration,
-          // timeLimit: this.controls.parameters.export.duration.value,
-        })
+        this.stopExportCC()
       }
+    }
+  }
+
+  stopExportCC = (save = true) => {
+    this.export.recording.animation = false
+    this.capturer.stop()
+    if (save) this.capturer.save()
+    // this.controls.parameters.buttons.export.controller.enable()
+    // this.controls.parameters.buttons.export.controller.disabled = false
+    this.controls.parameters.buttons.export.controller.removeAttribute('style')
+    this.controls.parameters.buttons.export.controller.parentNode.classList.remove('progress')
+    this.controls.parameters.buttons.export.controller.value = 'Export'
+
+    // Reset canvas (and particle) size
+    if (this.mode.activeMode.name === 'Pattern') {
+      this.mode.mode.updateParticleSize(this.sizes.width / this.sizes.limit.width)
+    }
+    this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
+    this.sizes.scaleCanvas()
+
+    // Change to keyframe B
+    this.controls.parameters.keyframe.controllers.b.click()
+
+    this.capturer = null
+    this.capturer = new CCapture({
+      format: 'png',
+      framerate: 60,
+      // verbose: true,
+    })
+
+    // this.controls.parameters.buttons.exportPreview.controller.disabled = false
+    // this.controls.parameters.export.duration.controller.disabled = false
+    // this.controls.parameters
+
+    if (this.mode.activeMode.name === 'Pattern') {
+      setTimeout(() => {
+        this.mode.mode.positionUniforms.uStartTime.value = this.time.elapsedTime
+      }, 100)
     }
   }
 
   exportImage = () => {
     if (this.export.recording.still && this.controls.parameters.export.save.value.key === 'still') {
-      // this.renderer.instance.preserveDrawingBuffer = true
-      // const sclFactor = this.controls.parameters.buttons.export.value.scale
-
-      // // Hide text preview for Pattern and Image modes
-      // if (this.mode.activeMode.name !== 'Text') {
-      //   if (this.mode.textMode) {
-      //     this.mode.textMode.text.forEach((text) => {
-      //       text.visible = false
-      //     })
-      //   }
-      // }
-
       // Only use export scale on preset sizes (need to limit max render size for performance reasons)
       const sclFactor = this.controls.parameters.size.value.name === 'Custom'
         ? 1
@@ -311,7 +205,6 @@ export default class App {
       const frequencyB = Math.round(this.controls.parameters.sliders.frequencyB.value[keyframe] * 100) / 100
       const distortion = Math.round(this.controls.parameters.sliders.distortion.value[keyframe] * 100) / 100
       const scale = Math.round(this.controls.parameters.sliders.scale.value[keyframe] * 100) / 100
-      // a.download = `wone_fA${frequency}_fB${frequencyB}_d${distortion}_s${scale}.jpg`
       a.download = `wone_fA${frequency}_fB${frequencyB}_d${distortion}_s${scale}_${width}_${height}.png`
       document.body.appendChild(a)
       a.click()
@@ -324,16 +217,6 @@ export default class App {
       }
       this.renderer.instance.setSize(this.sizes.width, this.sizes.height)
       this.setLogoPosition()
-      // this.renderer.instance.preserveDrawingBuffer = false
-
-      // // Reset text preview
-      // if (this.mode.activeMode.name !== 'Text') {
-      //   if (this.mode.textMode) {
-      //     this.mode.textMode.text.forEach((text) => {
-      //       text.visible = this.controls.parameters.buttons.textPreview.value
-      //     })
-      //   }
-      // }
     }
   }
 
@@ -349,27 +232,34 @@ export default class App {
     } else return
 
     const duration = this.controls.parameters.export.duration.value
-    // const progress = (this.time.elapsedTime - this.export.recordStartTime) / duration
-
-    // console.log(progress)
 
     // Preview
     if (this.controls.parameters.buttons.exportPreview.value || this.export.recording.animation) {
-      // console.log(this.export.recordStartTime)
-      // console.log(this.time.elapsedTime)
       const button = this.export.recording.animation
         ? this.controls.parameters.buttons.export.controller
         : this.controls.parameters.buttons.exportPreview.controller
       const t = ((this.time.elapsedTime - this.export.recordStartTime) % duration) / duration
-      // const colorBg = '#1D1D1B'
       const colorBg = '#282826'
       const colorProgress = '#136DEB'
       button.style.background = `linear-gradient(to right, ${colorProgress} ${t * 100}%, ${colorBg} ${t * 100}%)`
+      button.style.paddingBottom = '15px'
+      // const value = this.export.recording.animation ? 'Exporting' : 'Preview'
 
       if (this.export.recording.animation) button.value = 'Exporting'
+      button.parentNode.classList.add('progress')
+      // button.value = 'Cancel'
+      // button.addEventListener('mouseover', this.handleMouseOver, true)
+      // button.addEventListener('mouseout', (e) => this.handleMouseOut(e, value), true)
 
       if (this.time.elapsedTime > duration + this.export.recordStartTime) {
+        // button.removeEventListener('mouseover', this.handleMouseOver, true)
+        // button.removeEventListener('mouseout', this.handleMouseOut, true)
+        button.parentNode.classList.remove('progress')
+
+        this.controls.disableControls(false)
+
         if (this.controls.parameters.buttons.exportPreview.value) {
+          button.value = 'Preview'
           this.controls.parameters.buttons.exportPreview.value = false
         }
         if (this.export.recording.animation) button.value = 'Export'
@@ -377,23 +267,17 @@ export default class App {
       }
     }
 
+    // End animate
     if (this.time.elapsedTime > duration + this.export.recordStartTime) {
       if (this.mode.mode.animate) this.mode.mode.animate()
-
-      // // Reset text preview
-      // if (this.mode.activeMode.name !== 'Text') {
-      //   if (this.mode.textMode) {
-      //     this.mode.textMode.text.forEach((text) => {
-      //       text.visible = this.controls.parameters.buttons.textPreview.value
-      //     })
-      //   }
-      // }
     }
   }
 
   update = () => {
     // this.camera.update()
     if (this.mode) this.mode.update()
+
+    // console.log(this.time.elapsedTime, 'elapsedTime')
 
     // Export preview
     if (this.controls.parameters.buttons.exportPreview.value || this.export.recording.animation) {
@@ -403,38 +287,9 @@ export default class App {
     if (this.mode && this.mode.mode.effectComposer) this.mode.mode.effectComposer.render()
     else this.renderer.update()
 
-    // if (this.resources.items.logoTexture) {
-    //   const c = this.canvas
-    //   const ctx = c.getContext('webgl')
-    //   console.log(ctx)
-    //   const img = this.resources.items.logoTexture.file.image
-    //   console.log(img)
-    //   ctx.drawImage(img, 10, 10)
-    // }
+    this.stats.update()
 
     if (this.export.recording.still) this.exportImage()
     if (this.export.recording.animation) this.exportCC()
-
-    // if (this.time.elapsedTime >= 3 && this.mediaRecorder.state === 'recording') this.mediaRecorder.stop()
-
-    // this.stats.update()
-
-    // if (this.export.recording) {
-    //   // this.debugFolderTime.controllers.forEach((controller) => controller.disable())
-    //   this.capturer.capture(this.canvas)
-    //   if (this.time.elapsedTime > this.export.duration) {
-    //     this.export.recording = false
-    //     // this.debugFolderTime.controllers.forEach((controller) => controller.enable())
-    //     // const btn = this.debugFolderExport.children.filter((c) =>
-    //          c.property === 'export')[0].$button
-    //     // btn.innerHTML = 'Export'
-    //     // btn.style.color = 'white'
-    //   }
-    //   else {
-    //     capturer.stop()
-    //     capturer.save()
-    //     this.export.recording = false
-    //   }
-    // }
   }
 }

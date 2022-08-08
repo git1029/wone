@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import * as THREE from 'three'
 
 import EventEmitter from '../utils/EventEmitter'
@@ -18,14 +20,12 @@ export default class Mode extends EventEmitter {
     this.activeMode = this.controls.parameters.mode.value
 
     // Initialize text mode
-    // if (this.activeMode.name !== 'Text') {
     this.textMode = new Text()
     this.textMode.text.forEach((text) => {
       text.visible = false
     })
 
     this.setLogoColor()
-    // }
   }
 
   setMode = () => {
@@ -53,22 +53,6 @@ export default class Mode extends EventEmitter {
     }
 
     this.setLogoColor()
-
-    // Show/hide text inputs if on pattern/image mode
-    // const textInputs = document.querySelector('#input-text-container')
-    // if (this.mode && this.activeMode.name !== 'Text') {
-    //   if (this.textMode) {
-    //     textInputs.style.display = this.controls.parameters.buttons.textPreview.value ? 'block' : 'none'
-    //   }
-    // } else {
-    //   textInputs.style.display = 'block'
-    // }
-
-    // if (this.textMode) {
-    //   this.textMode.destroy()
-    // } else {
-    //   this.textMode = new Text()
-    // }
   }
 
   setTextPreview = (value) => {

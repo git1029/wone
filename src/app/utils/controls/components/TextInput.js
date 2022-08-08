@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+
 import Controls from '../Controls'
 
 export default class TextInput {
