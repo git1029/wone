@@ -46,6 +46,16 @@ export default class ButtonAction {
       }
     }
 
+    if (name === 'textPreview') {
+      if (parameter.value) {
+        buttonInput.value = 'Hide Text'
+        inputs.classList.add('preview-text')
+      } else {
+        buttonInput.value = 'Show Text'
+        inputs.classList.remove('preview-text')
+      }
+    }
+
     buttonInput.addEventListener('click', (event) => {
       event.preventDefault()
 

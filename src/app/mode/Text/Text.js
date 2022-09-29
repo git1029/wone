@@ -58,9 +58,7 @@ export default class Text {
     this.controls.on('parameter-update-slider-textSize', () => {
       this.text.forEach((text, i) => {
         this.textSettings.fontSize = this.getSize()
-        // this.textSettings.lineHeight = this.controls.parameters.sliders.lineHeight.value
         text.fontSize = this.textSettings.fontSize
-        // text.lineHeight = this.textSettings.lineHeight
         text.sync(() => {
           text.position.y = this.getYPos(i)
           this.getXOffset(text)
@@ -81,7 +79,8 @@ export default class Text {
         this.updateCanvasBackground()
       }
 
-      if (this.app.logoMesh) {
+      // Logo color can be controlled in text mode only, will be fixed at off white in other modes
+      if (this.app.mode.activeMode.name === 'Text' && this.app.logoMesh) {
         this.app.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.text.value.primary)
         this.app.logoMesh.material.needsUpdate = true
       }

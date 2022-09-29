@@ -139,9 +139,6 @@ void main() {
   float amp = 0.5 * abs(eq);
   if (amp < 0.008) amp = 0.008;
 
-
-
-
   float tf = 1.;
   float easeDuration = 6.;
   if ((uTime - uStartTime) < easeDuration) {
@@ -149,13 +146,10 @@ void main() {
     tf = map(tf, 1., 0., 1., 0.);
   }
   else tf = 0.;
-  
-  
+    
   // for (int i = 0; i < 4; i++) {
     vel.x = rand(uv + pos.y + 3.143284 + uTime) * amp * 2. - amp;
     vel.y = rand(uv + pos.x + 124.32347 + uTime) * amp * 2. - amp;
-    // vel.x *= .25;
-    // vel.y *= .25;
     vel.z = 0.;
 
     // Velocity end (slowed down)

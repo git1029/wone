@@ -10,6 +10,7 @@ export default class Camera {
     this.scene = this.app.scene
     this.canvas = this.app.canvas
 
+    // Setup
     this.distance = 1
 
     this.setInstance()

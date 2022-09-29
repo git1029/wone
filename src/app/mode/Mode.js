@@ -42,7 +42,6 @@ export default class Mode extends EventEmitter {
       this.mode = new Image()
       this.setTextPreview(this.controls.parameters.buttons.textPreview.value)
     } else if (this.activeMode.name === 'Text') {
-      // this.mode = new Text()
       this.textMode.updateCanvasBackground()
       this.textMode.setEvents()
       this.setTextPreview(true)

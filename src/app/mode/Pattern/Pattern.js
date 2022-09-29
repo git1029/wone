@@ -192,10 +192,6 @@ export default class Pattern {
 
     this.positionUniforms.uTime.value = this.time.elapsedTime
     if (restartTime) this.positionUniforms.uStartTime.value = this.time.elapsedTime
-
-    // console.log(restartTime)
-    // console.log(this.positionUniforms.uTime.value - this.positionUniforms.uStartTime.value)
-    // console.log(this.positionUniforms.uStartTime.value)
   }
 
   updateColors = () => {
@@ -215,10 +211,6 @@ export default class Pattern {
 
     this.positionUniforms.uTime.value = this.time.elapsedTime
     this.particleUniforms.texturePosition.value = this.gpuCompute.getCurrentRenderTarget(this.positionVariable).texture
-
-    // console.log(this.positionUniforms.uTime.value, 'uTime')
-    // console.log(this.positionUniforms.uStartTime.value, 'uStartTime')
-    // console.log(this.positionUniforms.uTime.value - this.positionUniforms.uStartTime.value)
   }
 
   // Do not restart time if slider values are equal between keyframes or if updating text values

@@ -164,16 +164,6 @@ export default class Controls extends EventEmitter {
           },
           controllers: {},
         },
-
-        // logo: {
-        //   modes: [],
-        //   label: 'Logo Colour',
-        //   options: {
-        //     light: { name: 'Light', background: '#1D1D1B', primary: '#FCFCFC' },
-        //     dark: { name: 'Dark', background: '#FCFCFC', primary: '#1D1D1B' },
-        //   },
-        //   controllers: {},
-        // },
       },
 
       sliders: {
@@ -333,12 +323,6 @@ export default class Controls extends EventEmitter {
           label: 'Image Upload',
           name: 'patternTexture',
         },
-
-        // logoTexture: {
-        //   modes: [],
-        //   label: 'Logo Image Upload',
-        //   name: 'logoTexture',
-        // },
       },
 
       buttons: {
@@ -375,6 +359,7 @@ export default class Controls extends EventEmitter {
               this.app.mode.textMode.text.forEach((text) => {
                 text.visible = this.parameters.buttons.textPreview.value
               })
+              this.updateLocalStorage()
             }
           },
         },
@@ -398,8 +383,6 @@ export default class Controls extends EventEmitter {
           },
           handleClick: () => {
             if (this.parameters.export.save.value.key === 'animation') {
-              // this.time.restart()
-
               // Change to keyframe A
               this.parameters.keyframe.controllers.a.click()
 
@@ -409,14 +392,11 @@ export default class Controls extends EventEmitter {
               if (this.app.export.recording.animation) {
                 this.app.stopExportCC(false)
                 this.disableControls(false)
-                // if (this.app.mode.activeMode.name === 'Pattern') this.app.mode.mode.positionUniforms.uStartTime.value = this.time.elapsedTime
               } else {
                 // Wait for pattern to settle before beginning recording
                 setTimeout(() => {
                   this.app.export.recordStartTime = this.time.elapsedTime
                   this.app.export.recording.animation = true
-                  // this.parameters.buttons.exportPreview.controller.disabled = true
-                  // this.parameters.export.duration.controller.disabled = true
                   this.disableControls(true)
 
                   const { width, height } = this.parameters.size.value
@@ -445,8 +425,6 @@ export default class Controls extends EventEmitter {
           label: 'Preview',
           value: false,
           handleClick: () => {
-            // console.log('Export Preview')
-
             if (this.parameters.export.save.value.key !== 'animation') return
 
             if (this.parameters.buttons.exportPreview.value) {
@@ -455,13 +433,9 @@ export default class Controls extends EventEmitter {
               this.parameters.buttons.exportPreview.controller.removeAttribute('style')
               this.parameters.buttons.exportPreview.controller.parentNode.classList.remove('progress')
               this.disableControls(false, 'preview')
-              // this.parameters.buttons.exportPreview.controller.removeEventListener('mouseover', this.app.handleMouseOver, true)
-              // this.parameters.buttons.exportPreview.controller.removeEventListener('mouseout', this.app.handleMouseOut, true)
-              // this.parameters.buttons.exportPreview.controller.value = 'Preview'
             } else {
               this.parameters.buttons.exportPreview.value = true
               this.disableControls(true, 'preview')
-              // this.parameters.buttons.exportPreview.controller.value = 'Cancel'
               this.app.export.recordStartTime = this.time.elapsedTime
               this.parameters.buttons.exportPreview.controller.parentNode.classList.add('progress')
             }
@@ -532,9 +506,9 @@ export default class Controls extends EventEmitter {
     this.setParameter(params, 'export', 'duration', this.parameters.export.duration.default)
     this.setParameter(params, 'color', 'pattern', this.parameters.color.pattern.options.blue)
     this.setParameter(params, 'color', 'text', this.parameters.color.text.options.dark)
-    // this.setParameter(params, 'color', 'logo', this.parameters.color.logo.options.light)
     this.setParameter(params, null, 'imageScale', this.parameters.imageScale.default)
     this.setParameter(params, 'buttons', 'logoPreview', false)
+    this.setParameter(params, 'buttons', 'textPreview', false)
 
     Object.keys(this.parameters.sliders).forEach((key) => {
       // Check for default value in localStorage
@@ -598,11 +572,9 @@ export default class Controls extends EventEmitter {
     this.buttonOption.create('size', null, document.querySelector('#input-size'))
     this.buttonColor.create('pattern', document.querySelector('#input-color-pattern'))
     this.buttonColor.create('text', document.querySelector('#input-color-text'))
-    // this.buttonColor.create('logo', document.querySelector('#input-color-logo'))
     this.buttonOption.create('keyframe', null, document.querySelector('#input-keyframe'))
     this.textInput.createTextarea(document.querySelector('#input-text'))
     this.imageUpload.create('patternTexture', 'images', document.querySelector('#input-image'))
-    // this.imageUpload.create('logoTexture', 'images', document.querySelector('#input-logo'))
 
     Object.keys(this.parameters.sliders).forEach((key) => {
       let parent = document.querySelector('#input-sliders')
@@ -702,7 +674,6 @@ export default class Controls extends EventEmitter {
       color: {
         pattern: { value: this.parameters.color.pattern.value },
         text: { value: this.parameters.color.text.value },
-        // logo: { value: this.parameters.color.logo.value },
       },
       text: { value: this.parameters.text.value },
       images: {},
@@ -712,6 +683,7 @@ export default class Controls extends EventEmitter {
       fitWidth: { value: this.parameters.buttons.image.fitWidth.value },
       fitHeight: { value: this.parameters.buttons.image.fitHeight.value },
       buttons: {
+        textPreview: { value: this.parameters.buttons.textPreview.value },
         logoPreview: { value: this.parameters.buttons.logoPreview.value },
       },
     }

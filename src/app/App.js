@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import CCapture from 'ccapture.js-npmfixed'
-import Stats from 'stats.js'
+// import Stats from 'stats.js'
 
 import Sizes from './utils/Sizes'
 import Time from './utils/Time'
@@ -21,11 +21,11 @@ export default class App {
     }
     instance = this
 
-    // Stats
-    this.stats = new Stats()
-    this.stats.domElement.style.bottom = 0
-    this.stats.domElement.style.top = 'auto'
-    document.body.appendChild(this.stats.dom)
+    // // Stats
+    // this.stats = new Stats()
+    // this.stats.domElement.style.bottom = 0
+    // this.stats.domElement.style.top = 'auto'
+    // document.body.appendChild(this.stats.dom)
 
     this.export = {
       recording: {
@@ -45,9 +45,7 @@ export default class App {
     this.renderer = new Renderer()
     this.controls = new Controls()
 
-    // Mode
     this.setMode()
-
     this.setLogo()
 
     // Add events
@@ -74,7 +72,6 @@ export default class App {
       new THREE.MeshBasicMaterial({
         map: null,
         transparent: true,
-        // color: this.controls.parameters.color.logo.value.primary,
       }),
     )
     this.logoMesh.position.z = 15
@@ -86,14 +83,6 @@ export default class App {
       this.logoMesh.material.needsUpdate = true
       this.setLogoPosition()
     })
-    // this.controls.on('parameter-update-color-logo', () => {
-    //   this.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.logo.value.primary)
-    //   this.logoMesh.material.needsUpdate = true
-    // })
-    // this.resources.on('ready-logoTexture', () => {
-    //   this.logoMesh.material.map = this.resources.itemsUser.logoTexture.file
-    //   this.logoMesh.material.needsUpdate = true
-    // })
   }
 
   setLogoPosition = () => {
@@ -126,8 +115,6 @@ export default class App {
 
   exportCC = () => {
     if (this.export.recording.animation && this.controls.parameters.export.save.value.key === 'animation') {
-      // this.debugFolderTime.controllers.forEach((controller) => controller.disable())
-
       this.capturer.capture(this.canvas)
 
       const duration = this.controls.parameters.export.duration.value
@@ -143,8 +130,6 @@ export default class App {
     this.export.recording.animation = false
     this.capturer.stop()
     if (save) this.capturer.save()
-    // this.controls.parameters.buttons.export.controller.enable()
-    // this.controls.parameters.buttons.export.controller.disabled = false
     this.controls.parameters.buttons.export.controller.removeAttribute('style')
     this.controls.parameters.buttons.export.controller.parentNode.classList.remove('progress')
     this.controls.parameters.buttons.export.controller.value = 'Export'
@@ -165,10 +150,6 @@ export default class App {
       framerate: 60,
       // verbose: true,
     })
-
-    // this.controls.parameters.buttons.exportPreview.controller.disabled = false
-    // this.controls.parameters.export.duration.controller.disabled = false
-    // this.controls.parameters
 
     if (this.mode.activeMode.name === 'Pattern') {
       setTimeout(() => {
@@ -243,17 +224,11 @@ export default class App {
       const colorProgress = '#136DEB'
       button.style.background = `linear-gradient(to right, ${colorProgress} ${t * 100}%, ${colorBg} ${t * 100}%)`
       button.style.paddingBottom = '15px'
-      // const value = this.export.recording.animation ? 'Exporting' : 'Preview'
 
       if (this.export.recording.animation) button.value = 'Exporting'
       button.parentNode.classList.add('progress')
-      // button.value = 'Cancel'
-      // button.addEventListener('mouseover', this.handleMouseOver, true)
-      // button.addEventListener('mouseout', (e) => this.handleMouseOut(e, value), true)
 
       if (this.time.elapsedTime > duration + this.export.recordStartTime) {
-        // button.removeEventListener('mouseover', this.handleMouseOver, true)
-        // button.removeEventListener('mouseout', this.handleMouseOut, true)
         button.parentNode.classList.remove('progress')
 
         this.controls.disableControls(false)
@@ -274,10 +249,7 @@ export default class App {
   }
 
   update = () => {
-    // this.camera.update()
     if (this.mode) this.mode.update()
-
-    // console.log(this.time.elapsedTime, 'elapsedTime')
 
     // Export preview
     if (this.controls.parameters.buttons.exportPreview.value || this.export.recording.animation) {
@@ -287,7 +259,7 @@ export default class App {
     if (this.mode && this.mode.mode.effectComposer) this.mode.mode.effectComposer.render()
     else this.renderer.update()
 
-    this.stats.update()
+    // this.stats.update()
 
     if (this.export.recording.still) this.exportImage()
     if (this.export.recording.animation) this.exportCC()

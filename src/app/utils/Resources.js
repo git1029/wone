@@ -19,10 +19,45 @@ export default class Resources extends EventEmitter {
     this.startLoading()
   }
 
+  // eslint-disable-next-line class-methods-use-this
+  onTransitionEnd = (event) => {
+    event.target.remove()
+  }
+
   setLoaders = () => {
+    this.loadingManager = new THREE.LoadingManager(
+      () => {
+        const loadingScreen = document.getElementById('loading-screen')
+        // loadingScreen.classList.add('fade-out')
+        // const loadingBarElement = document.querySelector('.loadera.loader-3')
+        // window.setTimeout(() => {
+        //   loadingBarElement.classList.add('ended')
+        //   loadingBarElement.style.transform = ''
+        // }, 500)
+        loadingScreen.classList.add('fade-out')
+        loadingScreen.addEventListener('transitionend', this.onTransitionEnd)
+      },
+
+      // (itemUrl, itemsLoaded, itemsTotal) => {
+      //   const loadingBarElement = document.querySelector('.loadera.loader-3')
+      //   console.log(itemUrl, itemsLoaded, itemsTotal)
+      //   const progressRatio = itemsLoaded / itemsTotal
+      //   loadingBarElement.style.transform = `scaleX(${progressRatio})`
+      //   // loadingBarElement.addEventListener('transitionend', this.onTransitionEnd)
+      // },
+
+      // optional: remove loader from DOM via event listener
+      // loadingScreen.addEventListener('transitionend', this.onTransitionEnd)
+    )
+    // this.loadingManager.onStart = () => {
+    //   console.log('onStart')
+    // }
+    // this.loadingManager.onLoad = () => {
+    //   console.log('onLoad')
+    // }
     this.loaders = {}
     this.loaders.fontLoader = new FontLoader()
-    this.loaders.textureLoader = new THREE.TextureLoader()
+    this.loaders.textureLoader = new THREE.TextureLoader(this.loadingManager)
   }
 
   startLoading = () => {
