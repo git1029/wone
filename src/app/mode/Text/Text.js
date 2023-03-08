@@ -25,14 +25,17 @@ export default class Text {
   }
 
   init = () => {
-    if (this.controls.parameters.mode.value.name === 'Text') this.updateCanvasBackground()
+    if (this.controls.parameters.mode.value.name === 'Text') {
+      this.updateCanvasBackground()
+    }
 
     this.string = this.controls.parameters.text.value
 
     this.padding = 0.015
 
     this.textSettings = {
-      font: '/fonts/Theinhardt Pan Medium.otf',
+      // font: '/fonts/Theinhardt Pan Medium.otf',
+      font: '/fonts/WorkSans-Regular.ttf',
       fontSize: this.getSize(),
       anchorX: 'left',
       anchorY: 'middle',
@@ -81,7 +84,9 @@ export default class Text {
 
       // Logo color can be controlled in text mode only, will be fixed at off white in other modes
       if (this.app.mode.activeMode.name === 'Text' && this.app.logoMesh) {
-        this.app.logoMesh.material.color = new THREE.Color(this.controls.parameters.color.text.value.primary)
+        this.app.logoMesh.material.color = new THREE.Color(
+          this.controls.parameters.color.text.value.primary,
+        )
         this.app.logoMesh.material.needsUpdate = true
       }
     })
@@ -159,22 +164,34 @@ export default class Text {
   chladni = (x, y, i, r) => {
     const freqA = this.controls.getSliderValue('frequencyA')
     const freqB = this.controls.getSliderValue('frequencyB')
-    const m = Utils.map(freqA, this.app.controls.parameters.sliders.frequencyA.options.min, this.app.controls.parameters.sliders.frequencyA.options.max, 0, 1)
-    const n = Utils.map(freqB, this.app.controls.parameters.sliders.frequencyB.options.min, this.app.controls.parameters.sliders.frequencyB.options.max, 0, 1)
+    const m = Utils.map(
+      freqA,
+      this.app.controls.parameters.sliders.frequencyA.options.min,
+      this.app.controls.parameters.sliders.frequencyA.options.max,
+      0,
+      1,
+    )
+    const n = Utils.map(
+      freqB,
+      this.app.controls.parameters.sliders.frequencyB.options.min,
+      this.app.controls.parameters.sliders.frequencyB.options.max,
+      0,
+      1,
+    )
     return Math.sin(m * Math.PI + r * Math.PI + n * Math.PI)
   }
 
   getXOffset = (text) => {
     const width = text.geometry.boundingBox.max.x - text.geometry.boundingBox.min.x
     const windowWidth = this.camera.aspect.x
-    if ((width + this.padding * 2) < windowWidth) {
+    if (width + this.padding * 2 < windowWidth) {
       const eq = this.chladni(0.5, text.position.y, text.i, text.r)
       let amp = Math.abs(eq)
       if (amp > 1) amp = 1
-      const offset = ((windowWidth - width - this.padding * 2) * 1) * amp
+      const offset = (windowWidth - width - this.padding * 2) * 1 * amp
       text.offsetX = offset
       text.position.x = text.offsetX * this.controls.getSliderValue('textOffset')
-      text.position.x -= (windowWidth * 0.5) - this.padding
+      text.position.x -= windowWidth * 0.5 - this.padding
     } else {
       text.offsetX = -(windowWidth * 0.5) - this.padding
       text.position.x = text.offsetX

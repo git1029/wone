@@ -25,3 +25,5 @@ yarn-error.log*
 .vercel
 
 spare.js
+
+.prettierrc.json
